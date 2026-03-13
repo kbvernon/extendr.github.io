@@ -1,0 +1,324 @@
+/*-- scss:uses --*/
+@use "sass:color";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/*-- scss:defaults --*/
+$min-contrast-ratio: 4.5 !default;
+
+// bootstrap grays
+$white: #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #ecf0f1 !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #b4bcc2 !default;
+$gray-600: #95a5a6 !default;
+$gray-700: #7b8a8b !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black: #000 !default;
+
+// base colors
+$true-r-blue-1: #276DC3;
+$true-r-blue-2: #165CAA;
+$desaturated-r-blue-1: #586D99;
+$desaturated-r-blue-2: #1A2740;
+$rust-orange: #D34516;
+$rust-silver: #67737A;
+$flatly-yellow: #f39c12;
+
+// base extendr colors
+// the blues are desaturated versions of the original r blues
+// tint scales (4 = original, 1 = 75% tinted)
+$dark-blue-4: $desaturated-r-blue-2;
+$dark-blue-3: color.mix(white, $dark-blue-4, 25%, $method: oklch);
+$dark-blue-2: color.mix(white, $dark-blue-4, 50%, $method: oklch);
+$dark-blue-1: color.mix(white, $dark-blue-4, 75%, $method: oklch);
+
+$orange-4: $rust-orange;
+$orange-3: color.mix(white, $orange-4, 25%, $method: oklch);
+$orange-2: color.mix(white, $orange-4, 50%, $method: oklch);
+$orange-1: color.mix(white, $orange-4, 75%, $method: oklch);
+
+$blue-4: $desaturated-r-blue-1;
+$blue-3: color.mix(white, $blue-4, 25%, $method: oklch);
+$blue-2: color.mix(white, $blue-4, 50%, $method: oklch);
+$blue-1: color.mix(white, $blue-4, 75%, $method: oklch);
+
+$silver-4: $rust-silver;
+$silver-3: color.mix(white, $silver-4, 25%, $method: oklch);
+$silver-2: color.mix(white, $silver-4, 50%, $method: oklch);
+$silver-1: color.mix(white, $silver-4, 75%, $method: oklch);
+
+$teal-4: #96C5B0;
+$teal-3: color.mix(white, $teal-4, 25%, $method: oklch);
+$teal-2: color.mix(white, $teal-4, 50%, $method: oklch);
+$teal-1: color.mix(white, $teal-4, 75%, $method: oklch);
+
+// semantic colors
+$primary: $dark-blue-4;
+$secondary: $silver-4;
+$success: $teal-4;
+$danger: $orange-4;
+$warning: $flatly-yellow;
+$info: $blue-4;
+$light: $gray-200;
+$dark: $gray-800;
+
+// quarto callouts
+$callout-color-note: $primary;
+$callout-color-important: $danger;
+$callout-color-tip: $success;
+$callout-color-caution: color.mix($warning, $danger, 50%, $method: oklch);
+$callout-color-warning: $warning;
+
+$link-color: color.mix(black, $teal-4, 20%, $method: oklch);
+$link-hover-color: color.mix(black, $teal-4, 40%, $method: oklch);
+$nav-link-color: $link-color;
+$nav-link-hover-color: $link-hover-color;
+
+// fonts
+$headings-font-family: "Noto Serif", Georgia, serif;
+$font-family-sans-serif: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+
+
+/*-- scss:rules --*/
+$palette: (
+    'dark-blue': ($dark-blue-1, $dark-blue-2, $dark-blue-3, $dark-blue-4),
+    'orange': ($orange-1, $orange-2, $orange-3, $orange-4),
+    'blue': ($blue-1, $blue-2, $blue-3, $blue-4),
+    'silver': ($silver-1, $silver-2, $silver-3, $silver-4),
+    'teal': ($teal-1, $teal-2, $teal-3, $teal-4),
+);
+
+// define css custom properties for all palette colors
+:root {
+    @each $name, $tints in $palette {
+        @for $i from 1 through 4 {
+            --#{$name}-#{$i}: #{nth($tints, $i)};
+        }
+    }
+
+    --r-blue-1: #{$true-r-blue-1};
+    --r-blue-2: #{$true-r-blue-2};
+}
+
+// generate utility classes using css custom properties
+@each $name, $tints in $palette {
+    @for $i from 1 through 4 {
+        .bg-#{$name}-#{$i} {
+            background-color: var(--#{$name}-#{$i});
+        }
+
+        .text-#{$name}-#{$i} {
+            color: var(--#{$name}-#{$i});
+        }
+
+        .bg-#{$name}-#{$i}-fixed {
+            background-color: nth($tints, $i);
+        }
+
+        .text-#{$name}-#{$i}-fixed {
+            color: nth($tints, $i);
+        }
+    }
+}
+
+.bg-r-blue-1 {
+    background-color: var(--r-blue-1);
+}
+
+.bg-r-blue-2 {
+    background-color: var(--r-blue-2);
+}
+
+.text-r-blue-1 {
+    color: var(--r-blue-1);
+}
+
+.text-r-blue-2 {
+    color: var(--r-blue-2);
+}
+
+.font-sans {
+    font-family: $font-family-sans-serif;
+}
+
+.font-serif {
+    font-family: $headings-font-family;
+}
+
+.navbar {
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    @media (min-width: 992px) {
+        max-width: 65%;
+    }
+
+    background-color: color.mix($gray-200, white, 20%, $method: oklch) !important;
+    border: 1px solid $gray-200;
+    color: black;
+
+    .nav-link,
+    .navbar-brand {
+        color: black;
+    }
+
+    .nav-link:hover {
+        color: $dark-blue-4;
+    }
+}
+
+.sidebar-link.active {
+    color: $link-color;
+}
+
+.card-img-col img {
+    width: 120px !important;
+    max-width: none !important;
+    object-fit: contain;
+
+    @media (max-width: 576px) {
+        width: 92px !important;
+    }
+}
+
+.guide-header {
+    border-bottom: 1px solid $gray-300;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+}
+
+#homepage-header p {
+    margin-bottom: 0;
+}
+
+.card {
+
+    h1:first-child,
+    h2:first-child,
+    h3:first-child,
+    h4:first-child,
+    h5:first-child,
+    h6:first-child {
+        margin-top: 0;
+    }
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}
+
+#homepage-cards .card {
+    background-color: color.mix($gray-200, white, 20%, $method: oklch);
+    border: 2px solid $gray-200;
+}
+
+.text-auto-dark {
+    color: white;
+}
+
+.text-auto-light {
+    color: black;
+}
+
+nav.page-navigation a.pagination-link:hover {
+    color: var(--bs-link-hover-color);
+}
+
+.quarto-title-breadcrumbs .breadcrumb {
+    margin-bottom: 0.5em;
+    font-size: 0.8rem;
+    padding-left: 0;
+    --bs-breadcrumb-bg: ;
+}
+
+// dark mode
+body.quarto-dark {
+
+    // swap tint scale (1↔4, 2↔3)
+    @each $name, $tints in $palette {
+        @for $i from 1 through 4 {
+            --#{$name}-#{$i}: #{nth($tints, 5 - $i)};
+        }
+    }
+
+    --bs-link-color: #{$teal-4};
+    --bs-link-color-rgb: #{color.red($teal-4)},
+    #{color.green($teal-4)},
+    #{color.blue($teal-4)};
+    --bs-link-hover-color: #{$teal-2};
+    --bs-link-hover-color-rgb: #{color.red($teal-2)},
+    #{color.green($teal-2)},
+    #{color.blue($teal-2)};
+
+    .nav-link {
+        --bs-nav-link-color: #{$teal-4};
+    }
+
+    .sidebar-link:hover {
+        color: $teal-2;
+    }
+
+    .sidebar-link.active {
+        color: $teal-4;
+
+        &:hover {
+            color: $teal-2;
+        }
+    }
+
+    .navbar {
+        background-color: color.mix($gray-800, $gray-900, 50%, $method: oklch) !important;
+        border: 2px solid $gray-800;
+        color: white;
+
+        .nav-link,
+        .navbar-brand {
+            color: white;
+        }
+
+        .nav-link:hover {
+            color: $dark-blue-1;
+        }
+    }
+
+    .guide-header {
+        border-bottom-color: $gray-700;
+    }
+
+    #homepage-cards .card {
+        background-color: color.mix($gray-800, $gray-900, 50%, $method: oklch);
+        border: 2px solid $gray-800;
+    }
+
+    .text-auto-dark {
+        color: black;
+    }
+
+    .text-auto-light {
+        color: white;
+    }
+
+    .callout-icon {
+        filter: brightness(5);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        code {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: inherit;
+        }
+    }
+}
