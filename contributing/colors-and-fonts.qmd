@@ -1,0 +1,237 @@
+---
+title: "Colors and Fonts"
+engine: knitr
+---
+
+```{=html}
+<style>
+.color-swatch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+
+    p { margin: 0; }
+}
+</style>
+```
+
+Our colors and themes are inspired by the painfully 90's color choices of the R
+Foundation, particularly [its logo](https://www.r-project.org/logo/), and the 
+Rust Foundation's official [brand guide](https://rustfoundation.org/brand-guide/). 
+
+## Colors
+
+We have defined several utility classes to make using consistent colors easier.
+These can be used to define background and text colors. They are also used to
+define semantic colors, which are applied automatically. 
+
+### Background colors
+
+:::::: {.d-flex}
+::: {.bg-dark-blue-4 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-dark-blue-4
+:::
+::: {.bg-dark-blue-3 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-dark-blue-3
+:::
+::: {.bg-dark-blue-2 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-dark-blue-2
+:::
+::: {.bg-dark-blue-1 .color-swatch style="width: 160px; height: 40px;"}
+.bg-dark-blue-1
+:::
+::::::
+
+:::::: {.d-flex .mt-3}
+::: {.bg-orange-4 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-orange-4
+:::
+::: {.bg-orange-3 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-orange-3
+:::
+::: {.bg-orange-2 .color-swatch style="width: 160px; height: 40px;"}
+.bg-orange-2
+:::
+::: {.bg-orange-1 .color-swatch style="width: 160px; height: 40px;"}
+.bg-orange-1
+:::
+::::::
+
+:::::: {.d-flex .mt-3}
+::: {.bg-blue-4 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-blue-4
+:::
+::: {.bg-blue-3 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-blue-3
+:::
+::: {.bg-blue-2 .color-swatch style="width: 160px; height: 40px;"}
+.bg-blue-2
+:::
+::: {.bg-blue-1 .color-swatch style="width: 160px; height: 40px;"}
+.bg-blue-1
+:::
+::::::
+
+:::::: {.d-flex .mt-3}
+::: {.bg-silver-4 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-silver-4
+:::
+::: {.bg-silver-3 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-silver-3
+:::
+::: {.bg-silver-2 .color-swatch style="width: 160px; height: 40px;"}
+.bg-silver-2
+:::
+::: {.bg-silver-1 .color-swatch style="width: 160px; height: 40px;"}
+.bg-silver-1
+:::
+::::::
+
+:::::: {.d-flex .mt-3}
+::: {.bg-teal-4 .color-swatch style="width: 160px; height: 40px;"}
+.bg-teal-4
+:::
+::: {.bg-teal-3 .color-swatch style="width: 160px; height: 40px;"}
+.bg-teal-3
+:::
+::: {.bg-teal-2 .color-swatch style="width: 160px; height: 40px;"}
+.bg-teal-2
+:::
+::: {.bg-teal-1 .color-swatch style="width: 160px; height: 40px;"}
+.bg-teal-1
+:::
+::::::
+
+:::::: {.d-flex .mt-3}
+::: {.bg-r-blue-2 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-r-blue-2
+:::
+::: {.bg-r-blue-1 .color-swatch .text-white style="width: 160px; height: 40px;"}
+.bg-r-blue-1
+:::
+::::::
+
+### Text colors
+
+[.text-dark-blue-4]{.text-dark-blue-4}, [.text-dark-blue-3]{.text-dark-blue-3}, [.text-dark-blue-2]{.text-dark-blue-2}, [.text-dark-blue-1]{.text-dark-blue-1}
+
+[.text-orange-4]{.text-orange-4}, [.text-orange-3]{.text-orange-3}, [.text-orange-2]{.text-orange-2}, [.text-orange-1]{.text-orange-1}
+
+[.text-blue-4]{.text-blue-4}, [.text-blue-3]{.text-blue-3}, [.text-blue-2]{.text-blue-2}, [.text-blue-1]{.text-blue-1}
+
+[.text-silver-4]{.text-silver-4}, [.text-silver-3]{.text-silver-3}, [.text-silver-2]{.text-silver-2}, [.text-silver-1]{.text-silver-1}
+
+[.text-teal-4]{.text-teal-4}, [.text-teal-3]{.text-teal-3}, [.text-teal-2]{.text-teal-2}, [.text-teal-1]{.text-teal-1}
+
+[.text-r-blue-2]{.text-r-blue-2}, [.text-r-blue-1]{.text-r-blue-1}
+
+### Semantic colors
+
+[Primary](#){.btn .btn-primary .me-1}
+[Secondary](#){.btn .btn-secondary .me-1}
+[Success](#){.btn .btn-success .me-1}
+[Danger](#){.btn .btn-danger .me-1}
+[Warning](#){.btn .btn-warning .me-1}
+[Info](#){.btn .btn-info .me-1}
+[Light](#){.btn .btn-light .me-1}
+[Dark](#){.btn .btn-dark .me-1}
+
+These will also apply to [Quarto callouts](https://quarto.org/docs/authoring/callouts.html).
+
+::: callout-note
+Note that there are five types of callouts, including: `note`, `tip`, `warning`, 
+`caution`, and `important`.
+:::
+
+::: callout-warning
+Callouts provide a simple way to attract attention, for example, to this warning.
+:::
+
+::: callout-important
+The callout heading is provided by the callout type, with the expected heading 
+(i.e., Note, Warning, Important, Tip, or Caution).
+:::
+
+::: callout-tip
+## Tip With Title
+
+This is an example of a callout with a title. Providing a callout heading is 
+optional.
+:::
+
+::: {.callout-caution collapse="true"}
+## Caution: Expand To Learn About Collapse
+
+This is an example of a 'collapsed' caution callout that can be expanded by the 
+user. You can use `collapse="true"` to collapse it by default or `collapse="false"` 
+to make a collapsible callout that is expanded by default.
+:::
+
+And they have utility classes for text colors:
+
+[.text-primary]{.text-primary}, [.text-primary-emphasis]{.text-primary-emphasis}, 
+[.text-secondary]{.text-secondary}, [.text-secondary-emphasis]{.text-secondary-emphasis}, 
+[.text-success]{.text-success}, [.text-success-emphasis]{.text-success-emphasis}, 
+[.text-danger]{.text-danger}, [.text-danger-emphasis]{.text-danger-emphasis}, 
+[.text-warning]{.text-warning}, [.text-warning-emphasis]{.text-warning-emphasis}, 
+[.text-info]{.text-info}, [.text-info-emphasis]{.text-info-emphasis}, 
+[.text-light]{.text-light}, [.text-light-emphasis]{.text-light-emphasis}, 
+[.text-dark]{.text-dark}, [.text-dark-emphasis]{.text-dark-emphasis}, 
+[.text-body]{.text-body}, [.text-body-emphasis]{.text-body-emphasis}, 
+[.text-body-secondary]{.text-body-secondary}, [.text-body-tertiary]{.text-body-tertiary}
+
+## Fonts
+
+We follow the Rust Foundation in using Noto Sans for body and smaller texts and
+Noto Serif for headers. We have also implemented utility classes for these, 
+though they should not be required.
+
+:::::: {.d-flex .gap-3}
+::: {.bg-dark-blue-3 .text-white .font-serif .p-3 .flex-fill}
+[Noto Serif]{.fs-3}  
+.font-serif  
+ABCDEFGHIJKLMNOPQRSTUVWXYZ  
+abcdefghijklmnopqrstuvwxyz  
+0123456789
+:::
+
+::: {.bg-silver-4 .font-sans .p-3 .flex-fill .text-auto-dark}
+[Noto Sans]{.fs-3}  
+.font-sans  
+ABCDEFGHIJKLMNOPQRSTUVWXYZ  
+abcdefghijklmnopqrstuvwxyz  
+0123456789
+:::
+::::::
+
+## Light and Dark
+
+The `.bg-*` and `.text-*` utility classes automatically adapt to light and dark
+mode by flipping the tint scale — so `.text-dark-blue-4` in light mode becomes 
+`.text-dark-blue-1` in dark mode, and `.text-dark-blue-1` in light mode becomes 
+`.text-dark-blue-4` in dark mode. This means you generally don't need to
+think about dark mode when using these classes. If you need a color to stay 
+fixed regardless of the theme, however, simply append `-fixed` to the class 
+name: `.bg-orange-4-fixed` and `.text-orange-4-fixed` will always render the 
+original color. 
+
+Here are some examples. To see how they work, toggle light and dark mode in the 
+browser:
+
+[.bg-orange-4]{.bg-orange-4}  
+[.bg-orange-4-fixed]{.bg-orange-4-fixed}
+
+Notice that the font changes from black to white in each example. This is 
+Bootstrap's color system adapting to the page background, which is meant to 
+ensure a certain contrast level for accessibility. Semantic colors (`.text-primary`, 
+`.btn-success`, callouts, etc.) are also handled by Bootstrap's color system and 
+do not need any special treatment. However, you will notice that Bootstrap's 
+color system does not recognize these utilities - currently, it does not even 
+recognize its own utilities! - so contrast can be lost when using them. To 
+ensure that accessibility is maintained, you may want to add `.text-auto-dark` 
+or `.text-auto-light` classes, too. These will ensure that white and black text 
+are correctly used with our utilities.
+
+[.bg-orange-1 with .text-auto-light]{.bg-orange-1 .text-auto-light}  
+[.bg-orange-4 with .text-auto-dark]{.bg-orange-4 .text-auto-dark}  

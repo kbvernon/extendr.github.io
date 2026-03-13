@@ -1,0 +1,16 @@
+---
+title: "General writing conventions"
+engine: knitr
+---
+
+This page covers code formatting conventions for the extendr project. Following 
+these conventions keeps code consistent and readable across contributors.
+
+## R code
+
+- Never use `print()` to display an R object. Let R print it implicitly.
+- Use the `extendrsrc` and `extendr` knitr engines for all extendr code. See 
+  `user-guide/serde-integration.qmd` for a worked example to emulate.
+
+## Rust code
+
