@@ -1,140 +1,51 @@
 ---
 title: ""
+toc: false
+page-layout: full
+anchor-sections: false
 ---
 
-::: {style="margin:0; width: 100%;"}
-::: {style="margin:0; width: 81%; float: left;"}
+:::::: {#homepage-header .text-center .w-75 .mx-auto}
+[Extending R with Rust]{.fs-3 .text-silver-4}  
 
-# extendr - extending R with Rust 🦀
+:::{.fs-1 .mx-auto style="width: 80%;"}
+Build blazingly fast R packages with developer-friendly and CRAN-ready tools.
+:::
 
-[![Github Actions Build
-Status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
+::: {.mt-1}
+[![Github Actions Build Status](https://github.com/extendr/extendr/workflows/Tests/badge.svg)](https://github.com/extendr/extendr/actions)
 [![Crates.io](https://img.shields.io/crates/v/extendr-api.svg)](https://crates.io/crates/extendr-api)
 [![Documentation](https://docs.rs/extendr-api/badge.svg)](https://docs.rs/extendr-api)
-[![License:
-MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+:::
+::::::
 
+:::: {#homepage-cards .grid style="margin-top: 4rem;"}
+::: {.g-col-12 .g-col-md-4 .card .p-4}
+### Get Started {{< iconify openmoji:rocket >}}
 
+Build your first Rust-powered R package in minutes. Follow our step-by-step 
+guide or dive straight into a complete example.
+
+[Installation →](/get-started.qmd) [•]{.text-silver-3} [User Guide →](/user-guide/index.qmd)
 :::
 
-::: {style="margin: 0.25rem 0 0 0; width: 19%; float: right;"}
-![](images/extendr-logo-256.png){width="100%" fig-alt="rextendr logo"}
+::: {.g-col-12 .g-col-md-4 .card .p-4}
+### See What's Possible {{< iconify openmoji:sparkler >}}
+
+Explore R packages built with extendr. From high-performance data processing to 
+system integrations, see what the community has built.
+
+[Browse awesome-extendr →](https://github.com/extendr/awesome-extendr)
 :::
 
+::: {.g-col-12 .g-col-md-4 .card .p-4}
+### Join the Community {{< iconify fluent-color:people-interwoven-16 >}}
+
+extendr has a welcoming and active community of R and Rust developers. Come ask 
+questions, share your work, or just hang out.
+
+[Discord →](https://discord.gg/7hmApuc) [•]{.text-silver-3} [GitHub →](https://github.com/extendr/extendr)
 :::
-
-
-
-Build blazingly fast R packages 📦 with ease. The extendr ecosystem is **developer-friendly** and **CRAN**-ready. extendr let's you write ergonomic and idomatic Rust without having to worry about R's internals (much 😅).
-
-## Getting Started
-
-- Don't have Rust installed yet? [Start here](/get-started.qmd).
-- Familiar with Rust and want to get your hands dirty? Follow along with a [complete example](user-guide/complete-example.qmd).
-
-
-## The ecosystem
-
-**Rust crates** 🦀 :
-
-- [`extendr-api`](https://extendr.github.io/extendr/extendr_api)—ergonomic, opinionated, and safe interface between R and Rust
-- [`extendr-engine`](https://extendr.github.io/extendr/extendr_engine)—embed and use R in Rust
-- [`extendr-ffi`](https://extendr.github.io/extendr/extendr_ffi)—hand-crafted bindings to R's C-API
-
-**R packages** 📦 :
-
-- [`{rextendr}`](https://extendr.github.io/rextendr/dev)—A `{usethis}`-like package that scaffolds extendr-powered R packages
-
-
-## Quickstart
-
-We recommend using the development version of `{rextendr}` from GitHub.
-
-```r
-# Install from CRAN
-install.packages("rextendr")
-
-# Development version
-remotes::install_github("extendr/rextendr")
-
-# create a new R package
-usethis::create_package("helloextendr")
-
-# Use extendr
-rextendr::use_extendr()
-
-# Document and build the package
-rextendr::document()
-
-# run hello_world()
-hello_world()
-#> [1] "Hello, world!"
-```
-
-### Example: calling structs from R
-
-``` rust
-use extendr_api::prelude::*;
-
-#[extendr]
-#[derive(Debug)]
-struct Person {
-    pub name: String,
-}
-
-#[extendr]
-impl Person {
-    fn new() -> Self {
-        Self { name: "".to_string() }
-    }
-
-    fn set_name(&mut self, name: &str) {
-        self.name = name.to_string();
-    }
-
-    fn name(&self) -> &str {
-        self.name.as_str()
-    }
-}
-
-#[extendr]
-fn my_function() { }
-
-// Macro to generate exports
-extendr_module! {
-    mod classes;
-    impl Person;
-    fn my_function;
-}
-```
-
-The `#[extendr]` attribute causes the compiler to generate wrapper and
-registration functions for R which are called when the package is loaded, thus
-allowing one to access Rust functions and structures in an R session:
-
-``` r
-# call function
-my_function()
-
-# create Person object
-p <- Person$new()
-p$set_name("foo")
-p$name()   # "foo" is returned
-```
-
-This, of course, is just the tip of the iceberg, for there are many ways to use
-extendr in R:
-
-- In an interactive R session one may use [`rextendr::rust_function` and
-    friends](https://extendr.github.io/rextendr/reference/rust_source.html) to
-    quickly prototype Rust code.
-
-- In an R package context, one may use
-    [`rextendr::use_extendr()`](https://extendr.github.io/rextendr/reference/use_extendr.html)
-    to setup a Rust powered R-package. See also the [vignette on
-    R-packages](https://extendr.github.io/rextendr/articles/package.html).
-
-- It is also possible to inline Rust code in `Quarto` documents, see
-    [vignette on extendr
-    `knitr-engine`](https://extendr.github.io/rextendr/articles/rmarkdown.html).
+::::
 

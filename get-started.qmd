@@ -3,48 +3,81 @@ title: "Get Started"
 toc: false
 ---
 
-To build R packages with **extendr**, you need to have the right tools.
-
-## Step 1 [Install Rust]{.fw-light}
-
-::: clearfix
-::: {.float-start style="width: 126px; margin-right: 0.8rem;"}
-[![](images/cuddlyferris.svg)](https://www.rust-lang.org/tools/install)
+::::::: card
+:::::: {.row .g-0 .d-flex .flex-column .flex-md-row}
+::: {.col-md-4 .d-flex .align-items-center .justify-content-center .p-3 .card-img-col}
+[![](images/cuddlyferris.svg){width="96"}](https://www.rust-lang.org/tools/install)
 :::
+
+:::: col-md-8
+::: card-body
+### Step 1 [Install Rust]{.fw-light}
 
 Follow the [rustup installation
 instructions](https://www.rust-lang.org/tools/install) to install Rust. Note
-that the current minimum supported Rust version (msrv) in **extendr** is `1.64`.
-This is to ensure CRAN compliance. Windows users will also need to install the GNU toolchain as it matches Rtools. This can be done via rustup in the terminal: `rustup target add x86_64-pc-windows-gnu`.
+that the current minimum supported Rust version (msrv) in **extendr** is
+`{{< var version.rust >}}`. This is to ensure CRAN compliance. Windows users
+will also need to install the GNU toolchain as it matches Rtools. This can be
+done via rustup in the terminal: `rustup target add x86_64-pc-windows-gnu`.
+:::
+::::
+::::::
+:::::::
+
+::::::: {.card .mt-3 .border-0 .bg-transparent}
+:::::: {.row .g-0 .d-flex .flex-column .flex-md-row}
+::: {.col-md-4 .d-flex .align-items-center .justify-content-center .p-3 .card-img-col}
+[![](images/Rlogo.svg){width="96"}](https://cran.r-project.org/)
 :::
 
-## Step 2 [Update R]{.fw-light}
+:::: col-md-8
+::: card-body
+### Step 2 [Update R]{.fw-light}
 
-::: clearfix
-::: {.float-start style="width: 126px; margin-right: 0.8rem;"}
-[![](images/Rlogo.svg)](https://cran.r-project.org/)
+We recommend using a moderately new version of R (\>= {{< var version.r >}}).
+You can get that from [CRAN](https://cran.r-project.org/), but we highly
+recommend that you use [rig](https://github.com/r-lib/rig) for this. With rig,
+installing R is as simple as `rig add release`.
+:::
+::::
+::::::
+:::::::
+
+::::::: {.card .mt-3}
+:::::: {.row .g-0 .d-flex .flex-column .flex-md-row}
+::: {.col-md-4 .d-flex .align-items-center .justify-content-center .p-3 .card-img-col}
+[![](images/rextendr-logo.png){width="96"}](https://extendr.github.io/rextendr/)
 :::
 
-We recommend using a moderately new version of R (\>= 4.2.0). You can get that 
-from [CRAN](https://cran.r-project.org/).
-:::
-
-## Step 3 [Install rextendr]{.fw-light}
-
-::: clearfix
-::: {.float-start style="width: 126px; margin-right: 0.8rem;"}
-[![](images/rextendr-logo.png)](https://extendr.github.io/rextendr/)
-:::
+:::: col-md-8
+::: card-body
+### Step 3 [Install rextendr]{.fw-light}
 
 The R package `{rextendr}` provides scaffolding for extendr projects and tools
-for documenting Rust functions and objects. To install the latest development
-version, use `pak::pak("extendr/rextendr")`. Note that **rextendr** provides a
-function to check your Rust installation: `rextendr::rust_sitrep()`.
+for documenting Rust functions and objects. To install the latest release
+version, use `install.packages("rextendr")`. For the latest development version,
+use `pak::pak("extendr/rextendr")`. You can then run `rextendr::rust_sitrep()`
+to check your Rust installation.
+:::
+::::
+::::::
+:::::::
+
+::::::: {.card .mt-3 .border-0 .bg-transparent}
+:::::: {.row .g-0 .d-flex .flex-column .flex-md-row}
+::: {.col-md-4 .d-flex .align-items-center .justify-content-center .p-3 .card-img-col}
+[![](images/ra-logo-square.svg){width="96"}](https://rust-analyzer.github.io/)
 :::
 
-## Step 4 [Use rust-analyzer]{.fw-light}
+:::: col-md-8
+::: card-body
+### Step 4 [Use rust-analyzer]{.fw-light}
 
 This is optional, but strongly recommended. If you use [Visual Studio Code (VS
 Code)](https://code.visualstudio.com/download) or a similar IDE, the
 [rust-analyzer](https://rust-analyzer.github.io/) will provide you type hinting
 and auto-completion suggestions. It is **very** helpful!
+:::
+::::
+::::::
+:::::::
