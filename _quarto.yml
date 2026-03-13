@@ -73,10 +73,9 @@ website:
           contents:
             - user-guide/complete-example.qmd
             - section: "R Packages"
-              contents:
-                - user-guide/package-setup.qmd
+              contents:                
                 - user-guide/package-structure.qmd
-            - section: "CRAN"
+            - section: "Publishing"
 
     - id: contributing
       title: "Contributing"
