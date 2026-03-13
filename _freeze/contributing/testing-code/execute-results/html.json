@@ -1,0 +1,15 @@
+{
+  "hash": "80bd5db10116f30dc51701d80d51de8f",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Testing Code\"\nengine: knitr\n---",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

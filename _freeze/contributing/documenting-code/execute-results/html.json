@@ -1,0 +1,15 @@
+{
+  "hash": "2ab630bb6ca63d4ea341fb21efceb6c5",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Documenting Code\"\nengine: knitr\n---\n\nCode in extendr and rextendr should be thoroughly documented using widely\naccepted styling conventions in the R and Rust communities. \n\n## Writing style\n\n- Be concise! And stay on topic! The reader should not have to wade through\n  lengthy digressions to get to the point.\n- Eschew obfuscation and avoid needlessly wordy phrases like 'eschew \n  obfuscation.' In other words, keep it simple.\n- Second person (\"you\") is fine for instructions, but do not write about the \n  reader's intentions in the second person (avoid expressions like \"you want to\" \n  or \"you need to\").\n\n\n## Rust Documentation\n\n## R Documentation\n\nFunctions in rextendr should be documented with [roxygen2](https://roxygen2.r-lib.org), \nfollowing the conventions recommended by the [tidyverse style guide](https://style.tidyverse.org/documentation.html).\n\n- Every exported function in rextendr must include the following roxygen \n  variables:\n  - `@title`\n  - `@description` — a concise description of what the function does.\n  - `@param` — one tag per parameter, specifying:\n    - the data type (e.g. `integer`, `character`, `logical`)\n    - whether it is a scalar or vector\n    - the default value, if one exists\n  - `@return` — what the function returns, including the R type.\n- The `@details` and `@examples` sections are optional, but should in general be \n  included.\n- Internal functions should include roxygen comments if their use in rextendr is \n  fairly complex, important, and not easy to discern. Simple helper functions do\n  not need to be documented.\n  \n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

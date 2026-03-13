@@ -1,0 +1,15 @@
+{
+  "hash": "ea8a511a54069ebf5106815389a6c1a0",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Implementations\"\nengine: knitr\n---\n\nOther methods can be implemented for structs using `impl` blocks. An `impl` \nblock is roughly analogous to defining S3 methods in R, except Rust's `impl` \nblocks associate behavior directly with the type definition, making them \nobject-oriented. The syntax is this:\n\n```rust\nimpl TypeName {\n    fn method_name() {\n        // body\n    }\n}\n```\n\n## Associated functions\n\nAn *associated function* is called on the type itself rather than on an \ninstance. These are written as `TypeName::function()` and are typically used\nas constructors. The return type `Self` refers to the type being implemented:\n\n```{.rust filename=\"src/main.rs\"} \n#[derive(Debug)]\nstruct Person {\n    name: String,\n    age: i32\n}\n\nimpl Person {\n    fn new(name: String, age: i32) -> Self {\n        Person { name, age }\n    }\n}\n\nfn main() {\n    let me = Person::new(\"Josiah\".to_string(), 29);\n    println!(\"{me:?}\");\n}\n```\n\n```default\nPerson { name: \"Josiah\", age: 29 }\n```\n\nYou have already seen associated functions in this form: `Vec::new()` and\n`String::new()` are both associated functions.\n\n## Self-reference\n\nTo define a method that operates on an instance, add `&self` as the first\nargument. This provides a read-only reference to the struct, so you can access \nits fields but not move or modify them:\n\n```rust\nimpl Person {\n    fn greet(&self) {\n        println!(\n            \"Hello, my name is {} and I am {} years old.\",\n            self.name, self.age\n        );\n    }\n}\n```\n\nA method can also accept another instance of the same type by using `&Self` as \nan argument type. Here `is_older_than()` compares two `Person` values:\n\n```rust\nimpl Person {\n    fn is_older_than(&self, other_person: &Self) -> bool {\n        self.age > other_person.age\n    }\n}\n```\n\n## Mutable self\n\nTo modify a struct's fields from a method, use `&mut self`. Here `rename()` and\n`celebrate_birthday()` both mutate fields in place:\n\n```{.rust filename=\"src/main.rs\"} \n#[derive(Debug)]\nstruct Person {\n    name: String,\n    age: i32\n}\n\nimpl Person {\n    fn new(name: String, age: i32) -> Self {\n        Person { name, age }\n    }\n\n    fn greet(&self) {\n        println!(\n            \"Hello, my name is {} and I am {} years old.\",\n            self.name, self.age\n        );\n    }\n\n    fn rename(&mut self, new_name: &str) {\n        self.name = new_name.to_string();\n    }\n\n    fn celebrate_birthday(&mut self) {\n        self.age += 1;\n    }\n}\n\nfn main() {\n    let mut me = Person::new(\"Josiah\".to_string(), 29);\n    me.celebrate_birthday();\n    me.rename(\"Jo\");\n    me.greet(); \n}\n```\n\n```default\nHello, my name is Jo and I am 30 years old.\n```\n\nNote that the instance must also be declared `mut` when it is assigned to a \nvariable. ",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

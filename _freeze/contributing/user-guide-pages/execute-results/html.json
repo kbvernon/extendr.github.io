@@ -1,0 +1,15 @@
+{
+  "hash": "3fa9b6d259a1b8f3143b11fe044bd7f7",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"User Guide Pages\"\nengine: knitr\n---\n\nUser guide pages are friendly introductions to specific features of the\n`extendr-api` crate. Keep them **concise** and use **simple language**.\nAlways use code chunks for extendr code — never paste raw snippets.\n\n### Page structure\n\nEach page should follow this rough structure:\n\n````markdown\n---\ntitle: \"An informative title\"\n---\n\n- Motivate the functionality the page covers\n- No more than 4 sentences\n\n## The feature\n\n- Describe the functionality\n- Discuss prerequisites if any\n\n## Basic usage\n\n- Discuss the code before showing it\n\n\n::: {.cell}\n\n```{.extendrsrc .cell-code}\n// your Rust code\n```\n:::\n\n\n- Summarize and explain the output\n\n## Advanced usage\n\n- Motivate the advanced example\n\n\n::: {.cell}\n\n```{.extendrsrc .cell-code}\n// your Rust code\n```\n:::\n\n\n- Summarize and explain\n\n## See also\n\n- Links to related pages or external docs\n````",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
