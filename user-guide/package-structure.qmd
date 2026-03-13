@@ -1,0 +1,199 @@
+---
+title: "Project Structure"
+--- 
+
+When you run `rextendr::use_extendr()` for the first time, it will generate the 
+scaffolding needed to integrate Rust code into an R package. The result is a 
+directory structure that is fairly unique among R packages, so this page serves 
+to walk you through all the generated files, explaining what they do. The 
+package directory should have the following structure:
+
+```
+.
+├── R
+│   └── extendr-wrappers.R
+├── cleanup
+├── cleanup.win
+├── configure
+├── configure.win
+├── src
+│   ├── .gitignore
+│   ├── Makevars.in
+│   ├── Makevars.win.in
+│   ├── entrypoint.c
+│   ├── <pkg>-win.def
+│   └── rust
+│       ├── Cargo.toml
+│       └── src
+│           ├── document.rs
+│           └── lib.rs
+└── tools
+    ├── config.R
+    └── msrv.R
+```
+
+As an R package developer, the file `R/extendr-wrappers.R` will perhaps look the 
+most familiar to you. This file contains auto-generated R wrapper functions that 
+call compiled Rust code via `.Call()`. The file is regenerated every time you 
+call `devtools::document()`. It should never be edited by hand. Every other file 
+we describe below serves to ensure that those `.Call()` actually link to your 
+Rust source and that your R package compiles correctly. Developers of the 
+extendr project have carefully crafted these scaffolding files to ensure that R 
+package development is easy and robust. Very few of these should ever be edited 
+by hand. Below we use the {{< iconify openmoji:stop-sign >}} icon to signal that 
+the file should NOT be edited by hand. As a general rule, however, you should 
+only ever mess with `Cargo.toml` and scripts in `rust/src/`.
+
+::: callout-note
+On this page, we only describe the content of files if it is helpful to you as 
+an R package developer. If you want to know more about how these files are 
+generated and what they contain, you can have a look at the 
+[Scaffolding](../contributing/scaffolding.qmd) page in the Contributing guide.
+:::
+
+
+## Rust source files
+
+Everything associated with your Rust library crate will live in `src/rust`. Here
+we will briefly describe some of the more important files contained there.
+
+### `~/Cargo.toml`
+
+The Rust package manifest defines the crate name, edition, dependencies, and 
+build profiles. If there are other crates you want to depend on, you will list 
+theme here. We provide a small utility `use_crate()` for this purpose. You
+can also add them by hand or call `cargo add` in the terminal if you prefer.
+
+```{.toml filename="src/rust/Cargo.toml"}
+[package]
+name = 'hellorust'
+publish = false
+version = '0.1.0'
+edition = '2021'
+rust-version = '1.65'
+
+[lib]
+crate-type = ['rlib', 'staticlib']
+name = 'hellorust'
+
+[[bin]]
+name = 'document'
+path = 'document.rs'
+
+[dependencies]
+extendr-api = '*'
+
+[profile.release]
+lto = true
+codegen-units = 1
+```
+
+Note that the crate is built as both an `rlib` (used by the `document` binary to 
+introspect exports) and a `staticlib` (linked into the R package). The `[[bin]]` 
+entry registers `document.rs` as an executable used to generate R wrappers at 
+build time.
+
+### `~/src/lib.rs`
+
+The main Rust library file where you gather Rust code to be linked into R. The 
+scaffolded version will initially contain a simple `hello_world()` example.
+
+```{.rust filename="src/rust/src/lib.rs"}
+use extendr_api::prelude::*;
+
+/// Return string `"Hello world!"` to R.
+/// @export
+#[extendr]
+fn hello_world() -> &'static str {
+    "Hello world!"
+}
+
+// Macro to generate exports.
+// This ensures exported functions are registered with R.
+// See corresponding C code in `entrypoint.c`.
+extendr_module! {
+    mod hellorust;
+    fn hello_world;
+}
+```
+
+The `extendr_module!` macro controls which functions, `impl` blocks, and 
+submodules are exposed to R. Every function you want available in R must be 
+listed in an `extendr_module!`.
+
+### `~/document.rs` {{< iconify openmoji:stop-sign >}}
+
+A Rust binary that generates `R/extendr-wrappers.R` by introspecting the 
+exported function metadata at build time. This runs as part of the `Makevars` 
+build step via `cargo run --bin document`. You should never edit this file by 
+hand.
+
+## Build files
+
+### `src/entrypoint.c` {{< iconify openmoji:stop-sign >}}
+
+A small C file that forwards R's routine registration to the Rust library. This 
+is necessary to prevent the linker from stripping the static library. Here, too,
+you should never edit this file by hand.
+
+### `src/Makevars.in` and `src/Makevars.win.in` {{< iconify openmoji:stop-sign >}}
+
+Makefile templates used to compile the Rust library as part of the R package 
+build process (whenever you call `R CMD INSTALL` or `devtools::install()`). These 
+are not used directly — `tools/config.R` reads them and writes the final 
+`src/Makevars` (or `src/Makevars.win`) at build time, interpolating placeholder 
+string variables that are specific to your package and operating system. As 
+noted above, the build step also runs `cargo run --bin document` to regenerate 
+`R/extendr-wrappers.R`.
+
+### `src/<pkg>-win.def` {{< iconify openmoji:stop-sign >}}
+
+A Windows DLL export definitions file. It ensures the package's initialization 
+routine is exported correctly on Windows.
+
+## Configuration scripts
+
+These are tools that tailor the build process to the specific context of your 
+package and operating system.
+
+### `configure` and `configure.win` {{< iconify openmoji:stop-sign >}}
+
+Shell scripts run by R before compilation. They invoke `tools/config.R` via 
+`Rscript` to generate the final `Makevars` file from the `.in` template. As 
+their names suggest, `configure` is used on Unix and `configure.win` on Windows.
+
+### `tools/msrv.R` {{< iconify openmoji:stop-sign >}}
+
+Reads the `SystemRequirements` field from `DESCRIPTION` to determine the minimum 
+supported Rust version (MSRV), then verifies that the installed `rustc` and 
+`cargo` meet that requirement. An informative error is raised if they do not.
+
+### `tools/config.R` {{< iconify openmoji:stop-sign >}}
+
+Sources `tools/msrv.R`, then checks the `DEBUG` and `NOT_CRAN` environment 
+variables to determine the build profile. Reads `src/Makevars.in` (or `src/Makevars.win.in` 
+on Windows), substitutes all context-specific placeholder variables, and writes 
+the final `src/Makevars` (or `src/Makevars.win`).
+
+## Additional files
+
+### `src/.gitignore`
+
+This local .gitignore ignores artifacts of the build process that should not be 
+committed:
+
+```{.default filename="src/.gitignore"}
+*.o
+*.so
+*.dll
+target
+.cargo
+rust/vendor
+Makevars
+Makevars.win
+```
+
+### `cleanup` and `cleanup.win` {{< iconify openmoji:stop-sign >}}
+
+Shell scripts run by R when the package is uninstalled. They remove the 
+generated `src/Makevars` and `src/Makevars.win` files respectively.
