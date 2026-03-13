@@ -57,7 +57,7 @@ $teal-2: color.mix(white, $teal-4, 50%, $method: oklch);
 $teal-1: color.mix(white, $teal-4, 75%, $method: oklch);
 
 // semantic colors
-$primary: $dark-blue-4;
+$primary: $true-r-blue-2;
 $secondary: $silver-4;
 $success: $teal-4;
 $danger: $orange-4;
@@ -77,6 +77,8 @@ $link-color: color.mix(black, $teal-4, 20%, $method: oklch);
 $link-hover-color: color.mix(black, $teal-4, 40%, $method: oklch);
 $nav-link-color: $link-color;
 $nav-link-hover-color: $link-hover-color;
+$navbar-bg: color.mix($gray-200, white, 20%, $method: oklch);
+$navbar-fg: black;
 
 // fonts
 $headings-font-family: "Noto Serif", Georgia, serif;
@@ -161,9 +163,7 @@ $palette: (
         max-width: 65%;
     }
 
-    background-color: color.mix($gray-200, white, 20%, $method: oklch) !important;
     border: 1px solid $gray-200;
-    color: black;
 
     .nav-link,
     .navbar-brand {
@@ -262,6 +262,11 @@ body.quarto-dark {
         --bs-nav-link-color: #{$teal-4};
     }
 
+    .sidebar nav[role=doc-toc] ul>li>a:hover,
+    .sidebar nav[role=doc-toc] ul>li>ul>li>a:hover {
+        color: #{$teal-2} !important;
+    }
+
     .sidebar-link:hover {
         color: $teal-2;
     }
@@ -276,7 +281,7 @@ body.quarto-dark {
 
     .navbar {
         background-color: color.mix($gray-800, $gray-900, 50%, $method: oklch) !important;
-        border: 2px solid $gray-800;
+        border: 1px solid $gray-800;
         color: white;
 
         .nav-link,
@@ -286,6 +291,14 @@ body.quarto-dark {
 
         .nav-link:hover {
             color: $dark-blue-1;
+        }
+
+        .aa-DetachedSearchButton .aa-DetachedSearchButtonIcon .aa-SubmitIcon {
+            color: white !important;
+        }
+
+        .quarto-color-scheme-toggle .bi {
+            filter: invert(1);
         }
     }
 
