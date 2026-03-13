@@ -1,74 +1,56 @@
-# Mutability
+---
+title: "Mutability"
+engine: knitr
+---
 
-::: callout-tip
-Understand the difference between immutable and mutable variables.
-:::
-
-In R everything is immutable (except environments). Immutable objects _cannot be altered_.
-
-::: aside
-
-Instead, when they are modified, they are copied. This is called copy-on-write (often referred to as **cow** semantics).
-
-:::
-
-In Rust, variables are immutable by default. This means once a value is assigned to a variable, it cannot be changed. To make a variable mutable, you must explicitly use the `mut` keyword.
+In R, most objects are effectively immutable — when you modify one, R copies it 
+first. This is called copy-on-write semantics. Rust takes a stricter approach, 
+making variables immutable by default, and the compiler enforces this at compile 
+time. To make a variable mutable, you must declare it with the `mut` keyword:
 
 ```rust
 let mut x = 5;
-x = 6; // ✅ works because x is mutable
+x = 6; // works because x is mutable
 ```
 
-- Use `mut` when you need to change a variable after it is created.
-- You do **not** re-bind the variable with `let` when changing its value.
-- This helps catch bugs early by making data changes explicit.
+Without `mut`, attempting to reassign a variable is a compile error. This helps 
+catch bugs early by making data changes explicit. Note that when updating a 
+mutable variable, you do not re-bind it with `let` — you simply assign the new 
+value directly.
 
+Mutability is especially useful for accumulating values across a loop. In the 
+previous section, we saw that variables defined inside a loop cannot be accessed 
+outside it. The solution is to declare a mutable variable in the outer scope and 
+update it inside the loop:
 
-By requiring `mut`, the compiler ensures that accidental mutations are caught at compile time.
-
-## Example
-
-Revisiting our loop from earlier:
-
-```rust
+```{.rust filename="src/main.rs"} 
 fn main() {
-    // create a vector
     let numbers = vec![1, 2, 3];
-    // create a mutable value
     let mut doubled = 0;
 
-    // iterate through numbers to update doubled
     for n in numbers {
         doubled = n * 2;
         println!("{} doubled is {}", n, doubled);
     }
 
-    // ✅ compiles because `doubled` was declared
-    // _outside_ of the inner loop scope
+    // `doubled` is accessible here because it was declared outside the loop
     println!("Last doubled: {}", doubled);
 }
 ```
 
-## Exercise
+```default
+1 doubled is 2
+2 doubled is 4
+3 doubled is 6
+Last doubled: 6
+```  
 
-- Create a vector of 5 or more f64 values  (`Vec<f64>`)
-- Use a for loop to calculate the sum of the vector
-- Calculate the mean from the sum of the vector and the length of the vector
-- Print the result
+You can also use `+=` to add and assign in one step — `x += 10` is equivalent to
+`x = x + 10`. This makes computing running totals concise:
 
-::: callout-tip
-You can use `+=` shorthand to add and assign all at the same time. For example `x += 10` is equivalent to `x = x + 10`.
-:::
-
-### Solution
-
-<details>
-<summary>View solution</summary>
-
-```rust
+```{.rust filename="src/main.rs"} 
 fn main() {
     let x = vec![1.0, 2.0, 3.0, 4.0];
-
     let n = x.len() as f64;
     let mut total = 0.0;
 
@@ -79,4 +61,84 @@ fn main() {
     println!("The mean is: {}", total / n);
 }
 ```
-</details>
+
+```default
+The mean is: 2.5
+```
+
+Like scalar variables, vectors must also be declared `mut` to modify them after 
+creation. You can create an empty mutable vector and let Rust infer the data 
+type based on how you go on to use it:
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let mut names = Vec::new();
+    names.push("Alice");
+    names.push("Bob");
+    println!("{:?}", names);
+}
+```
+
+```default
+["Alice", "Bob"]
+```
+
+Here, `Vec::new()` creates an empty vector, and `.push()` appends an element to 
+the end. Because the element appended is a character string, the Rust compiler 
+is able to infer the type of the names vector at compile time. With this 
+example, we have also introduced another method, namely `.push()`, which is 
+particularly useful, but there are, in fact, many ways to modify mutable vectors 
+in Rust. Let us mention just three here.
+
+**Clear** -- Instead of adding elements, you can remove all elements at once 
+with `.clear()`:
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let mut nums = vec![1, 2, 3];
+    nums.clear();
+    println!("{:?}", nums);
+}
+```
+
+```default
+[]
+```
+
+**Sort** -- Vectors can be sorted in place with `.sort()`. Not all types support 
+ordering, but numeric types and strings do:
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let mut x = vec![11, 3, 7, 10, 1];
+    println!("x before sorting: {x:?}");
+    x.sort();
+    println!("x after sorting:  {x:?}");
+}
+```
+
+```default
+x before sorting: [11, 3, 7, 10, 1]
+x after sorting:  [1, 3, 7, 10, 11]
+```
+
+**Extend** -- To combine two vectors, use `.extend()`, which appends the 
+contents of one vector onto another: 
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let mut a = vec![1, 2];
+    let b = vec![3, 4];
+    a.extend(b);
+    println!("{:?}", a);
+}
+```
+
+```default
+[1, 2, 3, 4]
+```
+
+Note that the vector being extended must be `mut` and that the second vector is 
+moved into the first — it can no longer be used after the call. We will 
+elaborate on that last point more in the section on Rust's memory model, 
+specifically the concept of ownership.
