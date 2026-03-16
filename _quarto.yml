@@ -20,10 +20,10 @@ website:
 
   navbar:
     search: true
-    left:
-      - text: "Get Started"
+    right:
+      - text: "INSTALL"
         href: get-started.qmd
-      - text: Documentation
+      - text: DOCS
         menu:
           - text: "{extendr} crates"
             href: https://extendr.github.io/extendr/
@@ -35,9 +35,8 @@ website:
             href: user-guide/index.qmd
           - text: "Contributing"
             href: contributing/index.qmd
-      - text: "Blog"
+      - text: "NEWS"
         href: blog/index.qmd
-    right:
       - icon: github
         href: https://github.com/extendr/extendr
       - icon: discord
@@ -94,8 +93,8 @@ format:
   html:
     html-table-processing: none
     theme:
-      dark: [darkly, css/extendr.scss]
       light: [flatly, css/extendr.scss]
+      dark: [darkly, css/extendr.scss]
     toc: true
     toc-location: right
     grid:

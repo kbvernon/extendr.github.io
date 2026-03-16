@@ -16,9 +16,9 @@ engine: knitr
 </style>
 ```
 
-Our colors and themes are inspired by the painfully 90's color choices of the R
-Foundation, particularly [its logo](https://www.r-project.org/logo/), and the 
-Rust Foundation's official [brand guide](https://rustfoundation.org/brand-guide/). 
+Our colors and themes are inspired by the delightfully awful 90's color choices 
+of the R Foundation, particularly [its logo](https://www.r-project.org/logo/), 
+and the Rust Foundation's official [brand guide](https://rustfoundation.org/brand-guide/). 
 
 ## Colors
 
@@ -183,11 +183,20 @@ And they have utility classes for text colors:
 
 ## Fonts
 
-We follow the Rust Foundation in using Noto Sans for body and smaller texts and
-Noto Serif for headers. We have also implemented utility classes for these, 
-though they should not be required.
+Our fonts are a mix of Rust Foundation fonts (Noto Sans and Serif) and IBM's 
+Plex Mono. The monofont is typically used for headings and navbar, though Noto 
+Serif may also be used. For body text, we use Noto Sans. Utility classes are 
+provided for each, though they should rarely be needed.
 
-:::::: {.d-flex .gap-3}
+:::::: {.d-flex .gap-2 .small}
+::: {.bg-dark-blue-4 .text-auto-dark .font-mono .p-3 .flex-fill}
+[IBM Plex Mono]{.fs-3}  
+.font-mono  
+ABCDEFGHIJKLMNOPQRSTUVWXYZ  
+abcdefghijklmnopqrstuvwxyz  
+0123456789
+:::
+
 ::: {.bg-dark-blue-3 .text-white .font-serif .p-3 .flex-fill}
 [Noto Serif]{.fs-3}  
 .font-serif  
@@ -196,7 +205,7 @@ abcdefghijklmnopqrstuvwxyz
 0123456789
 :::
 
-::: {.bg-silver-4 .font-sans .p-3 .flex-fill .text-auto-dark}
+::: {.bg-dark-blue-2 .text-auto-light .font-sans .p-3 .flex-fill}
 [Noto Sans]{.fs-3}  
 .font-sans  
 ABCDEFGHIJKLMNOPQRSTUVWXYZ  
