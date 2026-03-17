@@ -2,3 +2,40 @@
 title: "Testing Code"
 engine: knitr
 ---
+
+## Rust Tests
+
+Rust tests in extendr follow standard Rust conventions: `#[test]` functions
+in `#[cfg(test)]` modules, either inline in the source file or in a separate
+file under `tests/`. For details, see [Writing Automated Tests](https://doc.rust-lang.org/book/ch11-00-testing.html) 
+in The Book. 
+
+
+
+### Starting an R session in tests
+
+An important wrinkle of testing Rust code in extendr is that most tests need a 
+live R session. In normal package use, R is already running when Rust code 
+executes. But when running `cargo test` directly, there is no R session — so any 
+test that touches an R object must start one first. 
+
+Use the `test!` macro to wrap test code that calls the R API. It starts R and 
+allows `?` inside the block:
+
+```rust
+#[test]
+fn my_test() {
+    test! {
+        let x = r!([1, 2, 3]);
+        assert_eq!(x.len(), 3);
+    }
+}
+```
+
+If a test does not call the R API at all — for example, testing pure Rust
+arithmetic on scalar wrapper types — `test!` is not needed.
+
+## R Tests
+
+R code in rextendr is tested with [testthat](https://testthat.r-lib.org),
+following standard R package testing conventions.
