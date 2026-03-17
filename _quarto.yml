@@ -86,8 +86,9 @@ website:
             - contributing/writing-code.qmd
             - contributing/documenting-code.qmd
             - contributing/testing-code.qmd
-            - contributing/scaffolding.qmd
-            - contributing/colors-and-fonts.qmd            
+            - contributing/extendr-internals.qmd
+            - contributing/rextendr-internals.qmd
+            - contributing/colors-and-fonts.qmd
 
 format:
   html:

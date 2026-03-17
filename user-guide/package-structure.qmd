@@ -47,8 +47,9 @@ only ever mess with `Cargo.toml` and scripts in `rust/src/`.
 ::: callout-note
 On this page, we only describe the content of files if it is helpful to you as 
 an R package developer. If you want to know more about how these files are 
-generated and what they contain, you can have a look at the 
-[Scaffolding](../contributing/scaffolding.qmd) page in the Contributing guide.
+generated, you can have a look at the 
+[{rextendr} Internals](../contributing/rextendr-internals.qmd) page in the 
+Contributing guide.
 :::
 
 

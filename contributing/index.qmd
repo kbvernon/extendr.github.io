@@ -10,14 +10,13 @@ date-format: long
 The extendr project has three main areas where you can contribute:
 
 **extendr crates** — The core Rust library. This is where the `#[extendr]`
-macro, R type bindings, and the bulk of the Rust API live.
+macro, R type bindings, and the Rust API live.
 Contributions here require Rust experience. The repository is at
 [github.com/extendr/extendr](https://github.com/extendr/extendr).
 
-**rextendr package** — The R package that scaffolds new extendr projects
-and generates R wrapper functions. Contributions here require R
-package development experience. The repository is at
-[github.com/extendr/rextendr](https://github.com/extendr/rextendr).
+**rextendr package** — The R package that scaffolds new extendr projects.
+Contributions here require R package development experience. The repository is 
+at [github.com/extendr/rextendr](https://github.com/extendr/rextendr).
 
 **Documentation website** — The site you are reading now. Contributions
 here range from fixing typos to writing new guides and tutorials. The
