@@ -8,13 +8,11 @@ https://extendr.github.io.
 ## Codebase
 
 **extendr** 
-version: 0.8.1
 repo: https://github.com/extendr/extendr
 description: The core Rust library. Read source files there directly when you 
 need to understand extendr's API, types, macros, or implementation details.
 
 **rextendr**
-version: 0.4.2.9000 (dev)
 repo: https://github.com/extendr/rextendr
 description: The R package that scaffolds extendr projects and generates R 
 wrappers. Read source files there directly when you need to understand 
@@ -33,8 +31,8 @@ architecture.
 ├── intro-rust/       # Intro to Rust for R developers
 ├── contributing/     # Contributor guide (style, colors, scaffolding)
 ├── blog/             # Blog posts
-├── css/              # Custom SCSS (extendr.scss, _variables.scss, _bootswatch.scss)
-├── images/           # Logo files
+├── css/              # Custom SCSS
+├── images/           # Image files
 └── _extensions/      # Quarto extensions
 ```
 
