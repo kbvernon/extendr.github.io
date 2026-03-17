@@ -76,7 +76,7 @@ $link-color: color.mix(black, $teal-4, 20%, $method: oklch);
 $link-hover-color: color.mix(black, $teal-4, 40%, $method: oklch);
 $nav-link-color: $link-color;
 $nav-link-hover-color: $link-hover-color;
-$navbar-bg: transparent;
+$navbar-bg: white;
 $navbar-fg: black;
 
 // fonts
@@ -297,7 +297,7 @@ body.quarto-dark {
     }
 
     .navbar {
-        background-color: transparent !important;
+        background-color: var(--bs-body-bg);
         border: none;
         color: white;
 
