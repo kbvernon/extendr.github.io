@@ -1,0 +1,5 @@
+version:
+  r: "4.2"
+  rust: "1.65.0"
+  extendr: "0.8.1"
+  rextendr: "0.4.2.9000"

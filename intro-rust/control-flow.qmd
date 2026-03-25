@@ -1,0 +1,87 @@
+---
+title: "Control Flow"
+engine: knitr
+---
+
+Control flow refers to the ability to conditionally execute code. As with R, 
+Rust declares conditions for code execution using `if`, `else` and `else if`. 
+Those conditions will typically involve logical operators:
+
+- `==` check equality
+- `!=` check inequality
+- `!` negate a logical value
+- `&&` logical AND comparison
+- `||` logical OR comparison
+
+Logical operators work similarly to R but are not vectorised. They return a 
+single logical called a `bool` instead and can only take on one of two values: 
+`true` or `false`. 
+
+Like R, each branch of an `if` in Rust must be delimited by curly brackets, but 
+unlike R, parentheses around the condition are not required:
+
+```rust
+if x == y {
+    // do something
+} else {
+    // do something else
+}
+```
+
+Note, too, that the result of control flow can be assigned to a variable:
+
+```rust
+let number = if x == y { 5 } else { 3 };
+```
+
+Given what we learned about Rust's strong typing system, this suggests an
+additional strong constraint on control flow: each branch or "arm" of an `if` 
+expression must return the same type. Otherwise, the type would be unknown at 
+compile time. Consider this example program (drawn straight from The Book) that 
+includes mismatched types in the `if` and `else` arm:. 
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let condition = true;
+
+    let number = if condition { 5 } else { "six" };
+
+    println!("The value of number is: {number}");
+}
+```
+
+If you try to compile and run this program, you will get the following error
+message from cargo:
+
+```default
+error[E0308]: `if` and `else` have incompatible types
+ --> src/main.rs:4:44
+  |
+4 |     let number = if condition { 5 } else { "six" };
+  |                                 -          ^^^^^ expected integer, found `&str`
+  |                                 |
+  |                                 expected because of this
+
+For more information about this error, try `rustc --explain E0308`.
+```
+
+As an side, this is actually a great example of one of Rust's best features. Not 
+only does the error message tell you where precisely it occurs, but it also 
+points you to additional information to help you understand what is wrong in 
+your code. Often, it will even suggest how to fix your problem!
+
+For completeness, here is the correct way to program that control flow:
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let condition = true;
+
+    let number = if condition { 5 } else { 6 };
+
+    println!("The value of number is: {number}");
+}
+```
+
+```default
+The value of number is: 5
+```

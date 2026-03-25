@@ -1,0 +1,199 @@
+---
+title: "Ownership"
+engine: knitr
+---
+
+Rust is notorious for its **borrow checker**, the mechanism that enforces memory 
+safety at compile time. The core rule is that every value has a single owner, 
+and once that ownership is transferred, the original variable can no longer be 
+used. This is called a **move**. A move occurs whenever a variable is passed to 
+a function or assigned to another variable. After the move, the original binding 
+is invalid. Consider this example from The Book:
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;
+    println!("{s1}, world!");
+}
+```
+
+Running this code will cause the following error:
+
+```default
+error[E0382]: borrow of moved value: `s1`
+ --> src/main.rs:4:16
+  |
+2 |     let s1 = String::from("hello");
+  |         -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
+3 |     let s2 = s1;
+  |              -- value moved here
+4 |     println!("{s1}, world!");
+  |                ^^ value borrowed here after move
+  |
+  = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider cloning the value if the performance cost is acceptable
+  |
+3 |     let s2 = s1.clone();
+  |                ++++++++
+
+
+For more information about this error, try `rustc --explain E0382`.
+```
+
+There is a lot of output here, but let us focus on the source of the error for 
+now. First, we see that `let s2 = s1;` moves the value in `s1` to `s2`, and then
+we are told that the `println!` macro mistakenly seeks to borrow the value that 
+has been moved. Since that value is no longer *owned* by `s1`, it causes an 
+error. 
+
+## Cloning
+
+In the example above, we are also given helpful advice about how to fix the 
+error using `.clone()`, which copies the value rather than moving it. Cloning is 
+probably the simplest way to reuse the original value, as almost everything in 
+Rust can be cloned.
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1.clone();
+    println!("{s1}, world!");
+}
+```
+
+```default
+hello, world!
+```
+
+## Functions 
+
+The above example also highlights that the `println` macro seeks to *borrow* the 
+value in `s1`. In fact, any time you pass a variable to a function, its value is 
+moved, meaning the originally defined variable can no longer be used to access 
+the value outside of the function. For example, let's define a `mean()` 
+function:
+
+```rust
+fn mean(x: Vec<f64>) -> f64 {
+    let mut total = 0.0;
+    let n = x.len();
+    
+    for xi in x {
+        total += xi;
+    }
+    
+    total / (n as f64)
+}
+```
+
+Calling this function twice on the same vector will fail because the first call 
+moves `x` into the function:
+
+```rust
+let x = vec![0.0, 3.14, 10.1, 44.8];
+
+let avg1 = mean(x); // ⬅️ x moved here!
+let avg2 = mean(x); // ❌ compiler error
+```
+
+As we just saw, one way of handling this is to clone the data before passing it
+to the function.
+
+```rust
+let x  = vec![0.0, 3.14, 10.1, 44.8];
+
+let avg1 = mean(x.clone()); // ⬅️ x cloned here!
+let avg2 = mean(x);         // ✅ compiler happy
+```
+
+While cloning in this way is safe and correct, it has the unfortunate downside 
+of allocating a new copy of the data each time — not an issue for small vectors
+like `x`, but as they grow, finding a better approach will become more urgent.
+
+## Borrowing 
+
+Fortunately, there is a more efficient approach known as *borrowing*, which 
+involves passing a reference to a value rather than moving it. In Rust, we 
+signal a reference by placing an ampersand `&` in front of a variable or type 
+name, for example, `&x` or `&Vec<f64>`. These tell the compiler that we are 
+borrowing a value rather than taking ownership. To use the `mean()`function with 
+a reference, notice that we have to update its signature to make the reference 
+type explicit:
+
+```rust
+fn mean(x: &Vec<f64>) -> f64 {
+    let mut total = 0.0;
+    let n = x.len();
+    
+    for xi in x {
+        total += *xi;
+    }
+    
+    total / (n as f64)
+}
+
+fn main() {
+    let x = vec![1.0, 2.0, 3.0];
+    let avg = mean(&x); // 👈 borrowing `x`
+    println!("x is still usable: {:?}", x);
+}
+```
+
+```default
+x is still usable: [1.0, 2.0, 3.0]
+```
+
+An important restriction on referencing is that borrowed values cannot be moved 
+or mutated — only read. You can borrow a value as many times as you like, you 
+just cannot change it.
+
+## Slices
+
+Rather than reference the entire array or vector, we can reference a slice, or a 
+contiguous sequence of elements within it. These are denoted in Rust using `&[T]` 
+where `T` stands for a generic type. For example, `&[f64]` means a reference 
+slice of 64-bit floating points. If we want to demonstrate the use of reference 
+slices with our `mean()` function, we will as before have to update its 
+signature to make that type explicit:
+
+```{.rust filename="src/main.rs"} 
+fn mean(x: &[f64]) -> f64 {
+    let mut total = 0.0;
+    let n = x.len();
+    
+    for xi in x {
+        total += *xi;
+    }
+    
+    total / (n as f64)
+}
+
+fn main() {
+    let x = [0.0, 20.0, 742.3];  // array
+    let y = vec![1.0, 2.0, 3.0]; // vector
+
+    println!("the mean of x is: {}", mean(&x));
+    println!("the mean of y is: {}", mean(&y));
+}
+```
+
+```default
+the mean of x is: 254.1
+the mean of y is: 2
+```
+
+There are two things to note about this example. The first is very subtle. We 
+updated the signature for mean to take `x: &[f64]`, a slice. However, we passed 
+`&x` and `&y` to the function, which are references to arrays and vectors. What 
+is going on here? The answer is an implicit conversion. Both arrays and vectors
+have methods for converting their generic references to slices, and those are
+invoked when passing them into a function with this signature.
+
+Following from that, the second thing to note is that a function written to 
+accept `&Vec<f64>` works only on vectors. That is because there is no method
+for converting array references to vector references. But as we just saw, both 
+can be converted to slices. Rewriting a function to accept `&[f64]`, thus, makes 
+it more general at no cost. So, in practice, we should prefer slices over vector 
+references whenever the function only needs to read the data — it is more 
+flexible and equally efficient.

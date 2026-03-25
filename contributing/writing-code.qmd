@@ -1,0 +1,46 @@
+---
+title: "Writing Code"
+engine: knitr
+---
+
+This page covers code formatting conventions for the extendr project. Following 
+these conventions keeps code consistent and readable across contributors.
+
+## Rust Code
+
+Rust code should be written to conform with conventions outlined in the
+[Rust API Guidelines](https://rust-lang.github.io/api-guidelines/about.html). 
+It's a good idea to read this document, but it may take time to gain some 
+familiarity with all of its ins and outs. In the meantime, the following tools 
+will prove very beneficial to keeping your Rust code consistent with those 
+conventions.
+
+- Use [rustfmt](https://rust-lang.github.io/rustfmt/?version=v1.9.0) to
+  format Rust code. rustfmt is the standard Rust formatter and can be
+  configured to run on save in most editors.
+  
+- Use [Clippy](https://doc.rust-lang.org/stable/clippy/) to lint Rust code.
+  Clippy catches common mistakes and enforces idiomatic Rust style.
+
+- Use [rust-analyzer](https://rust-analyzer.github.io/) for IDE support.
+  It provides code completion, inline errors, and other features in VS Code,
+  Positron, Zed, and other editors.
+
+## R Code
+
+R code should be written to conform with conventions outlined in the 
+[Tidyverse style guide](https://style.tidyverse.org/). What we said about the
+Rust API guidelines, it applies here, too. In your effort to abide by those
+conventions, you will find a great deal of advantage in these tools.
+
+- Use [Air](https://posit-dev.github.io/air/) to format R code. Air can be
+  configured to automatically format R scripts on save in your editor. Air 
+  supports VS Code, Positron, Zed, and the command line.
+
+- Use [lintr](https://lintr.r-lib.org/) to lint R code. rextendr's CI uses 
+  lintr, so having it configured in your editor will catch issues before they 
+  are flagged in review. lintr supports most IDEs, include RStudio, VS Code, and 
+  Positron. You may also like [jarl](https://jarl.etiennebacher.com/), an R 
+  lintr written in Rust, which is much faster than lintr and supports additional 
+  IDEs.
+

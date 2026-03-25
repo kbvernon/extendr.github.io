@@ -14,89 +14,100 @@ website:
   repo-url: https://github.com/extendr/extendr.github.io
   repo-branch: main
   repo-actions: [edit, issue]
+  favicon: "/images/extendr-gears-logo.png"
+  page-navigation: true
+  bread-crumbs: true
 
   navbar:
-    logo: /images/feRris.png
-    left:
-      - text: "Get Started"
+    search: true
+    right:
+      - text: "INSTALL"
         href: get-started.qmd
-      - text: Documentation
+      - text: DOCS
         menu:
-          - text: "Rust crates"
-            href: "https://extendr.github.io/extendr/"
+          - text: "{extendr} crates"
+            href: https://extendr.github.io/extendr/
           - text: "{rextendr} package"
             href: https://extendr.github.io/rextendr/dev
-          - user-guide/index.qmd
-          - intro-rust/index.qmd
-      - text: "Blog"
+          - text: "Rust Basics"
+            href: intro-rust/index.qmd
+          - text: "User Guide"
+            href: user-guide/index.qmd
+          - text: "Contributing"
+            href: contributing/index.qmd
+      - text: "NEWS"
         href: blog/index.qmd
-    right:
       - icon: github
         href: https://github.com/extendr/extendr
       - icon: discord
         href: https://discord.gg/7hmApuc
 
   sidebar:
-    - title: "Rust for R Developers"
-      style: "floating"
-      collapse-level: 1
+    - id: rust-basics
+      title: "Rust Basics"
+      collapse-level: 2
       contents:
-        - intro-rust/index.qmd
-        - intro-rust/why-rust.qmd
-        - intro-rust/hello-world.qmd
-        - intro-rust/types.qmd
-        - intro-rust/fizz-buzz.qmd
-        - intro-rust/collections.qmd
-        - intro-rust/for-loops.qmd
-        - intro-rust/mutability.qmd
-        - intro-rust/mutable-vectors.qmd
-        - intro-rust/is-odd.qmd
-        - intro-rust/references-slices.qmd
-        - intro-rust/iterators.qmd
-        - intro-rust/iter-map.qmd
-        - intro-rust/structs.qmd
-        - intro-rust/struct-methods.qmd
-        - intro-rust/enums.qmd
-        - intro-rust/options.qmd
+        - section: "Rust Basics"
+          href: intro-rust/index.qmd
+          contents: 
+            - intro-rust/hello-world.qmd
+            - intro-rust/types.qmd
+            - intro-rust/control-flow.qmd
+            - intro-rust/collections.qmd
+            - intro-rust/loops.qmd
+            - intro-rust/mutability.qmd
+            - intro-rust/functions.qmd
+            - intro-rust/ownership.qmd
+            - intro-rust/iterators.qmd
+            - intro-rust/structures.qmd
+            - intro-rust/implementations.qmd
+            - intro-rust/enumerations.qmd
 
-    - title: "User Guide"
-      collapse-level: 1
-      style: "floating"
+    - id: guide
+      title: "User Guide"
+      collapse-level: 3
       contents:
-        - user-guide/index.qmd
-        - user-guide/complete-example.qmd
-        - section: "R Packages"
+        - section: "User Guide"
+          href: user-guide/index.qmd
           contents:
-            - user-guide/r-pkgs/package-setup.qmd
-            - user-guide/r-pkgs/package-structure.qmd
-        - section: "Type Mapping"
+            - user-guide/complete-example.qmd
+            - section: "R Packages"
+              contents:                
+                - user-guide/package-structure.qmd
+            - section: "Publishing"
+
+    - id: contributing
+      title: "Contributing"
+      collapse-level: 2
+      contents:
+        - section: "Contributing"
+          href: contributing/index.qmd
           contents:
-            - user-guide/type-mapping/extendr-macro.qmd
-            - user-guide/type-mapping/scalars.qmd
-            - user-guide/type-mapping/vectors.qmd
-            - user-guide/type-mapping/collections.qmd
-            - user-guide/type-mapping/into-list.qmd
-            - user-guide/type-mapping/missing-values.qmd
-            - user-guide/type-mapping/characters.qmd
-        - section: "Error Handling"
-          contents:
-            - user-guide/error-handling/basic-error-handling.qmd
-        - user-guide/default-args.qmd
-        - user-guide/serde-integration.qmd
-        - user-guide/tokio.qmd
-        - user-guide/cran-publishing.qmd
-        - text: CRAN's MSRV
-          href: user-guide/cran-msrv.qmd
-        - text: WebR
-          href: user-guide/webr.qmd
-        - text: FAQ
-          href: user-guide/faq.qmd
+            - contributing/writing-code.qmd
+            - contributing/documenting-code.qmd
+            - contributing/testing-code.qmd
+            - contributing/extendr-internals.qmd
+            - contributing/rextendr-internals.qmd
+            - contributing/colors-and-fonts.qmd
 
 format:
   html:
     html-table-processing: none
-    theme: css/_bootswatch.scss
+    theme:
+      light: [flatly, css/extendr.scss]
+      dark: [darkly, css/extendr.scss]
     toc: true
-    include-in-header:
-      - text: |
-          <script type="text/javascript" src="/js/breadcrumb-fix.js"></script>
+    toc-location: right
+    grid:
+      sidebar-width: 250px
+      body-width: 900px
+      margin-width: 300px
+
+# this currently does not work 
+# see: https://github.com/quarto-dev/quarto-cli/issues/3157
+engine: knitr
+
+knitr:
+  opts_chunk: 
+    collapse: true
+    comment: "#>" 

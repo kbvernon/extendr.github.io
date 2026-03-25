@@ -1,101 +1,63 @@
-# Arrays and Vectors
+---
+title: "Collections"
+engine: knitr
+---
 
-::: callout-tip
-
-## Objective
-
-Learn how to store multiple values of the same type in arrays and vectors. Understand the difference between arrays and vectors.
-:::
-
-
-## Arrays
-
-Arrays in Rust are fixed in size and hold values of the same type. Since the size is known ahead of time, it makes them fast but inflexible.
+Rust has two primary ways to store multiple values of the same type: arrays and
+vectors. Arrays are fixed in size — their length is known at compile time, which 
+makes them fast but inflexible. You cannot add or remove elements after 
+creation. Vectors are like growable arrays, making them more flexible and also 
+more common in everyday Rust code. The syntax for creating arrays and vectors 
+also differs: 
 
 ```rust
-fn main() {
-    let arr = [10, 20, 30, 40];
-    println!("Array: {:?}", arr);
-}
+// array
+let a = [10, 20, 30, 40];
+
+// vector
+let v = vec![10, 20, 30, 40];
 ```
 
-::: callout-note
-The `{:?}` syntax is used for a [**Debug**](https://doc.rust-lang.org/std/fmt/trait.Debug.html) representation of a variable. Using `{}` is used for [**Displaying**](https://doc.rust-lang.org/std/fmt/trait.Display.html) data.
-
-More often than not, using `{:?}` will be your best option.
-:::
-
-* Arrays use square brackets: `[1, 2, 3]`
-* Their size is known at compile time.
-* You can't add or remove elements.
-* Mostly used when performance is critical and size is known.
-
-The type of an array is specified as `[type; length]`, e.g.
+Here, the array is created using square brackets, the vector by calling the 
+`vec!` macro. In this case, the types are inferred. If we want to make those
+explicit, the syntax also differs:
 
 ```rust
-let arr: [i32; 4] = [10, 20, 30, 40];
+// array
+let a: [i32; 4] = [10, 20, 30, 40];
+
+// vector
+let v: Vec<i32> = vec![10, 20, 30, 40];
 ```
 
-## Vectors
+In this example, the array type and length are both declared with 
+`[type; length]`, but the vector only requires specifying that it is a vector of 
+32-bit integers or `Vec<i32>`, which can have any given length.
 
-Vectors are like growable arrays. They are much more common in everyday Rust code. To create a vector with known values, use the `vec![]` macro. Like an array, they must all be the same type.
+One nice thing about both vectors and arrays is that you can initialize them to 
+a specific constant value and size. The syntax here is similar, though again the
+vector version requires the use of the `vec!` macro:
 
 ```rust
-fn main() {
-    let v = vec![1, 2, 3, 4, 5];
-    println!("Vector: {:?}", v);
-}
+// array
+let a: [i32; 4] = [0; 4];
+
+// vector
+let v: Vec<i32> = vec![0; 4];
 ```
 
-The type of a vector is specified using `Vec<T>` where `T` is shorthand for any type.
+In each case, we put the initial value `0` followed by the size `4`.
 
-An empty vector can be created using `Vec::new()` or `vec![]`. If creating an empty vector, the type must be inferred or made explicit. Vectors also have **methods**. Two handy ones are `.len()` for length, and `.is_empty()` (equivalent of `.len() == 0`)
-
-
-
-::: callout-important
-## Cannot compile
-```rust
-fn main() {
-    let x = Vec::new();
-    println!("x is empty: {}", x.is_empty());
-}
-```
-:::
-
-This cannot compile because the type of `x` is not known. Rust can infer the type if the vector is used elsewhere where the type is known. To make it compile we must specify the type.
+One last thing to note here, specifically about vectors. An empty vector can 
+also be created with `Vec::new()` or `vec![]`. When creating an empty vector, 
+however, Rust needs to know the element type either from context or from an 
+explicit type annotation, since it cannot infer type from the empty vector 
+itself:
 
 ```rust
-fn main() {
-    let x: Vec<f64> = Vec::new();
-    println!("x is empty: {}", x.is_empty());
-}
-````
-
-
-## Exercise
-
-- Create an array of 4 integers and print it.
-- Create a vector with 5 numbers and print it using `{:?}`.
-- Compare the length of the array and the vector.
-- Bonus: create an empty i32 vector.
-
-### Solution
-
-<details>
-<summary>View solution</summary>
-
-```rust
-fn main() {
-    let arr = [1, 2, 3, 4];
-    println!("Array: {:?}", arr);
-
-    let v = vec![10, 20, 30, 40, 50];
-    println!("Vector: {:?}", v);
-
-    // Bonus:
-    let v = vec![42_i32; 0];
-}
+let v: Vec<f64> = Vec::new();
 ```
 
-</details>
+Vectors also have a number of useful **methods**: `.len()` returns the number of 
+elements and `.is_empty()` returns `true` if there are no elements. We will 
+encounter more methods like these as we work through the guide.

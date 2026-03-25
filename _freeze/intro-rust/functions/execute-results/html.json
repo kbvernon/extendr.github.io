@@ -1,0 +1,15 @@
+{
+  "hash": "6bf9354bc9ad4eeb32f73992c6b09998",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Functions\"\nengine: knitr\n---\n\nSo far, we have been modifying the `main()` function, but Rust lets us define as \nmany functions as we need. In R, functions are objects created with \n`<- function()`. In Rust, they are declared with the `fn` keyword. Just like \neverything else in Rust, arguments are typed - each argument takes the form \n`arg_name: type`, and the return type is specified after `->`.\n\n```rust\nfn name_of_function(arg1: ArgType) -> ReturnType {\n    // function body\n    my_return_object\n}\n```\n\nAs in R, the last expression in a function body is returned automatically — no \nexplicit `return` keyword is needed unless you are returning early. Functions \ncan also be declared anywhere in the file, outside of `main()`.\n\nIdentifying whether a number is odd or even is a classic example. The\n[is-odd npm package](https://www.npmjs.com/package/is-odd) became famous for \nbeing a remarkably small and widely depended-upon piece of code:\n\n![](/images/is-odd.png){width=70% fig-align=\"center\"}\n\nHere is the Rust equivalent. We define `is_even()` first, taking an `i32` and \nreturning a `bool`, then use it inside `is_odd()`:\n\n```rust\nfn is_even(x: i32) -> bool {\n    x % 2 == 0\n}\n\nfn is_odd(x: i32) -> bool {\n    !is_even(x)\n}\n```\n\nSince `x % 2 == 0` is an expression that evaluates to a `bool`, it is returned \ndirectly without a `return` statement. Building new functions from existing ones \nlike this is idiomatic Rust.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

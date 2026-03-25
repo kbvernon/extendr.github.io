@@ -1,0 +1,88 @@
+---
+title: "Testing Code"
+engine: knitr
+---
+
+Testing is mission critical for extendr. For all new functionality we require 
+tests to ensure they continue to work as intended. For bug fixes we require a 
+test to cover the bug fix (if one didn't exist yet).
+
+Note that we have a justfile that you can use to run tests locally:
+
+  - for R, `just document` then `just devtools-test` and 
+  - for Rust, `just test` and then also ensure that things are formatted with 
+    `just fmt`.
+
+## Rust Tests
+
+Rust tests in extendr follow standard Rust conventions: `#[test]` functions
+in `#[cfg(test)]` modules, either inline in the source file or in a separate
+file under `tests/`. For details, see [Writing Automated Tests](https://doc.rust-lang.org/book/ch11-00-testing.html) in The Book. 
+
+### Tests using R symbols
+
+There is an important wrinkle for testing Rust code in extendr as many Rust 
+tests will need a live R session to handle R objects and symbols. The `test!` 
+macro is useful for this purpose. It wraps test code in a call to the R API and 
+allows `?` to be used inside the block:
+
+```rust
+#[test]
+fn my_test() {
+    test! {
+        let x = r!([1, 2, 3]);
+        assert_eq!(x.len(), 3);
+    }
+}
+```
+
+If a test does not call the R API at all — for example, testing pure Rust
+arithmetic on scalar wrapper types — `test!` is not needed.
+
+### FFI tests
+
+Rust primarily supports unit and integration tests for testing individual 
+functions and the public API, but extendr needs a third layer of integration 
+tests to account for the Rust-R interface. These tests should go in the
+workspace level [`tests/extendrtests`](https://github.com/extendr/extendr/tree/main/tests/extendrtests) 
+directory, which holds the R package `{extendrtests}` that implements all 
+extendr functionality.
+
+Because this is an R package with internal Rust code, we actually get access to
+many varieties of tests: on the R side, documentation examples and testthat 
+tests along with `R CMD CHECK`, and on the Rust side, standard testing with unit 
+and integration tests. For our purposes, however, we have chosen to rely only on 
+testthat tests, which get called during `R CMD CHECK`. We do not really care so
+much about the Rust code passing tests in the R package as we do that the 
+traffic back and forth with R is robust.
+
+See 
+[`src/rust/src/tuple_conversions.rs`](https://github.com/extendr/extendr/blob/main/tests/extendrtests/src/rust/src/tuple_conversions.rs) 
+and 
+[`tests/testthat/tuples.rs`](https://github.com/extendr/extendr/blob/main/tests/extendrtests/tests/testthat/test-tuples.R) 
+for an example of how we implement these tests.
+
+### Additional guidance
+
+Here are some other important guidelines for Rust testing:
+
+- Following standard Rust conventions, integration tests should go in the crate
+  `/src` folder and unit tests at the end of each module file. See 
+  [extendr-api/tests](https://github.com/extendr/extendr/tree/main/extendr-api/tests) 
+  for an example of integration tests.
+- All tests should go in a test module `mod tests {}`.
+- All tests should be annotated with `#[cfg(test)]` to ensure that tests are 
+  not compiled with extendr.
+- Do not use documentation tests.
+
+## R Tests
+
+R code in rextendr is tested with [testthat](https://testthat.r-lib.org),
+following standard R package testing conventions.
+
+Here are some guidelines specific to rextendr:
+
+- Documentation for all exported functions should include examples that run 
+  during `R CMD CHECK` on CRAN.
+- Avoid introducing new snapshot tests whenever possible. We should prefer more
+  explicit testing.

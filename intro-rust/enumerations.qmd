@@ -1,0 +1,199 @@
+---
+title: "Enumerations"
+engine: knitr
+---
+
+Sometimes a value can only take on one of a fixed set of possibilities. In R,
+this pattern appears constantly as function arguments. For example, the `cor()`
+function has the argument `method = c("pearson", "kendall", "spearman")`. Rust 
+formalizes this idea with *enumerations* or`enum`s, types that can take on 
+exactly one of a defined set of *variants*.
+
+::: {.callout-note}
+The tidyverse design style guide has a great section on enums. See 
+[enumerate options](https://design.tidyverse.org/enumerate-options.html#whats-the-pattern).
+
+Josiah Parry's blog also has a nice discussion of this. See 
+[Enums in R: towards type safe R](https://josiahparry.com/posts/2023-11-10-enums-in-r/).
+:::
+
+Like structs, enum names use PascalCase, and variants are created using 
+`EnumName::Variant`:
+
+```rust
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+let my_shape = Shape::Triangle;
+```
+
+## Matching
+
+How do we actually determine behavior based on a variant? This is done using 
+*pattern matching*, specifically the keyword `match`, which works similar to 
+`switch()` in R. The pattern match format uses the syntax `Enum::Variant => action`. 
+When using `match` each variant much be *enumerated*: 
+
+```{.rust filename="src/main.rs"}
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+fn main() {
+    let my_shape = Shape::Triangle;
+
+    match my_shape {
+        Shape::Triangle => println!("A triangle has 3 vertices"),
+        Shape::Rectangle => println!("A rectangle has 4 vertices"),
+        Shape::Pentagon => println!("A pentagon has 5 vertices"),
+        Shape::Hexagon => println!("A hexagon has 6 vertices"),
+    }
+}
+```
+
+```default
+A triangle has 3 vertices
+```
+
+When you only care about specific variants, use `_` as a catch-all for
+everything else:
+
+```{.rust filename="src/main.rs"}
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+fn main() {
+    let my_shape = Shape::Triangle;
+
+    match my_shape {
+        Shape::Hexagon => println!("Hexagons are the bestagons"),
+        _ => println!("Every other polygon is mid"),
+    }
+}
+```
+
+```default
+Every other polygon is mid
+```
+
+## Methods
+
+Enums can have `impl` blocks just like structs. Inside the method, `match self` 
+branches on the variant:
+
+```{.rust filename="src/main.rs"}
+enum Shape {
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
+
+impl Shape {
+    fn n_vertices(&self) -> i32 {
+        match self {
+            Self::Triangle  => 3,
+            Self::Rectangle => 4,
+            Self::Pentagon  => 5,
+            Self::Hexagon   => 6,
+        }
+    }
+}
+
+fn main() {
+    let my_shape = Shape::Triangle;
+    let n_vertices = my_shape.n_vertices();
+
+    println!("my shape has {} vertices", n_vertices);
+}
+```
+
+```default
+my shape has 3 vertices
+```
+
+## Missing values
+
+Because of its memory model and strong safety guarantees, Rust has no concept of 
+a `NULL` type. Null values are actually quite dangerous and have their own 
+category of errors and security issues. In fact, [C.A.R. Hoare](https://en.wikipedia.org/wiki/Tony_Hoare), 
+who invented null pointers, called them his "billion-dollar mistake." Rust,
+therefore, makes it impossible to use null values, requiring instead that the 
+concept of missingness be implemented using a special kind of `enum` known as an
+`Option<>`, which has exactly two variants:
+
+```rust
+enum Option<T> {
+    Some(T),
+    None,
+}
+```
+
+As a reminder, the `T` here stands for any generic type. When a value is 
+present, it is wrapped in `Some(T)`. When it is absent, the variant is `None`. 
+The type system forces you to acknowledge the possibility of `None` before you 
+can use the inner value — there is no way to accidentally treat a missing value 
+as if it were present.
+
+Since `Option<T>` is just an enum, we can match on the variants to access its 
+values.
+
+```rust
+// create an Option<Measure> that contains a value
+let measure = Some(Measure::Euclidean);
+
+match measure {
+    Some(v) => println!("The measure is: {}", v),
+    None => println!("Oh no! The measure is missing!"),
+}
+```
+
+This makes missing values visible - the code cannot compile unless both arms are 
+handled.
+
+::: {.callout-warning}
+Sometimes dealing with options is a headache, particularly when we're in the 
+early stages of developing. While we can use `.unwrap()` or `.expect()` to grab 
+the inner value of an option _without matching_, this is **dangerous!!** because 
+we are ignoring the possibility of a `None`. Unwrapping on a `None` leads to a 
+**panic**. Panics cause your program to abort.
+
+```rust
+thread 'main' panicked at src/main.rs:4:41:
+called `Option::unwrap()` on a `None` value
+```
+:::
+
+## Optional arguments
+
+A common use is to make function arguments optional — call with a value when you 
+have one, and fall back to a default when you do not, similar to how we use 
+`function(x = NULL)` in R. This can be achieved using an option in Rust.
+
+```{.rust filename="src/main.rs"}
+fn greet_user(name: Option<String>) {
+    let user_name = name.unwrap_or(String::from("world"));
+    println!("Hello, {}!", user_name);
+}
+
+fn main() {
+    greet_user(None); // Output: Hello, world!
+    greet_user(Some("Ferris".to_string()));
+}
+```
+
+```default
+Hello, world!
+Hello, Ferris!
+```

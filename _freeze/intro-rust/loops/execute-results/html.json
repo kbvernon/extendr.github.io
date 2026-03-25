@@ -1,0 +1,15 @@
+{
+  "hash": "2932b2ee3500d0c488e7b7a66b89fc78",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Loops\"\nengine: knitr\n---\n\nIn Rust, the easiest way to iterate over items in a collection is with a `for` \nloop. The syntax should look familiar to R programmers. Each item in the \ncollection is bound to the name you provide before `in` at each iteration of the \nloop:\n\n```rust\nfor value in collection {\n    // do something with value\n}\n```\n\nAs with control flow, the content of a for-loop must be delimited by curly \nbrackets, but the in-statement does not require parantheses. As an example, \nconsider a program for printing each number in a vector:\n\n```{.rust filename=\"src/main.rs\"}\nfn main() {\n    let nums = vec![1, 2, 3];\n\n    for n in nums {\n        println!(\"n is: {n}\");\n    }\n}\n```\n\nRunning `cargo run --quiet` (the `quiet` suppresses compiler logs) should print\nthe following to your terminal:\n\n```default\nn is: 1\nn is: 2\nn is: 3\n```\n\nIn the context of for-loops, Rust's scoping rules are important to be aware of.\nThey are, in fact, much stricter than R's. Like R, values declared outside a \nfor-loop are accessible inside it, but unlike R, values created inside the loop \ncannot be used outside it. In the following example, `greeting` is defined in \nthe outer scope and is accessible inside the loop:\n\n```{.rust filename=\"src/main.rs\"}\nfn main() {\n    let greeting = \"Hi\";\n    let names = vec![\"Alice\", \"Bob\"];\n\n    for name in names {\n        println!(\"{greeting}, {name}!\");\n    }\n}\n```\n\n```default\nHi, Alice!\nHi, Bob!\n```\n\nIn contrast, `doubled` in the next example is defined inside the loop and cannot \nbe accessed after it ends:\n\n```{.rust filename=\"src/main.rs\"}\nfn main() {\n    let numbers = vec![1, 2, 3];\n\n    for n in numbers {\n        let doubled = n * 2;\n        println!(\"{n} doubled is {doubled}\");\n    }\n\n    // ❌ `doubled` doesn't exist here\n    // println!(\"Last doubled: {}\", doubled);\n}\n```\n\nIn the next section we will see how to get around this scoping rule using a \nmutable variable declared in the outer scope to collect values produced inside \nthe loop.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

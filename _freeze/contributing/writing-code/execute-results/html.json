@@ -1,0 +1,15 @@
+{
+  "hash": "eabdbdacaa25d5ec738f188b2ca6aa79",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"General writing conventions\"\nengine: knitr\n---\n\nThis page covers code formatting conventions for the extendr project. Following \nthese conventions keeps code consistent and readable across contributors.\n\n## R code\n\n- Never use `print()` to display an R object. Let R print it implicitly.\n- Use the `extendrsrc` and `extendr` knitr engines for all extendr code. See \n  `user-guide/serde-integration.qmd` for a worked example to emulate.\n\n## Rust code\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

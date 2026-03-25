@@ -1,0 +1,15 @@
+{
+  "hash": "b29bb5b357658aa0b68f590ff85d2acf",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Control Flow\"\nengine: knitr\n---\n\nControl flow refers to the ability to conditionally execute code. As with R, \nRust declares conditions for code execution using `if`, `else` and `else if`. \nThose conditions will typically involve logical operators:\n\n- `==` check equality\n- `!=` check inequality\n- `!` negate a logical value\n- `&&` logical AND comparison\n- `||` logical OR comparison\n\nLogical operators work similarly to R but are not vectorised. They return a \nsingle logical called a `bool` instead and can only take on one of two values: \n`true` or `false`. \n\nLike R, each branch of an `if` in Rust must be delimited by curly brackets, but \nunlike R, parentheses around the condition are not required:\n\n```rust\nif x == y {\n    // do something\n} else {\n    // do something else\n}\n```\n\nNote, too, that the result of control flow can be assigned to a variable:\n\n```rust\nlet number = if x == y { 5 } else { 3 };\n```\n\nGiven what we learned about Rust's strong typing system, this suggests an\nadditional strong constraint on control flow: each branch or \"arm\" of an `if` \nexpression must return the same type. Otherwise, the type would be unknown at \ncompile time. Consider this example program (drawn straight from The Book) that \nincludes mismatched types in the `if` and `else` arm:. \n\n```{.rust filename=\"src/main.rs\"} \nfn main() {\n    let condition = true;\n\n    let number = if condition { 5 } else { \"six\" };\n\n    println!(\"The value of number is: {number}\");\n}\n```\n\nIf you try to compile and run this program, you will get the following error\nmessage from cargo:\n\n```default\nerror[E0308]: `if` and `else` have incompatible types\n --> src/main.rs:4:44\n  |\n4 |     let number = if condition { 5 } else { \"six\" };\n  |                                 -          ^^^^^ expected integer, found `&str`\n  |                                 |\n  |                                 expected because of this\n\nFor more information about this error, try `rustc --explain E0308`.\n```\n\nAs an side, this is actually a great example of one of Rust's best features. Not \nonly does the error message tell you where precisely it occurs, but it also \npoints you to additional information to help you understand what is wrong in \nyour code. Often, it will even suggest how to fix your problem!\n\nFor completeness, here is the correct way to program that control flow:\n\n```{.rust filename=\"src/main.rs\"} \nfn main() {\n    let condition = true;\n\n    let number = if condition { 5 } else { 6 };\n\n    println!(\"The value of number is: {number}\");\n}\n```\n\n```default\nThe value of number is: 5\n```",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

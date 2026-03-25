@@ -1,0 +1,125 @@
+---
+title: "Implementations"
+engine: knitr
+---
+
+Other methods can be implemented for structs using `impl` blocks. An `impl` 
+block is roughly analogous to defining S3 methods in R, except Rust's `impl` 
+blocks associate behavior directly with the type definition, making them 
+object-oriented. The syntax is this:
+
+```rust
+impl TypeName {
+    fn method_name() {
+        // body
+    }
+}
+```
+
+## Associated functions
+
+An *associated function* is called on the type itself rather than on an 
+instance. These are written as `TypeName::function()` and are typically used
+as constructors. The return type `Self` refers to the type being implemented:
+
+```{.rust filename="src/main.rs"} 
+#[derive(Debug)]
+struct Person {
+    name: String,
+    age: i32
+}
+
+impl Person {
+    fn new(name: String, age: i32) -> Self {
+        Person { name, age }
+    }
+}
+
+fn main() {
+    let me = Person::new("Josiah".to_string(), 29);
+    println!("{me:?}");
+}
+```
+
+```default
+Person { name: "Josiah", age: 29 }
+```
+
+You have already seen associated functions in this form: `Vec::new()` and
+`String::new()` are both associated functions.
+
+## Self-reference
+
+To define a method that operates on an instance, add `&self` as the first
+argument. This provides a read-only reference to the struct, so you can access 
+its fields but not move or modify them:
+
+```rust
+impl Person {
+    fn greet(&self) {
+        println!(
+            "Hello, my name is {} and I am {} years old.",
+            self.name, self.age
+        );
+    }
+}
+```
+
+A method can also accept another instance of the same type by using `&Self` as 
+an argument type. Here `is_older_than()` compares two `Person` values:
+
+```rust
+impl Person {
+    fn is_older_than(&self, other_person: &Self) -> bool {
+        self.age > other_person.age
+    }
+}
+```
+
+## Mutable self
+
+To modify a struct's fields from a method, use `&mut self`. Here `rename()` and
+`celebrate_birthday()` both mutate fields in place:
+
+```{.rust filename="src/main.rs"} 
+#[derive(Debug)]
+struct Person {
+    name: String,
+    age: i32
+}
+
+impl Person {
+    fn new(name: String, age: i32) -> Self {
+        Person { name, age }
+    }
+
+    fn greet(&self) {
+        println!(
+            "Hello, my name is {} and I am {} years old.",
+            self.name, self.age
+        );
+    }
+
+    fn rename(&mut self, new_name: &str) {
+        self.name = new_name.to_string();
+    }
+
+    fn celebrate_birthday(&mut self) {
+        self.age += 1;
+    }
+}
+
+fn main() {
+    let mut me = Person::new("Josiah".to_string(), 29);
+    me.celebrate_birthday();
+    me.rename("Jo");
+    me.greet(); 
+}
+```
+
+```default
+Hello, my name is Jo and I am 30 years old.
+```
+
+Note that the instance must also be declared `mut` when it is assigned to a 
+variable. 

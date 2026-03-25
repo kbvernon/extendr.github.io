@@ -1,0 +1,44 @@
+---
+title: "Functions"
+engine: knitr
+---
+
+So far, we have been modifying the `main()` function, but Rust lets us define as 
+many functions as we need. In R, functions are objects created with 
+`<- function()`. In Rust, they are declared with the `fn` keyword. Just like 
+everything else in Rust, arguments are typed - each argument takes the form 
+`arg_name: type`, and the return type is specified after `->`.
+
+```rust
+fn name_of_function(arg1: ArgType) -> ReturnType {
+    // function body
+    my_return_object
+}
+```
+
+As in R, the last expression in a function body is returned automatically — no 
+explicit `return` keyword is needed unless you are returning early. Functions 
+can also be declared anywhere in the file, outside of `main()`.
+
+Identifying whether a number is odd or even is a classic example. The
+[is-odd npm package](https://www.npmjs.com/package/is-odd) became famous for 
+being a remarkably small and widely depended-upon piece of code:
+
+![](/images/is-odd.png){width=70% fig-align="center"}
+
+Here is the Rust equivalent. We define `is_even()` first, taking an `i32` and 
+returning a `bool`, then use it inside `is_odd()`:
+
+```rust
+fn is_even(x: i32) -> bool {
+    x % 2 == 0
+}
+
+fn is_odd(x: i32) -> bool {
+    !is_even(x)
+}
+```
+
+Since `x % 2 == 0` is an expression that evaluates to a `bool`, it is returned 
+directly without a `return` statement. Building new functions from existing ones 
+like this is idiomatic Rust.

@@ -1,19 +1,16 @@
 ---
 title: "User Guide"
-subtitle: "A comprehensive guide to using extendr."
-toc: false
+subtitle: "A comprehensive guide to using extendr"
+page-layout: article
+toc: true
+toc-depth: 0
+date: today
+date-format: long
 ---
 
-This user guide serves two primary functions:
-
--   First, and more generally, it explains how to call Rust code in R (and, as
-    it happens, how to call R code in Rust).
--   Second, and more narrowly, it provides sufficient information and resources
-    to empower developers to build R packages with Rust extensions and publish
-    them to CRAN.
-
-Given these goals, the guide is primarily geared towards R users and R
-developers who also have a decent grasp of Rust.
+This user guide focuses on developing R packages that call Rust code and 
+publishing them to CRAN, so it is assumed that the reader has a basic 
+understanding of Rust.
 
 ## What's in this guide?
 
@@ -21,15 +18,25 @@ We're working on that...
 
 ## What's *not* in this guide?
 
-This book is not intended to be a comprehensive introduction to Rust. While do
-go over some of the basics, more often than not, concepts are introduced only to
-help explain extendr tools. That said, we do try to include copious references
-and links to additional resources that the reader can follow to learn more about
-specific topics. Of course, the biggest reference will be ["The
-Book"](<https://doc.rust-lang.org/stable/book/>).
+This book is not intended to be a comprehensive introduction to Rust. While we 
+do go over some of the basics, more often than not, concepts are introduced only 
+to help explain extendr tools. To learn more about Rust, you should consult 
+["The Book"](<https://doc.rust-lang.org/stable/book/>).
 
 This book is also not intended to be a comprehensive guide to R package
 development! There are, quite frankly, better resources for that, notably [R
 Packages (2e)](<https://r-pkgs.org/>). As with Rust specifics, we will strive
-to point you in the right direction to get more details and advice when you need
-it.
+to point you in the right direction to get more details and advice if you should 
+need it.
+
+## Software requirements
+
+This guide assumes the following versions of necessary software:
+
+- R: {{< var version.r >}}
+- Rust {{< var version.rust >}}
+- extendr-api {{< var version.extendr >}}
+- rextendr {{< var version.rextendr >}}
+
+Please see [Get Started](get-started.qmd) if you have not already installed this 
+software.

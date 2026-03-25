@@ -1,0 +1,168 @@
+---
+title: "Structures"
+engine: knitr
+---
+
+Rust lets you define custom types by grouping related values together using the 
+`struct` keyword. This is similar in spirit to a named list in R, but with fixed 
+fields and a declared type. Struct names use PascalCase, while field names use 
+snake_case:
+
+```rust
+struct Person {
+    name: String,
+    age: i32,
+}
+```
+
+A struct is created using "literal" syntax, where we write the struct name 
+followed by curly brackets containing each field and its value:
+
+```rust
+let me = Person { name: "Josiah".to_string(), age: 29 };
+```
+
+## Derive
+
+By default, a new struct has no built-in behavior. It does not even have a 
+defined behavior for printing. So, right now, if you try to print the `Person` 
+struct, you will get an error.
+
+```{.rust filename="src/main.rs"} 
+struct Person {
+    name: String,
+    age: i32
+}
+
+fn main() {
+    let me = Person { name: "Josiah".to_string(), age: 29 };
+    println!("{me:?}");
+}
+```
+
+```default
+error[E0277]: `Person` doesn't implement `Debug`
+ --> src/main.rs:8:15
+  |
+8 |     println!("{me:?}");
+  |               ^^^^^^ `Person` cannot be formatted using `{:?}` because it doesn't implement `Debug`
+  |
+  = help: the trait `Debug` is not implemented for `Person`
+  = note: add `#[derive(Debug)]` to `Person` or manually `impl Debug for Person`
+  = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider annotating `Person` with `#[derive(Debug)]`
+  |
+1 + #[derive(Debug)]
+2 | struct Person {
+  |
+
+For more information about this error, try `rustc --explain E0277`.
+```
+
+Here again we see a great demonstration of Rust's very informative error 
+messages. In this case, it also suggests a solution. We should derive the 
+`Debug` trait. What is a trait exactly? In Rust, traits are similar to R's S3 
+generics — they define a set of methods that a type can support. In this case, 
+the `Debug` trait allows for printing the content of a struct to stdout using 
+the special `:?` syntax in `println!()` or the `dbg!()` macro. 
+
+For very simple behaviors like printing, it is possible to derive the behavior 
+automatically from the struct definition itself. In fact, this is what the error 
+message above is telling us to do. It tells us to use another type of macro, 
+specifically the `derive` macro, placing it above the struct definition and 
+telling it what specific behavior to derive, in this case, `Debug`.
+
+```{.rust filename="src/main.rs"} 
+#[derive(Debug)]
+struct Person {
+    name: String,
+    age: i32
+}
+
+fn main() {
+    let me = Person { name: "Josiah".to_string(), age: 29 };
+    println!("{me:?}");
+}
+```
+
+```default
+Person { name: "Josiah", age: 29 }
+```
+
+## Fields 
+
+Fields in a struct can be accessed with dot notation: `me.name`, `me.age`. But 
+beware that ownership rules apply here, too. Accessing a field by moving it out 
+of the struct partially moves the struct itself, making the whole struct 
+unusable afterward:
+
+```{.rust filename="src/main.rs"} 
+#[derive(Debug)]
+struct Person {
+    name: String,
+    age: i32,
+}
+
+fn main() {
+    let me = Person { name: "Josiah".to_string(), age: 29 };
+    let name = me.name; // ⬅️ name moved out
+    println!("{me:?}"); // ❌ error: partial move
+}
+```
+
+```default
+error[E0382]: borrow of partially moved value: `me`
+  --> src/main.rs:10:16
+   |
+ 9 |     let name = me.name; // name moved out
+   |                ------- value partially moved here
+10 |     println!("{me:?}"); // error: partial move
+   |                ^^ value borrowed here after partial move
+   |
+   = note: partial move occurs because `me.name` has type `String`, which does not implement the `Copy` trait
+   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0382`.
+```
+
+To read a field without consuming it, borrow it instead by referencing the 
+struct.
+
+```{.rust filename="src/main.rs"} 
+#[derive(Debug)]
+struct Person {
+    name: String,
+    age: i32,
+}
+
+fn main() {
+    let me = Person { name: "Josiah".to_string(), age: 29 };
+    let name = &me.name;
+    println!("{me:?}");
+}
+```
+
+```default
+Person { name: "Josiah", age: 29 }
+```
+
+## Destructuring
+
+Rust lets you unpack all fields of a struct in a single `let` binding. This is 
+called destructuring and uses the syntax `let StructName { field1, field2 } = variable`:
+
+```{.rust filename="src/main.rs"} 
+fn main() {
+    let me = Person { name: "Josiah".to_string(), age: 29 };
+    let Person { name, age } = me;
+    println!("{name} is {age} years old");
+}
+```
+
+```default
+Josiah is 29 years old
+```
+
+Destructuring is useful when you need several fields at once and want to avoid
+repeated `.field` access. The struct is consumed in the process, so the original 
+variable is no longer available.

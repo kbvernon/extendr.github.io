@@ -1,0 +1,15 @@
+{
+  "hash": "579a7a4862437c7719c3c65c7e53088b",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Collections\"\nengine: knitr\n---\n\nRust has two primary ways to store multiple values of the same type: arrays and\nvectors. Arrays are fixed in size — their length is known at compile time, which \nmakes them fast but inflexible. You cannot add or remove elements after \ncreation. Vectors are like growable arrays, making them more flexible and also \nmore common in everyday Rust code. The syntax for creating arrays and vectors \nalso differs: \n\n```rust\n// array\nlet a = [10, 20, 30, 40];\n\n// vector\nlet v = vec![10, 20, 30, 40];\n```\n\nHere, the array is created using square brackets, the vector by calling the \n`vec!` macro. In this case, the types are inferred. If we want to make those\nexplicit, the syntax also differs:\n\n```rust\n// array\nlet a: [i32; 4] = [10, 20, 30, 40];\n\n// vector\nlet v: Vec<i32> = vec![10, 20, 30, 40];\n```\n\nIn this example, the array type and length are both declared with \n`[type; length]`, but the vector only requires specifying that it is a vector of \n32-bit integers or `Vec<i32>`, which can have any given length.\n\nOne nice thing about both vectors and arrays is that you can initialize them to \na specific constant value and size. The syntax here is similar, though again the\nvector version requires the use of the `vec!` macro:\n\n```rust\n// array\nlet a: [i32; 4] = [0; 4];\n\n// vector\nlet v: Vec<i32> = vec![0; 4];\n```\n\nIn each case, we put the initial value `0` followed by the size `4`.\n\nOne last thing to note here, specifically about vectors. An empty vector can \nalso be created with `Vec::new()` or `vec![]`. When creating an empty vector, \nhowever, Rust needs to know the element type either from context or from an \nexplicit type annotation, since it cannot infer type from the empty vector \nitself:\n\n```rust\nlet v: Vec<f64> = Vec::new();\n```\n\nVectors also have a number of useful **methods**: `.len()` returns the number of \nelements and `.is_empty()` returns `true` if there are no elements. We will \nencounter more methods like these as we work through the guide.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
