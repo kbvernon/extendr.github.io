@@ -1,0 +1,15 @@
+{
+  "hash": "125b0874f1c9139fd9b376ef08f2fb49",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"{extendr} Internals\"\nengine: knitr\n---\n\n::: {.callout-note}\n[Coming soon!]{.fs-1 .fw-bold}\n:::",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
