@@ -71,7 +71,7 @@ Here are some other important guidelines for Rust testing:
   [extendr-api/tests](https://github.com/extendr/extendr/tree/main/extendr-api/tests) 
   for an example of integration tests.
 - All tests should go in a test module `mod tests {}`.
-- All tests should be annotated with `#[cfs(tests)]` to ensure that tests are 
+- All tests should be annotated with `#[cfg(test)]` to ensure that tests are 
   not compiled with extendr.
 - Do not use documentation tests.
 
