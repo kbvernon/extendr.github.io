@@ -7,6 +7,12 @@ Testing is mission critical for extendr. For all new functionality we require
 tests to ensure they continue to work as intended. For bug fixes we require a 
 test to cover the bug fix (if one didn't exist yet).
 
+Note that we have a justfile that you can use to run tests locally:
+
+  - for R, `just document` then `just devtools-test` and 
+  - for Rust, `just test` and then also ensure that things are formatted with 
+    `just fmt`.
+
 ## Rust Tests
 
 Rust tests in extendr follow standard Rust conventions: `#[test]` functions
@@ -68,11 +74,6 @@ Here are some other important guidelines for Rust testing:
 - All tests should be annotated with `#[cfs(tests)]` to ensure that tests are 
   not compiled with extendr.
 - Do not use documentation tests.
-- Use the justfile to help run tests locally:
-  - for R, `just document` then `just devtools-test` and 
-  - for Rust, `just test` and then also ensure that things are formatted with 
-    `just fmt`
-
 
 ## R Tests
 
