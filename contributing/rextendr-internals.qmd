@@ -87,7 +87,7 @@ extendr wrappers (basically `.Call()`) and writes them into
 configured to use it for offline compilation — this is the essential mechanism 
 required for CRAN submissions. 
 
-### Registeration
+### Registration
 
 Because we are building an R package with compiled code, R requires that we 
 register all routines via a C-level initialization function named 
