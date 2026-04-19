@@ -23,17 +23,17 @@ architecture.
 
 ```
 .
-├── _quarto.yml       # Site config: navbar, sidebars, theme
-├── index.qmd         # Landing page (3 cards: Get Started, Examples, Community)
-├── get-started.qmd   # 4-step install guide (Rust, R ≥ 4.2, rextendr, rust-analyzer)
-├── changelog.qmd     # Dynamically fetches extendr CHANGELOG.md from GitHub
-├── user-guide/       # User guide
-├── intro-rust/       # Intro to Rust for R developers
-├── contributing/     # Contributor guide (style, colors, scaffolding)
-├── blog/             # Blog posts
-├── css/              # Custom SCSS
-├── images/           # Image files
-└── _extensions/      # Quarto extensions
+├── _quarto.yml            # Site config: navbar, sidebars, theme
+├── index.qmd              # Landing page (3 cards: Get Started, Examples, Community)
+├── installation-guide.qmd # 4-step install guide (Rust, R ≥ 4.2, rextendr, rust-analyzer)
+├── changelog.qmd          # Dynamically fetches extendr CHANGELOG.md from GitHub
+├── user-guide/            # User guide
+├── intro-rust/            # Intro to Rust for R developers
+├── contributing/          # Contributor guide (style, colors, scaffolding)
+├── blog/                  # Blog posts
+├── css/                   # Custom SCSS
+├── images/                # Image files
+└── _extensions/           # Quarto extensions
 ```
 
 ## Quarto (`_quarto.yml`)

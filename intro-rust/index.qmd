@@ -44,7 +44,7 @@ what Rust developers affectionately call "The Book."
 ## Software requirements
 
 This guide assumes that you have Rust {{< var version.rust >}} installed. Please
-see [Get Started](get-started.qmd) if you do not.
+see [Installation Guide](installation-guide.qmd) if you do not.
 
 If you are not yet comfortable with installing Rust, you may find it helpful to
 try out examples in this tutorial using the open source 
