@@ -27,13 +27,29 @@ Get support for publishing to CRAN.
 ## init
 
 **Get Started** {{< iconify fluent-color:checkmark-circle-32 >}}  
-Build your first Rust-powered R package in minutes. Follow our step-by-step 
-guide or dive straight into a complete example.
+Build your first Rust-powered R package in minutes. 
 
-→ [Installation](/get-started.qmd)  
+```r
+# setup R package
+usethis::create_package("helloextendr")
+
+# add extendr scaffolding
+rextendr::use_extendr()
+
+# build and document package
+devtools::document()
+
+# call rust function
+hello_world()
+#> "Hello world!"
+```
+
+For more information, check out our installation and user guides.
+
+→ [Installation Guide](/installation-guide.qmd)  
 → [User Guide](/user-guide/index.qmd)
 
-## run example
+## ls examples/
 
 **See What's Possible** {{< iconify fluent-color:lightbulb-filament-32 >}}  
 Explore R packages built with extendr. From high-performance data processing to 
@@ -41,7 +57,7 @@ system integrations, see what the community has built.
 
 → [Browse awesome-extendr](https://github.com/extendr/awesome-extendr)
 
-## --help
+## \-\-help
 
 **Join the Community** {{< iconify fluent-color:people-interwoven-32 >}}  
 extendr has a welcoming and active community of R and Rust developers. Come ask 

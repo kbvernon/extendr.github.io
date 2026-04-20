@@ -22,7 +22,7 @@ website:
     search: true
     right:
       - text: "INSTALL"
-        href: get-started.qmd
+        href: installation-guide.qmd
       - text: DOCS
         menu:
           - text: "User Guide"

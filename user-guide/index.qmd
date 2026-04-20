@@ -70,5 +70,5 @@ This guide assumes the following versions of necessary software:
 - extendr-api {{< var version.extendr >}}
 - rextendr {{< var version.rextendr >}}
 
-Please see [Get Started](../get-started.qmd) if you have not already
-installed this software.
+Please see [Installation Guide](../installation-guide.qmd) if you have not 
+already installed this software.
