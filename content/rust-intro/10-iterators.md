@@ -1,0 +1,213 @@
+---
+title: Iterators
+description: >-
+  Chain operations over sequences with Rust's iterator methods — closer in
+  spirit to purrr::map than a for-loop.
+weight: 10
+slug: iterators
+---
+
+
+So far we have been using `for` loops to work through collections, but Rust has
+a more powerful and flexible mechanism: iterators. Iterators produce a sequence
+of items that can be accessed one at a time and chained with methods like
+`.sum()`, `.min()`, `.max()`, and `.enumerate()`. They are closer in spirit to
+`apply()` or `purrr::map()` than to a traditional for-loop.
+
+And actually, we were technically using iterators all along, since Rust calls
+`.into_iter()` on the vector passed to a for-loop under the hood. Both of these
+are equivalent:
+
+``` rust
+let nums = vec![3, 6, 9];
+
+for n in nums { ... }
+for n in nums.into_iter() { ... }
+```
+
+## Borrowing
+
+One important constraint on the use of `.into_iter()` is that it actually
+*consumes* the vector --- ownership is moved into the iterator so that the
+vector can no longer be used afterward:
+
+<div class="code-with-filename">
+
+**src/main.rs**
+
+``` rust
+fn main() {
+    let nums = vec![3, 6, 9];
+    for n in nums.into_iter() {   // ⬅️ nums is moved
+        println!("Value: {n}");
+    }
+    
+    println!("nums: {:?}", nums); // ❌ compiler error
+}
+```
+
+</div>
+
+To iterate without consuming the original collection, use `.iter()` instead.
+This *borrows* the collection and produces references to each element, leaving
+the original value intact:
+
+<div class="code-with-filename">
+
+**src/main.rs**
+
+``` rust
+fn main() {
+    let nums = vec![3, 6, 9];
+    
+    for n in nums.iter() {
+        println!("Reference to value: {n}");
+    }
+    
+    println!("nums is still usable: {:?}", nums);
+}
+```
+
+</div>
+
+``` console
+Reference to value: 3
+Reference to value: 6
+Reference to value: 9
+nums is still usable: [3, 6, 9]
+```
+
+Once you have an iterator, a number of useful methods are available. Here is an
+example of the sum method:
+
+<div class="code-with-filename">
+
+**src/main.rs**
+
+``` rust
+fn main() {
+    let nums = vec![2, 4, 8];
+    let total: i32 = nums.iter().sum();
+    println!("Sum is: {total}");
+}
+```
+
+</div>
+
+``` console
+Sum is: 14
+```
+
+## Enumerating
+
+You can also `.enumerate()` over iterators to get the index and value of the
+current element. These are returned as a tuple `(i, xi)` where `i` is the index
+and `xi` is the value. The data type of the index `i` is `usize`, which can if
+needed be cast to `i32` with `i as i32`. Note that Rust is zero-indexed!
+
+<div class="code-with-filename">
+
+**src/main.rs**
+
+``` rust
+fn is_even(x: i32) -> bool {
+    x % 2 == 0
+}
+
+fn main() {
+    let x = vec![1, 3, 5];
+
+    for (i, xi) in x.iter().enumerate() {
+        if is_even(i as i32) {
+            println!("Index {i} is even with value {xi}");
+        }
+    }
+}
+```
+
+</div>
+
+``` console
+Index 0 is even with value 1
+Index 2 is even with value 5
+```
+
+## Mapping
+
+Maybe the most useful method to apply to iterators is `.map()`, the Rust analog
+of `purrr::map()` and the `apply()` family of functions. Here is an example that
+squares each element of a vector:
+
+``` rust
+// providing explicit type annotation in one
+// value so the compiler knows its f64 and not f32
+let x = vec![5.9_f64, 6.8, 4.5, 7.3, 6.2];
+
+x.iter().map(|xi| xi.powi(2))
+```
+
+Using `.map()` returns another iterator, so we can chain operations over
+iterators by using multiple `.map()` statements.
+
+``` rust
+// providing explicit type annotation in one
+// value so the compiler knows its f64 and not f32
+let x = vec![5.9_f64, 6.8, 4.5, 7.3, 6.2];
+
+x.iter().map(|xi| xi.powi(2)).map(|xi| xi - 1.0)
+```
+
+## Closure
+
+In these examples we use a *closure* to modify each element of the iterator,
+which is Rust's version of an anonymous function. The syntax of a closure is
+`|arg| expression`, similar to R's recent adoption of `\(arg) expression`. Like
+R's anonymous functions, they can also be multiple lines by wrapping the
+expression in curly brackets:
+
+``` rust
+x.iter().map(|xi| {
+    let squared = xi.powi(2);
+    squared.sqrt()
+})
+```
+
+When using `.enumerate().map()`, you get the Rust version of `purrr::imap()`.
+
+``` rust
+x.iter()
+    .enumerate()
+    .map(|(i, xi)| {
+        // use both i and xi here
+    })
+```
+
+Notice that the iterator is now the tuple `(i, xi)` as before in the for-loop.
+
+## Collecting
+
+In R, `purrr::map()` always returns a list, but in Rust, `.map()` always returns
+another iterator, so getting back a concrete collection means you must
+`.collect()` the values in the iterator. Rust cannot always infer the type you
+want to collect, however, so you need to provide it explicitly:
+
+``` rust
+let x_squared: Vec<f64> = x.iter().map(|xi| xi.powi(2)).collect();
+```
+
+Alternatively, you can use the *turbofish* syntax `.collect::<TYPE>()` to
+specify the type directly on `.collect()` rather than in the assignment:
+
+``` rust
+let x_squared = x.iter().map(|xi| xi.powi(2)).collect::<Vec<f64>>();
+```
+
+In either case, you may use a general placeholders to encourage Rust to infer
+the type, the syntax being `Vec<_>`:
+
+``` rust
+let x_squared: Vec<_> = x.iter().map(|xi| xi.powi(2)).collect();
+let x_squared = x.iter().map(|xi| xi.powi(2)).collect::<Vec<_>>();
+```
+
+This lets Rust infer the element type while you specify the container type.

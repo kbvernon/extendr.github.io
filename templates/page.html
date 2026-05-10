@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block content %}
+<div class="ml-auto w-full flex-1 min-w-0 max-w-screen-md">
+    <article class="content flex flex-col gap-4">
+        <header class="pb-2 border-b border-border">
+            <h1 class="my-0">{{ page.title }}</h1>
+            {% if page.description %}
+            <p class="text-muted-foreground mt-1 mb-0">{{ page.description }}</p>
+            {% endif %}
+            {% if "blog" in page.components %}
+            <div class="mt-6">
+                {% if page.authors %}
+                <p class="flex items-center text-sm text-muted-foreground my-0">
+                    <span class="iconify lucide--users mr-2"></span>
+                    {{ page.authors | join(sep=", ") }}
+                </p>
+                {% endif %}
+                {% if page.date %}
+                <p class="flex items-center text-sm text-muted-foreground mt-2 mb-0">
+                    <span class="iconify lucide--calendar text-xs mr-2"></span>
+                    {{ page.date | date(format="%b %-d, %Y") }}
+                </p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </header>
+        <div class="prose">
+            {{ page.content | safe }}
+        </div>
+        {% if "blog" not in page.components %}
+        <footer class="mt-10">
+            <nav class="flex justify-between items-center text-sm">
+                <div>
+                    {% if page.lower %}
+                    <a href="{{ page.lower.permalink }}"
+                       class="flex items-center gap-1">
+                        <span>←</span>
+                        <span>{{ page.lower.title }}</span>
+                    </a>
+                    {% endif %}
+                </div>
+                <div>
+                    {% if page.higher %}
+                    <a href="{{ page.higher.permalink }}"
+                       class="flex items-center gap-1">
+                        <span>{{ page.higher.title }}</span>
+                        <span>→</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </nav>
+        </footer>
+        {% endif %}
+    </article>
+</div>
+<div class="hidden text-sm xl:block w-full max-w-[240px]">
+    {% set max_level = page.extra.toc_max_level | default(value=3) %}
+    <aside aria-label="On this page"
+           class="sticky top-[var(--header-h,5rem)] py-4 space-y-1">
+        {% if page.toc %}
+        <nav
+             class="toc sticky top-22 space-y-2 [&_ul]:my-0 [&_ul]:list-none [&_li]:mt-0 [&_li]:pt-2 [&_a]:inline-block [&_a]:no-underline [&_a]:transition-colors [&_a]:hover:text-foreground [&_a]:text-muted-foreground">
+            <h4 class="font-medium uppercase">On this page</h4>
+            {{ macros::toc_items(headings=page.toc, max_level=max_level) }}
+        </nav>
+        {% endif %}
+    </aside>
+</div>
+{% endblock content %}

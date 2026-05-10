@@ -1,0 +1,55 @@
+---
+title: User Guide Pages
+description: >-
+  Style and structure guidelines for writing pages that introduce extendr-api
+  features.
+weight: 10
+slug: user-guide-pages
+---
+
+
+User guide pages are friendly introductions to specific features of the
+`extendr-api` crate. Keep them **concise** and use **simple language**.
+Always use code chunks for extendr code — never paste raw snippets.
+
+### Page structure
+
+Each page should follow this rough structure:
+
+```` markdown
+---
+title: "An informative title"
+---
+
+- Motivate the functionality the page covers
+- No more than 4 sentences
+
+## The feature
+
+- Describe the functionality
+- Discuss prerequisites if any
+
+## Basic usage
+
+- Discuss the code before showing it
+
+```{.rust}
+// your Rust code
+```
+
+- Summarize and explain the output
+
+## Advanced usage
+
+- Motivate the advanced example
+
+```{.rust}
+// your Rust code
+```
+
+- Summarize and explain
+
+## See also
+
+- Links to related pages or external docs
+````

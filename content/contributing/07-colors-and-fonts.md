@@ -1,0 +1,376 @@
+---
+title: Colors and Fonts
+description: Reference for the site's Tailwind theme tokens, brand palette, and fonts.
+weight: 7
+slug: colors-and-fonts
+---
+
+
+The site uses [Tailwind CSS v4](https://tailwindcss.com/) with the
+[basecoat](https://basecoatui.com/) component library. Two color systems are
+exposed as Tailwind utilities:
+
+1.  **Semantic theme tokens** — `primary`, `muted`, `card`, etc. These adapt
+    automatically to light and dark mode and should be preferred for general UI.
+2.  **Brand palette tokens** — fixed R Foundation and Rust Foundation colors.
+    Use these when you specifically want a brand color regardless of theme.
+
+Anywhere a Tailwind color utility is accepted (`bg-*`, `text-*`, `border-*`,
+`ring-*`, `from-*`, `to-*`, …), both groups work the same way.
+
+## Semantic theme colors
+
+Each semantic role comes as a pair: a background and its matching foreground.
+Tokens live in `css/theme.css` and flip automatically when the `.dark` class
+is on `<html>`.
+
+<div class="flex gap-2 flex-wrap">
+
+<div class="bg-background text-foreground border border-border h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-background
+
+</div>
+
+<div class="bg-card text-card-foreground border border-border h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-card
+
+</div>
+
+<div class="bg-popover text-popover-foreground border border-border h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-popover
+
+</div>
+
+</div>
+
+<div class="flex gap-2 flex-wrap mt-2">
+
+<div class="bg-primary text-primary-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-primary
+
+</div>
+
+<div class="bg-secondary text-secondary-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-secondary
+
+</div>
+
+<div class="bg-accent text-accent-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-accent
+
+</div>
+
+</div>
+
+<div class="flex gap-2 flex-wrap mt-2">
+
+<div class="bg-muted text-muted-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-muted
+
+</div>
+
+<div class="bg-destructive text-destructive-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-destructive
+
+</div>
+
+</div>
+
+Three single-purpose tokens round out the set:
+
+- `border-border` — default border color.
+- `bg-input` — form field background.
+- `ring-ring` — focus ring color.
+
+For text, drop the `bg-` prefix:
+<span class="text-foreground">text-foreground</span>,
+<span class="text-muted-foreground">text-muted-foreground</span>,
+<span class="text-primary">text-primary</span>,
+<span class="text-destructive">text-destructive</span>,
+<span class="text-accent-foreground">text-accent-foreground</span>.
+
+## Chart colors
+
+Five semantic slots designed for data visualization, each with a distinct
+light/dark mapping.
+
+<div class="flex gap-2 flex-wrap">
+
+<div class="bg-chart-1 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+
+chart-1
+
+</div>
+
+<div class="bg-chart-2 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+
+chart-2
+
+</div>
+
+<div class="bg-chart-3 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+
+chart-3
+
+</div>
+
+<div class="bg-chart-4 h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+
+chart-4
+
+</div>
+
+<div class="bg-chart-5 h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+
+chart-5
+
+</div>
+
+</div>
+
+## Brand palette
+
+Defined in `css/colors.css`. These are **fixed values** — they don't flip in
+dark mode. Pair them with an appropriate text color manually.
+
+### R Foundation
+
+The blues from the [R logo](https://www.r-project.org/logo/).
+
+<div class="flex gap-2 flex-wrap">
+
+<div class="bg-r-blue-2 text-white h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-r-blue-2
+
+</div>
+
+<div class="bg-r-blue-1 text-white h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+
+bg-r-blue-1
+
+</div>
+
+</div>
+
+### Rust Foundation
+
+Tints from the Rust Foundation [brand guide](https://rustfoundation.org/brand-guide/).
+Each family ships at 100, 75, 50, and 25 percent saturation.
+
+<div class="flex gap-2 flex-wrap">
+
+<div class="bg-rust-dark-blue-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-dark-blue-100
+
+</div>
+
+<div class="bg-rust-dark-blue-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-dark-blue-75
+
+</div>
+
+<div class="bg-rust-dark-blue-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-dark-blue-50
+
+</div>
+
+<div class="bg-rust-dark-blue-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-dark-blue-25
+
+</div>
+
+</div>
+
+<div class="flex gap-2 flex-wrap mt-2">
+
+<div class="bg-rust-orange-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-orange-100
+
+</div>
+
+<div class="bg-rust-orange-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-orange-75
+
+</div>
+
+<div class="bg-rust-orange-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-orange-50
+
+</div>
+
+<div class="bg-rust-orange-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-orange-25
+
+</div>
+
+</div>
+
+<div class="flex gap-2 flex-wrap mt-2">
+
+<div class="bg-rust-blue-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-blue-100
+
+</div>
+
+<div class="bg-rust-blue-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-blue-75
+
+</div>
+
+<div class="bg-rust-blue-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-blue-50
+
+</div>
+
+<div class="bg-rust-blue-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-blue-25
+
+</div>
+
+</div>
+
+<div class="flex gap-2 flex-wrap mt-2">
+
+<div class="bg-rust-silver-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-silver-100
+
+</div>
+
+<div class="bg-rust-silver-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-silver-75
+
+</div>
+
+<div class="bg-rust-silver-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-silver-50
+
+</div>
+
+<div class="bg-rust-silver-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-silver-25
+
+</div>
+
+</div>
+
+<div class="flex gap-2 flex-wrap mt-2">
+
+<div class="bg-rust-green-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-green-100
+
+</div>
+
+<div class="bg-rust-green-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-green-75
+
+</div>
+
+<div class="bg-rust-green-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-green-50
+
+</div>
+
+<div class="bg-rust-green-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+
+rust-green-25
+
+</div>
+
+</div>
+
+Brand colors are also available as text utilities:
+<span class="text-r-blue-1">text-r-blue-1</span>,
+<span class="text-rust-orange-100">text-rust-orange-100</span>,
+<span class="text-rust-blue-100">text-rust-blue-100</span>,
+<span class="text-rust-green-100">text-rust-green-100</span>,
+<span class="text-rust-dark-blue-100">text-rust-dark-blue-100</span>.
+
+## Light and dark mode
+
+Theme switching is driven by a `.dark` class on `<html>`. Semantic tokens
+have separate values for each mode, so utilities like `bg-primary` or
+`text-muted-foreground` adapt without any extra work on your part.
+
+When you need a class to apply *only* in one mode, prefix it with the `dark:`
+variant:
+
+<div class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-border p-4 rounded">
+
+This block is white in light mode and zinc-900 in dark mode. Toggle the theme
+to see the swap.
+
+</div>
+
+In practice you should rarely need `dark:` — reach for it only when the
+semantic tokens above don't fit your case.
+
+## Fonts
+
+Three font families are loaded in `css/fonts.css` and exposed as Tailwind
+utilities:
+
+<div class="flex gap-2 flex-wrap">
+
+<div class="bg-card text-card-foreground border border-border font-mono p-4 flex-1 min-w-56">
+
+    <div class="text-2xl">Monaspace</div>
+    font-mono<br>
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+    abcdefghijklmnopqrstuvwxyz<br>
+    0123456789
+
+</div>
+
+<div class="bg-card text-card-foreground border border-border font-serif p-4 flex-1 min-w-56">
+
+    <div class="text-2xl">Noto Serif</div>
+    font-serif<br>
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+    abcdefghijklmnopqrstuvwxyz<br>
+    0123456789
+
+</div>
+
+<div class="bg-card text-card-foreground border border-border font-sans p-4 flex-1 min-w-56">
+
+    <div class="text-2xl">Noto Sans</div>
+    font-sans<br>
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+    abcdefghijklmnopqrstuvwxyz<br>
+    0123456789
+
+</div>
+
+</div>
+
+Body copy uses `font-sans` by default, and headings inside `.content` get
+`font-mono` automatically (see `css/content.css`). You should rarely need to
+set a font utility by hand.

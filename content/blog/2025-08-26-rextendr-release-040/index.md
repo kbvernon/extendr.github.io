@@ -1,0 +1,96 @@
+---
+title: rextendr 0.4
+description: |
+  A new version of rextendr has arrived.
+authors:
+  - Blake Vernon
+date: '2025-08-26'
+taxonomies:
+  tags:
+    - Release
+    - Updates
+---
+
+
+## TL;DR
+
+- New domain! Say hi to extendr.rs 👋🏼
+- Positron & VS Code Support 👩🏽‍💻
+- CRAN compatibility out of the box
+- WebR support 🕸️
+
+The extendr team is excited to announce the release of
+[rextendr](https://extendr.github.io/rextendr/dev) `0.4`, along with two
+follow-up patch releases, that bring significant improvements to the R package
+ecosystem for Rust integration. These include:
+
+- enhanced CRAN compatibility,
+- improved developer experience,
+- WebR support,
+- and streamlined package scaffolding.
+
+A great deal of work also went into re-factoring code to reduce package dependencies and
+improve the maintainability to ensure the long-term viability of the project.
+
+{% callout(type="note") %}
+
+## What is rextendr?
+
+For those new to the project, rextendr is an R package similar to `usethis` and
+`devtools` for supporting development of Rust-powered R packages, with the Rust
+crate `extendr` handling most of the heavy lifting behind the scenes.
+
+{% end %}
+
+## WebR support
+
+A very exciting development in this release is **WebR compatibility out of the box**. All extendr-powered R packages are now compatible with [WebR](https://webr.r-wasm.org/latest/), meaning your packages can run in the browser without an R installation.
+
+WebR support happens without any additional work on your part. Just update your build files with `use_extendr()` and permit rextendr to update your `Makevars{.win}.in`, files in `tools/`, `configure` scripts.
+
+{% callout(type="tip") %}
+
+## WebR for existing packages
+
+WebR support requires that `lto = true` in your release profile. This is handled for new packages, but not existing ones. Be sure to add it to your `Cargo.toml`.
+
+{% end %}
+
+## CRAN compatibility
+
+The standout feature of the current release is found in rextendr's workhorse function `use_extendr()`, which now provides **CRAN-ready scaffolding out of the box**. All you need to do is vendor your Rust dependencies with `vendor_pkgs()` and you're ready for CRAN submission.
+
+## Positron & VS Code Support
+
+With [Positron](http://positron.posit.co/) coming out of beta, we've introduced `use_positron()` and `use_vscode()` to generate (or update) `.vscode/settings.json` tailored to Rust development in R packages.
+
+When you run `use_extendr()`, it now automatically calls `use_vscode()` when VS Code or Positron is detected as your IDE, making the setup completely seamless.
+
+## Enhanced Developer Tools
+
+Release of 0.4.0 and its patches also comes with additional developer tooling:
+
+- **Rust diagnostics**—`rust_sitrep()` provides comprehensive Rust toolchain diagnostics and guides you through fixing any installation issues
+- **Dependency management**—`use_crate()` makes adding Rust dependencies to your `Cargo.toml` as easy as `usethis::use_package()`
+- **MSRV support**—`use_msrv()` helps specify the minimum supported Rust version for your package
+- **Metadata access**—`read_cargo_metadata()` lets you fetch detailed project information from Cargo
+- **Eeasy dependency vendoring**—`vendor_pkgs()` vendors and compresses your Rust dependencies for easy CRAN publication and offline installation
+
+## A new extendr badge!
+
+The extendr community has grown quite a bit in the last two years, maybe as much
+as the codebase! First of all, we want to say **thank you** for being a part of the community!
+
+We wanted to make sure that new developers could boast about
+their extendr-powered packages—and, if we're being honest, increase visibility
+for the project—by adding an extendr badge to their README files, which can
+now be done with `use_extendr_badge()`. This results in:
+
+[<img src="https://img.shields.io/badge/extendr-%5E0.8.0-276DC2"/>](https://extendr.rs/extendr/extendr_api/)
+
+If you're using extendr in your package, do us a solid and add the badge to your README! 🥺
+
+## There's still more
+
+Check out our recently updated [website](https://extendr.rs/) and
+documentation! For the full changelog see the [NEWS.md](https://github.com/extendr/rextendr/blob/main/NEWS.md).

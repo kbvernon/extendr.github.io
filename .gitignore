@@ -1,17 +1,26 @@
-docs
-*~
-.Rproj.user
-*.Rproj
-
-/.quarto/
-/_site/
-# rust specific .gitignore
+# rust
 target/
 debug/
 Cargo.lock
 **/*.rs.bk
 *.pdb
-# r specific
+
+# r
 .Rproj.user/
 *.Rproj
+
+# quarto
+/content/.quarto/
 **/*.quarto_ipynb
+.luarc.json
+
+# zola
+/public/
+
+# node / tailwind build
+/node_modules/
+/static/style.css
+
+# other
+/_miscellaneous/
+/.claude/

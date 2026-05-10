@@ -1,0 +1,102 @@
+---
+title: Loops
+description: Iterate over collections with Rust's for-loop syntax.
+weight: 6
+slug: loops
+---
+
+
+In Rust, the easiest way to iterate over items in a collection is with a `for`
+loop. The syntax should look familiar to R programmers. Each item in the
+collection is bound to the name you provide before `in` at each iteration of the
+loop:
+
+``` rust
+for value in collection {
+    // do something with value
+}
+```
+
+As with control flow, the content of a for-loop must be delimited by curly
+brackets, but the in-statement does not require parantheses. As an example,
+consider a program for printing each number in a vector:
+
+<div class="code-with-filename">
+
+**src/main.rs**
+
+``` rust
+fn main() {
+    let nums = vec![1, 2, 3];
+
+    for n in nums {
+        println!("n is: {n}");
+    }
+}
+```
+
+</div>
+
+Running `cargo run --quiet` (the `quiet` suppresses compiler logs) should print
+the following to your terminal:
+
+``` console
+n is: 1
+n is: 2
+n is: 3
+```
+
+In the context of for-loops, Rust's scoping rules are important to be aware of.
+They are, in fact, much stricter than R's. Like R, values declared outside a
+for-loop are accessible inside it, but unlike R, values created inside the loop
+cannot be used outside it. In the following example, `greeting` is defined in
+the outer scope and is accessible inside the loop:
+
+<div class="code-with-filename">
+
+**src/main.rs**
+
+``` rust
+fn main() {
+    let greeting = "Hi";
+    let names = vec!["Alice", "Bob"];
+
+    for name in names {
+        println!("{greeting}, {name}!");
+    }
+}
+```
+
+</div>
+
+``` console
+Hi, Alice!
+Hi, Bob!
+```
+
+In contrast, `doubled` in the next example is defined inside the loop and cannot
+be accessed after it ends:
+
+<div class="code-with-filename">
+
+**src/main.rs**
+
+``` rust
+fn main() {
+    let numbers = vec![1, 2, 3];
+
+    for n in numbers {
+        let doubled = n * 2;
+        println!("{n} doubled is {doubled}");
+    }
+
+    // ❌ `doubled` doesn't exist here
+    // println!("Last doubled: {}", doubled);
+}
+```
+
+</div>
+
+In the next section we will see how to get around this scoping rule using a
+mutable variable declared in the outer scope to collect values produced inside
+the loop.

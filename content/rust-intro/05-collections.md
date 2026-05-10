@@ -1,0 +1,68 @@
+---
+title: Collections
+description: >-
+  Store multiple values of the same type with arrays (fixed-size) and vectors
+  (growable).
+weight: 5
+slug: collections
+---
+
+
+Rust has two primary ways to store multiple values of the same type: arrays and
+vectors. Arrays are fixed in size --- their length is known at compile time,
+which makes them fast but inflexible. You cannot add or remove elements after
+creation. Vectors are like growable arrays, making them more flexible and also
+more common in everyday Rust code. The syntax for creating arrays and vectors
+also differs:
+
+``` rust
+// array
+let a = [10, 20, 30, 40];
+
+// vector
+let v = vec![10, 20, 30, 40];
+```
+
+Here, the array is created using square brackets, the vector by calling the
+`vec!` macro. In this case, the types are inferred. If we want to make those
+explicit, the syntax also differs:
+
+``` rust
+// array
+let a: [i32; 4] = [10, 20, 30, 40];
+
+// vector
+let v: Vec<i32> = vec![10, 20, 30, 40];
+```
+
+In this example, the array type and length are both declared with
+`[type; length]`, but the vector only requires specifying that it is a vector of
+32-bit integers or `Vec<i32>`, which can have any given length.
+
+One nice thing about both vectors and arrays is that you can initialize them to
+a specific constant value and size. The syntax here is similar, though again the
+vector version requires the use of the `vec!` macro:
+
+``` rust
+// array
+let a: [i32; 4] = [0; 4];
+
+// vector
+let v: Vec<i32> = vec![0; 4];
+```
+
+In each case, we put the initial value `0` followed by the size `4`.
+
+One last thing to note here, specifically about vectors. An empty vector can
+also be created with `Vec::new()` or `vec![]`. When creating an empty vector,
+however, Rust needs to know the element type either from context or from an
+explicit type annotation, since it cannot infer type from the empty vector
+itself:
+
+``` rust
+let v: Vec<f64> = Vec::new();
+```
+
+Vectors also have a number of useful **methods**: `.len()` returns the number of
+elements and `.is_empty()` returns `true` if there are no elements. We will
+encounter more methods like these as we work through the guide.

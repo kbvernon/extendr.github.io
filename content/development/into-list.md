@@ -1,0 +1,178 @@
+---
+title: Rust Structs to Lists
+description: ''
+weight: 6
+---
+
+
+When returning structured data from Rust to R, named lists are often the most natural representation. The `IntoList` derive macro converts Rust structs into R lists where each field becomes a named element.
+
+## Basic Usage
+
+Derive `IntoList` on a struct to convert it into a named R list. Each field is converted to an `Robj` and assembled into a named list. This approach has some overhead but provides a straightforward way to return structured results. Note that this creates a one-way conversion—there is no built-in method to convert the list back into the Rust struct. For stateful objects that need methods, use `#[extendr]` on an `impl` block with external pointers instead. See [IntoList vs External Pointers](#intolist-vs-external-pointers) below for additional details.
+
+``` rust
+#[derive(IntoList)]
+struct Person {
+    name: String,
+    age: i32,
+}
+
+#[extendr]
+fn create_person() -> Person {
+    Person {
+        name: String::from("Alice"),
+        age: 30,
+    }
+}
+```
+
+The field names become element names in the resulting list:
+
+``` r
+create_person()
+```
+
+``` output
+$name
+[1] "Alice"
+
+$age
+[1] 30
+```
+
+``` rust
+#[derive(IntoList)]
+struct Analysis {
+    id: i32,
+    values: Vec<f64>,
+    passed: bool,
+}
+
+#[extendr]
+fn run_analysis() -> Analysis {
+    Analysis {
+        id: 123,
+        values: vec![1.5, 2.7, 3.9],
+        passed: true,
+    }
+}
+```
+
+``` r
+run_analysis()
+```
+
+``` output
+$id
+[1] 123
+
+$values
+[1] 1.5 2.7 3.9
+
+$passed
+[1] TRUE
+```
+
+Any type that can be converted into an `Robj` can be used as a field. If a field type cannot be converted, exclude it using `#[into_list(ignore)]` or reconsider the approach.
+
+## Ignoring Fields
+
+Not all types in Rust can be converted to R. Skip serializing these fields by using `#[into_list(ignore)]`:
+
+``` rust
+#[derive(IntoList)]
+struct Config {
+    setting: String,
+    value: i32,
+    #[into_list(ignore)]
+    internal_cache: Vec<u8>,
+}
+
+#[extendr]
+fn get_config() -> Config {
+    Config {
+        setting: String::from("timeout"),
+        value: 30,
+        internal_cache: vec![1, 2, 3],
+    }
+}
+```
+
+Note that the ignored field does not appear in the resultant list:
+
+``` r
+config <- get_config()
+config
+```
+
+``` output
+$setting
+[1] "timeout"
+
+$value
+[1] 30
+```
+
+``` r
+config$internal_cache
+```
+
+``` output
+NULL
+```
+
+## IntoList vs External Pointers
+
+`IntoList` takes Rust structs and serializes them as an R list. The result is just that—an R list. The list does not store any reference to the Rust struct. That is lost.
+
+The `#[extendr]` macro creates a reference to the Rust struct itself. This can then be used to pass the Rust struct from function to function.
+
+``` rust
+#[extendr]
+struct StatefulCounter {
+    count: i32,
+}
+
+#[extendr]
+impl StatefulCounter {
+    fn new() -> Self {
+        StatefulCounter { count: 0 }
+    }
+
+    fn increment(&mut self) {
+        self.count += 1;
+    }
+
+    fn get(&self) -> i32 {
+        self.count
+    }
+}
+```
+
+`StatefulCounter` keeps state in Rust and exposes methods:
+
+``` r
+counter <- StatefulCounter$new()
+counter$increment()
+```
+
+``` output
+NULL
+```
+
+``` r
+counter$increment()
+```
+
+``` output
+NULL
+```
+
+``` r
+counter$get()
+```
+
+``` output
+[1] 2
+```

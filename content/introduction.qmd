@@ -1,0 +1,91 @@
+---
+title: "Introduction"
+description: "Call Rust code in R!"
+weight: 2
+---
+
+
+```{r}
+#| label: set-root-dir
+#| include: false
+root_dir <- tempdir()
+knitr::opts_knit$set(root.dir = root_dir)
+```
+
+This is the website for `extendr`, a developer-first utility for building R
+packages that call Rust code. Of course, you do not have to be a package 
+developer to find some use in extendr. In fact, anyone who has a need to call 
+Rust in R can do so with ease. Consider this basic example:
+
+```{r}
+#| label: rust-function
+# create a Rust function
+rextendr::rust_function(
+  "fn add(a:f64, b:f64) -> f64 { a + b }",
+  quiet = TRUE
+)
+
+# call it from R
+add(2.5, 4.7)
+```
+
+Moving beyond these simple, one-off cases, however, is where extendr really 
+shines. Any time you have lots of really complex Rust code that requires 
+seamless integration with R, notably within a package, extendr is the tool for
+you. 
+
+Now largely owing to the fact that we are bridging programming languages, you 
+will rarely proceed directly to extendr's Rust API. You will instead reach for 
+the R package `rextendr`, which works sort of like `usethis`, automating many of 
+the repetitive tasks required to setup or scaffold your project, so you can 
+focus on the important business of writing code. This is done by calling
+`rextendr::use_extendr()`, which should feel familiar to anyone who has worked
+with `usethis::use_cpp11()`.
+
+## Create an R package
+
+The process of building a Rust-powered R package with extendr boils down to 
+three simple steps:
+
+1. Setup R package with `usethis::create_package()`.
+2. Add extendr scaffolding with `rextendr::use_extendr()`.
+3. Build and document with `devtools::document()`.
+
+Once you have worked through those steps, you can then load your package with 
+`devtools::load_all()` and start using your package! Here is an example with 
+just the defaults:
+
+```r
+# setup R package
+usethis::create_package("helloextendr")
+
+# add extendr scaffolding
+rextendr::use_extendr()
+
+# build and document package
+devtools::document()
+
+# load package
+devtools::load_all()
+
+# call rust function
+hello_world()
+```
+
+```
+[1] "Hello world!"
+```
+
+A Rust-powered R package in one fell swoop! Now, if you want to see a complete 
+example of an actual R package, check out the [heck example](@/example.md).
+
+## What's next?
+
+-   If you do not already have Rust, R, and rextendr, check out our [Installation guide](@/installation.md).
+-   Want to learn more about Rust? Check out our [Rust tutorials](@/rust-intro/_index.md).
+-   Ready to dive in to package development? You will want to consult our
+    [Development guide](@/development/_index.md).
+-   Have a Rust-powered package and want to publish it to CRAN? Jump to our 
+    [Publishing recommendations](@/publishing/_index.md).
+-   Here to join the extendr team and contribute to new features and 
+    maintenance? Have a look at our [Guide for contributors](@/contributing/_index.md).

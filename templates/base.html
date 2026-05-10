@@ -1,0 +1,151 @@
+{% import "macros.html" as macros %}
+<!doctype html>
+<html lang="en"
+      class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}{{ config.title }}{% endblock %}</title>
+
+        <!-- Tailwind + Basecoat CSS -->
+        <link rel="stylesheet"
+              href="{{ get_url(path='style.css') }}" />
+
+        <!-- Determine theme before loading syntax highlighting -->
+        <script>
+            (() => {
+                const stored = localStorage.getItem("themeMode");
+                // Use stored preference if exists, otherwise always default to dark
+                const isDark = stored ? stored === "dark" : true;
+                document.documentElement.classList.toggle("dark", isDark);
+            })();
+        </script>
+
+        <!-- Syntax highlighting themes (both loaded; inactive one disabled by pre-paint script) -->
+        <link rel="stylesheet"
+              href="{{ get_url(path='giallo-light.css') }}"
+              id="giallo-light" />
+        <link rel="stylesheet"
+              href="{{ get_url(path='giallo-dark.css') }}"
+              id="giallo-dark" />
+
+        <!-- Toggle syntax highlighting -->
+        <script defer>
+            (() => {
+                const apply = (dark) => {
+                    document.documentElement.classList.toggle("dark", dark);
+
+                    // Toggle syntax highlighting themes via media attribute
+                    const darkSyntax = document.getElementById("giallo-dark");
+                    const lightSyntax = document.getElementById("giallo-light");
+                    if (darkSyntax && lightSyntax) {
+                        darkSyntax.media = dark ? "all" : "not all";
+                        lightSyntax.media = dark ? "not all" : "all";
+                    }
+
+                    try {
+                        localStorage.setItem(
+                            "themeMode",
+                            dark ? "dark" : "light",
+                        );
+                    } catch (_) { }
+                };
+
+                document.addEventListener("basecoat:theme", (event) => {
+                    const mode = event.detail?.mode;
+                    apply(
+                        mode === "dark" ? true : mode === "light"
+                            ? false : !document.documentElement.classList.contains("dark"),
+                    );
+                });
+
+                apply(document.documentElement.classList.contains("dark"));
+            })();
+        </script>
+
+        <!-- Basecoat ui functionality -->
+        <script src="{{ get_url(path='js/basecoat.min.js') }}"
+                defer></script>
+        <script src="{{ get_url(path='js/dropdown-menu.min.js') }}"
+                defer></script>
+        <script src="{{ get_url(path='js/sidebar.min.js') }}"
+                defer></script>
+        <script src="{{ get_url(path='js/popover.min.js') }}"
+                defer></script>
+        <script src="{{ get_url(path='js/tabs.min.js') }}"
+                defer></script>
+        <script src="{{ get_url(path='js/accordion.js') }}"
+                defer></script>
+        <script>window.SEARCH_INDEX_URL = "{{ get_url(path='search_index.en.json') }}";</script>
+        <script src="{{ get_url(path='js/search.js') }}"
+                defer></script>
+        <script src="{{ get_url(path='js/filter-list.js') }}"
+                defer></script>
+
+        <script>
+            (() => {
+                const themeSelect = document.getElementById('theme-select');
+                const storedTheme = localStorage.getItem('themeVariant');
+                if (themeSelect && storedTheme) themeSelect.value = storedTheme;
+                themeSelect.addEventListener('change', () => {
+                    const newTheme = themeSelect.value;
+                    document.documentElement.classList.forEach(c => {
+                        if (c.startsWith('theme-')) document.documentElement.classList.remove(c);
+                    });
+                    if (newTheme) {
+                        document.documentElement.classList.add(`theme-${newTheme}`);
+                        localStorage.setItem('themeVariant', newTheme);
+                    } else {
+                        localStorage.removeItem('themeVariant');
+                    }
+                });
+            })();
+        </script>
+
+        <script>
+            (() => {
+                const KEY = "sidebarScrollTop";
+                const select = () => document.querySelector("aside.sidebar section");
+
+                const restore = () => {
+                    const el = select();
+                    if (!el) return;
+                    const v = sessionStorage.getItem(KEY);
+                    if (v !== null) el.scrollTop = parseInt(v, 10);
+                };
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", restore);
+                } else {
+                    restore();
+                }
+
+                window.addEventListener("pagehide", () => {
+                    const el = select();
+                    if (!el) return;
+                    sessionStorage.setItem(KEY, String(el.scrollTop));
+                });
+            })();
+        </script>
+
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <aside class="sidebar block"
+               data-side="left"
+               aria-label="Main navigation">
+            {% include "sidebar.html" %}
+        </aside>
+        <main>
+            <header class="bg-sidebar sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b z-10">
+                {% include "navbar.html" %}
+            </header>
+            <div class="p-4 md:p-6 xl:p-12">
+                <main class="mx-auto relative flex w-full max-w-screen-xl gap-8">
+                    {% block content %}{% endblock content %}
+                </main>
+            </div>
+        </main>
+    </body>
+</html>

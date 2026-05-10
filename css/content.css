@@ -1,0 +1,53 @@
+@layer base {
+
+    /* Typography rules for guide and blog content. The `to (.bc)` boundary
+       stops descent into shortcode subtrees so basecoat components keep
+       their own styling. */
+    @scope (.content) to (.bc) {
+
+        :is(h1, h2, h3, h4, h5) {
+            @apply font-mono font-semibold leading-tight;
+        }
+
+        h1 {
+            @apply mt-12 mb-4 text-xl md:text-4xl;
+        }
+
+        h2 {
+            @apply mt-10 mb-4 pb-2 text-lg md:text-3xl;
+            @apply border-b border-border;
+        }
+
+        h3 {
+            @apply mt-8 mb-3 text-base md:text-2xl;
+        }
+
+        h4 {
+            @apply mt-4 mb-2 text-base md:text-lg;
+        }
+
+        h5 {
+            @apply mt-4 mb-2 text-base md:text-lg font-normal;
+        }
+
+        p {
+            @apply leading-relaxed my-4 text-base;
+        }
+
+        ul {
+            @apply list-disc pl-6 m-4 space-y-1;
+        }
+
+        ol {
+            @apply list-decimal pl-6 m-4 space-y-1;
+        }
+
+        :is(ul, ol) :is(ul, ol) {
+            @apply my-1;
+        }
+
+        a {
+            @apply text-primary hover:underline;
+        }
+    }
+}

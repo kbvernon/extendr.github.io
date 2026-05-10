@@ -1,0 +1,47 @@
+@font-face {
+    font-family: "Monaspace";
+    font-style: normal;
+    font-weight: 100 900;
+    src: url("../fonts/Monaspace-Neon-Var.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Noto Sans";
+    font-style: normal;
+    font-weight: 100 900;
+    src: url("../fonts/NotoSans-VariableFont_wdth,wght.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Noto Sans";
+    font-style: italic;
+    font-weight: 100 900;
+    src: url("../fonts/NotoSans-Italic-VariableFont_wdth,wght.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Noto Serif";
+    font-style: normal;
+    font-weight: 100 900;
+    src: url("../fonts/NotoSerif-VariableFont_wdth,wght.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Noto Serif";
+    font-style: italic;
+    font-weight: 100 900;
+    src: url("../fonts/NotoSerif-Italic-VariableFont_wdth,wght.ttf") format("truetype");
+}
+
+:root {
+    --font-sans: "Noto Sans", sans-serif;
+    --font-heading: "Noto Sans", sans-serif;
+    --font-mono: "Monaspace", monospace;
+    --font-serif: "Noto Serif", serif;
+}
+
+@theme inline {
+    --font-sans: var(--font-sans);
+    --font-mono: var(--font-mono);
+    --font-serif: var(--font-serif);
+}
