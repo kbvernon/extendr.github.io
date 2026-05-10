@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% set data =
+load_data(url="https://raw.githubusercontent.com/extendr/awesome-extendr/refs/heads/main/extendr-pkgs.csv",
+format="csv") %}
+{% set_global total_downloads = 0 %}
+{% for row in data.records %}
+{% if row[5] and row[5] != "NA" %}
+{% set count_val = row[5] | int %}
+{% set_global total_downloads = total_downloads + count_val %}
+{% endif %}
+{% endfor %}
+<div class="mx-auto w-full max-w-screen-md">
+    <header>
+        <h1 class="mt-0 text-4xl font-mono">{{ page.title }}</h1>
+        {% if page.description %}
+        <p class="text-muted-foreground mt-1 mb-0">{{ page.description }}</p>
+        {% endif %}
+        <div class="flex flex-wrap items-center gap-2 mt-3">
+            <a href="https://awesome.re" target="_blank" rel="noopener noreferrer">
+                <img src="https://awesome.re/badge.svg" alt="Awesome">
+            </a>
+            <img src="https://img.shields.io/badge/Last_Updated-{{ now() | date(format='%Y--%m--%d') }}-276DC2"
+                 alt="Last updated {{ now() | date(format='%Y-%m-%d') }}">
+            <img src="https://img.shields.io/badge/Packages-{{ data.records | length }}-276DC2"
+                 alt="{{ data.records | length }} packages">
+            <img src="https://img.shields.io/badge/CRAN_Downloads-{{ total_downloads }}-276DC2"
+                 alt="{{ total_downloads }} CRAN downloads">
+        </div>
+    </header>
+    <div class="flex gap-4 mt-6">
+        <div data-filterable-list
+             class="flex flex-1 flex-col gap-4">
+            <div>
+                <div class="flex-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span
+                              class="iconify lucide--search absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none">
+                        </span>
+                    </div>
+                    <input type="search"
+                           data-filter-search
+                           placeholder="Search packages"
+                           class="input pl-8 h-8">
+                </div>
+                <div class="flex items-center gap-2 text-sm text-muted-foreground mt-3">
+                    <span>Sort by:</span>
+                    <button type="button"
+                            data-filter-sort="title"
+                            class="hover:underline">title</button>
+                    <span>|</span>
+                    <button type="button"
+                            data-filter-sort="author"
+                            class="hover:underline">author</button>
+                    <span>|</span>
+                    <button type="button"
+                            data-filter-sort="count"
+                            class="hover:underline">downloads</button>
+                </div>
+            </div>
+
+            {% for row in data.records %}
+            {% set name = row[0] %}
+            {% set title = row[1] %}
+            {% set author = row[2] %}
+            {% set desc = row[3] %}
+            {% set url = row[4] %}
+            {% set count = row[5] %}
+            <a class="card overflow-hidden hover:bg-muted/80 transition-colors cursor-pointer hover:border-ring hover:ring-ring/50 hover:ring-[3px]"
+               href="{% if url and url != 'NA' %}{{ url }}{% endif %}"
+               target="{% if url and url != 'NA' %}_blank{% endif %}"
+               rel="{% if url and url != 'NA' %}noopener noreferrer{% endif %}"
+               data-filter-item
+               data-title="{{ name }} {{ title }}"
+               data-description="{{ desc }} {{ author }}"
+               data-sort-name="{{ name | lower }}"
+               data-sort-author="{{ author | lower }}"
+               data-sort-count="{% if count and count != 'NA' %}{{ count }}{% else %}0{% endif %}">
+                <header class="flex items-start justify-between gap-2">
+                    <h2 class="font-mono">{{ name }}</h2>
+                    <span class="iconify lucide--external-link text-xs text-muted-foreground"></span>
+                </header>
+                <section>
+                    <p class="font-medium">{{ title }}</p>
+                    <p class="text-sm text-muted-foreground line-clamp-5">{{ desc }}</p>
+                </section>
+                <footer class="flex items-center gap-2 w-full text-xs text-muted-foreground">
+                    <span class="truncate flex items-center gap-1 mr-auto shrink-0">
+                        <span class="iconify lucide--users mr-1"></span>
+                        {{ author }}
+                    </span>
+                    <span class="flex items-center gap-1 shrink-0">
+                        <span class="iconify lucide--download"></span>
+                        <span>Downloads:</span>
+                        <span>
+                            {% if count and count != "NA" %}
+                            {{ count }}
+                            {% else %}
+                            NA
+                            {% endif %}
+                        </span>
+                    </span>
+                </footer>
+            </a>
+            {% endfor %}
+
+            <p data-filter-empty
+               class="hidden text-sm text-muted-foreground mt-2">No packages match your search.</p>
+        </div>
+    </div>
+</div>
+{% endblock content %}

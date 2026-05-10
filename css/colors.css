@@ -1,0 +1,32 @@
+/* language colors */
+@theme {
+    /* R colors */
+    --color-r-blue-1: #276DC3;
+    --color-r-blue-2: #165CAA;
+
+    /* Rust colors */
+    --color-rust-dark-blue-100: #1E2650;
+    --color-rust-dark-blue-75: #565C7C;
+    --color-rust-dark-blue-50: #8F93A8;
+    --color-rust-dark-blue-25: #C7C9D3;
+
+    --color-rust-orange-100: #D34516;
+    --color-rust-orange-75: #DE7450;
+    --color-rust-orange-50: #E9A28B;
+    --color-rust-orange-25: #F4D1C5;
+
+    --color-rust-blue-100: #28607F;
+    --color-rust-blue-75: #5E889F;
+    --color-rust-blue-50: #93B0BF;
+    --color-rust-blue-25: #C9D7DF;
+
+    --color-rust-silver-100: #67737A;
+    --color-rust-silver-75: #8D969B;
+    --color-rust-silver-50: #B3B9BD;
+    --color-rust-silver-25: #D9DCDE;
+
+    --color-rust-green-100: #61784D;
+    --color-rust-green-75: #899A7A;
+    --color-rust-green-50: #B0BCA6;
+    --color-rust-green-25: #D8DDD3;
+}

@@ -1,0 +1,110 @@
+---
+title: "Hello, World!"
+description: "Set up your first Rust crate and run it with cargo, Rust's bundled build tool and package manager."
+weight: 2
+slug: hello-world
+---
+
+In this tutorial, you will learn how to setup a new Rust crate and get a sense
+for what it includes. You will also learn how to build and run your new crate
+with `cargo`, a package manager and build system for Rust. You do not need to
+install `cargo` because it comes bundled with Rust.
+
+When you first setup a Rust crate, you will have to choose between one of two
+types: binary crates and library crates. Binary crates are standalone
+applications or executables that you can run, like command line tools. Library
+crates are typically small bundles of code that are used in the development of
+other crates. In this tutorial, we will focus on building a binary crate.
+
+To create a new binary crate, open a terminal and run the following:
+
+```console
+cargo new hello-world
+```
+
+This will create a new directory called `hello-world` that you can then navigate
+into using `cd hello-world`. Once inside that directory, you will find all of
+the following:
+
+```
+hello-world/
+├── Cargo.toml
+├── Cargo.lock
+└── src/
+    └── main.rs
+```
+
+The `Cargo.toml` file is a document in which you specify metadata and
+dependencies for your crate similar to an R package's `DESCRIPTION`. The
+`Cargo.lock` file maintains copies of those dependencies, similar to
+`renv.lock`. A lot more can be said about those two files, which are absolutely
+crucial to programming in Rust, but for now let's focus on the Rust file in the
+source directory. If you open that file in Positron (or your preferred IDE), you
+will see the following text:
+
+```rust {filename="src/main.rs"}
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+In just those three short lines, we see examples of many Rust coding patterns:
+
+- Functions are declared using the `fn` keyword,
+- The `main()` function defines what happens when you run your binary,
+- Blocks of code are delimited using curly brackets (just like R), and
+- Statements end with `;`.
+
+Right now, our app uses the `println!()` macro to print "Hello, world!" to the
+terminal. When a program writes to the console, it does so through file
+connections called standard output (`stdout`) and standard error (`stderr`). In
+R, when we print a message with `print()` or `message()`, we print to stdout.
+Similarly, when we make a warning or error using `stop()` or `warning()`, that
+is writing to `stderr`. The Rust `println!()` macro also has the nice feature of
+supporting string interpolation like `sprintf()` and `glue()`:
+
+```rust
+// indirect interpolation
+let name = "Josiah";
+println!("Hello, {}!", name);
+
+// direct interpolation
+let name = "Josiah";
+println!("Hello, {name}!");
+```
+
+If we add one or the other of those lines to `main()` like so
+
+```rust {filename="src/main.rs"}
+fn main() {
+    let name = "Josiah";
+    println!("Hello, {name}!");
+}
+```
+
+we can then call the application and get it to execute in the terminal:
+
+```console
+cargo run
+   Compiling hello_world v0.1.0 (/hello-world)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.33 secs
+     Running `target/debug/hello_world`
+Hello, Josiah!
+```
+
+Notice that `cargo` provides detailed information about the build process
+(printed to stderr) before actually running the program (and printing to
+stdout). This is a useful reminder that Rust, unlike R, is a compiled language -
+Rust programs have to be built before they can be run. For those coming from R,
+that might sound rather mysterious, and in some respects it is, but we want to
+emphasize how easy it was to get a program up and running. It was just three
+lines of code in the terminal:
+
+```console
+cargo new hello-world
+cd hello-world
+cargo run
+```
+
+That's it! Those three lines were sufficient to build and run our simple binary.
+Now we can move on to learning about basic data types in Rust.

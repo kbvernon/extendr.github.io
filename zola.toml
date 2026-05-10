@@ -1,0 +1,39 @@
+title = "extendr"
+base_url = "https://extendr.rs"
+compile_sass = false
+build_search_index = true
+taxonomies = [{ name = "tags", render = false, feed = true }]
+ignored_content = [
+  "_background/",
+  "**/*.qmd",
+  "**/*.R",
+  "content/_quarto.yml",
+  "content/_variables.yml",
+  "CLAUDE.md"
+]
+
+[markdown]
+smart_punctuation = true
+insert_anchor_links = "none"
+
+[markdown.highlighting]
+style = "class"
+light_theme = "light-plus"
+dark_theme = "dark-plus"
+
+[search]
+index_format = "fuse_json"
+
+[extra]
+[extra.url]
+github = "https://github.com/extendr/extendr"
+discord = "https://discord.gg/7hmApuc"
+awesome = "https://github.com/extendr/awesome-extendr"
+extendr = "https://extendr.rs/extendr/"
+rextendr = "https://extendr.rs/rextendr/"
+
+[extra.version]
+r = "4.5"
+rust = "1.65.0"
+extendr = "0.9.0"
+rextendr = "0.5.0"

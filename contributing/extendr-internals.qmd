@@ -1,8 +1,0 @@
----
-title: "{extendr} Internals"
-engine: knitr
----
-
-::: {.callout-note}
-[Coming soon!]{.fs-1 .fw-bold}
-:::

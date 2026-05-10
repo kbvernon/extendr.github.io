@@ -1,0 +1,86 @@
+---
+title: "CRAN's Rust versions"
+description: ""
+weight: 5
+extra:
+  short_title: "CRAN MSRV"
+---
+
+CRAN does not coordinate versions of Rust across build machines, so it can be
+challenging to ensure your package builds on *any* CRAN machine. The only sure
+fire way to do that is to ensure that your package builds under the lowest 
+version of Rust currently supported by a CRAN build machine, that being the 
+minimal supported Rust version (or MSRV) on CRAN. That includes your package's 
+Rust dependencies, too. Any crate or feature you list in your manifest must also 
+fall under CRAN's MSRV.
+
+The below table reports CRAN versions per check flavor based on the 
+[check results](https://cran.r-project.org/web/checks/check_results_fio.htm) of 
+the extendr package [`{fio}`](https://albersonmiranda.github.io/fio/).
+
+```{r}
+#| echo: false
+library(rvest)
+
+check_links <- "https://cran.r-project.org/web/checks/check_results_fio.html" |>
+  read_html() |>
+  html_node(".container") |>
+  html_nodes("a") |>
+  html_attr("href")
+
+check_links <- unique(check_links[grepl("^https://", check_links)])
+
+install_logs <- gsub(
+  "00check.html",
+  "00install.html",
+  check_links
+)
+
+extract_semver <- function(ver) {
+  if (grepl("\\d+\\.\\d+(\\.\\d+)?", ver)) {
+    sub(".*?(\\d+\\.\\d+(\\.\\d+)?).*", "\\1", ver)
+  } else {
+    NA
+  }
+}
+
+versions <- lapply(install_logs, function(.log) {
+  lns <- readLines(.log)
+  rust_version <- extract_semver(lns[grepl("^Using rustc", lns)])
+  cargo_version <- extract_semver(lns[grepl("^Using cargo", lns)])
+  data.frame(rustc = rust_version, cargo = cargo_version)
+})
+
+
+# get all of the flavors
+flavor <- dirname(
+  gsub("https://www.r-project.org/nosvn/r.check/", "", tolower(install_logs))
+)
+
+res <- cbind(
+  "Check flavor" = flavor,
+  do.call(rbind.data.frame, versions)
+)
+
+res <- transform(
+  res,
+  rustc = numeric_version(rustc),
+  cargo = numeric_version(cargo)
+)
+
+res <- res[order(res[["rustc"]]), ]
+```
+
+**CRAN's MSRV** is `r min(res[["rustc"]])`.
+
+```{r}
+#| echo: false
+#| results: asis
+csv_string <- capture.output(write.csv(res, row.names = FALSE))
+cat(
+  '{% raw_table(format="csv") %}',
+  csv_string,
+  "{% end %}",
+  sep = "\n"
+)
+```

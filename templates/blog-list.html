@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% set_global all_tags = [] %}
+{% for page in section.pages %}
+{% if page.taxonomies.tags %}
+{% for tag in page.taxonomies.tags %}
+{% if tag not in all_tags %}
+{% set_global all_tags = all_tags | concat(with=tag) %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% set sorted_tags = all_tags | sort %}
+<div class="mx-auto w-full">
+    <div class="grid gap-y-6 grid-cols-1 xl:grid-cols-[minmax(0,16rem)_minmax(0,48rem)_1rem_15rem]">
+        <header class="xl:col-start-2 xl:row-start-1">
+            <h1 class="mt-0 text-4xl font-mono">{{ section.title }}</h1>
+            {% if section.description %}
+            <p class="text-muted-foreground mt-1 mb-0">{{ section.description }}</p>
+            {% endif %}
+        </header>
+
+        <article id="blog-list"
+                 data-filterable-list
+                 class="flex flex-col gap-4 min-w-0 xl:col-start-2 xl:row-start-2">
+            <div class="flex gap-2">
+                <div class="flex-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span
+                              class="iconify lucide--search absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none"></span>
+                    </div>
+                    <input type="search"
+                           data-filter-search
+                           placeholder="Search posts"
+                           class="input pl-8 h-8">
+                </div>
+                <div class="dropdown-menu xl:hidden">
+                    <button type="button"
+                            id="filter-dropdown-trigger"
+                            aria-haspopup="menu"
+                            aria-controls="filter-dropdown-menu"
+                            aria-expanded="false"
+                            class="btn-outline flex items-center gap-2 h-8">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="1em"
+                             height="1em"
+                             fill="currentColor"
+                             viewBox="0 0 256 256">
+                            <path
+                                  d="M200,136a8,8,0,0,1-8,8H64a8,8,0,0,1,0-16H192A8,8,0,0,1,200,136Zm32-56H24a8,8,0,0,0,0,16H232a8,8,0,0,0,0-16Zm-80,96H104a8,8,0,0,0,0,16h48a8,8,0,0,0,0-16Z">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="filter-dropdown-popover"
+                         data-popover=""
+                         aria-hidden="true"
+                         data-align="end"
+                         class="min-w-64 max-h-96 overflow-y-auto scrollbar">
+                        <div role="menu"
+                             id="filter-dropdown-menu"
+                             aria-labelledby="filter-dropdown-trigger">
+                            <div role="group"
+                                 aria-labelledby="dropdown-tags-heading">
+                                <div class="flex items-center justify-between px-2 py-1.5">
+                                    <div role="heading"
+                                         id="dropdown-tags-heading"
+                                         class="text-sm font-medium">Tags
+                                    </div>
+                                    <button type="button"
+                                            data-tag-select-all
+                                            class="text-xs text-primary hover:underline">Select all</button>
+                                </div>
+                                {% for tag in sorted_tags %}
+                                <label class="flex items-center gap-2 w-full cursor-pointer px-2 py-1.5">
+                                    <input type="checkbox"
+                                           class="input"
+                                           data-tag-checkbox
+                                           value="{{ tag }}">
+                                    <span class="text-sm">{{ tag | title }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% for page in section.pages %}
+            <a class="card overflow-hidden hover:bg-muted/80 transition-colors cursor-pointer hover:border-ring hover:ring-ring/50 hover:ring-[3px]"
+               href="{{ page.permalink | safe }}"
+               data-filter-item
+               data-title="{{ page.title }}"
+               data-description="{{ page.description | default(value='') }}"
+               data-tags="{% if page.taxonomies.tags %}{{ page.taxonomies.tags | join(sep=',') }}{% endif %}">
+                <header class="flex items-start justify-between">
+                    <h2 class="font-mono">{{ page.title }}</h2>
+                    <span class="text-xs text-muted-foreground">
+                        Read <span class="iconify lucide--external-link"></span>
+                    </span>
+                </header>
+                <section>
+                    {% if page.description %}
+                    <p class="text-sm text-muted-foreground line-clamp-3">{{ page.description }}</p>
+                    {% endif %}
+                    {% if page.taxonomies.tags %}
+                    <div class="flex items-center gap-2 flex-wrap mt-2">
+                        {% for tag in page.taxonomies.tags %}
+                        <span class="badge-outline flex items-center gap-1">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </section>
+                <footer class="flex items-center gap-2 w-full text-xs text-muted-foreground">
+                    {% if page.authors %}
+                    <span class="truncate flex items-center gap-1 mr-auto shrink-0">
+                        <span class="iconify lucide--users mr-1"></span>
+                        {{ page.authors | join(sep=", ") }}
+                    </span>
+                    {% endif %}
+                    {% if page.date %}
+                    <span class="flex items-center gap-1 ml-auto shrink-0">
+                        <span class="iconify lucide--calendar text-xs mr-1"></span>
+                        {{ page.date | date(format="%b %-d, %Y") }}
+                    </span>
+                    {% endif %}
+                </footer>
+            </a>
+            {% endfor %}
+
+            <p data-filter-empty
+               class="hidden text-sm text-muted-foreground mt-2">No posts match your filters.</p>
+        </article>
+
+        <aside id="tag-list"
+               class="hidden text-sm xl:block xl:col-start-4 xl:row-start-2">
+            <div class="card">
+                <header>
+                    <h2 class="font-mono">Filter items</h2>
+                </header>
+                <section class="flex flex-col gap-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium">Tags</h4>
+                        <button type="button"
+                                data-tag-select-all
+                                class="text-xs text-primary hover:underline">Select all</button>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        {% for tag in sorted_tags %}
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox"
+                                   class="input"
+                                   data-tag-checkbox
+                                   value="{{ tag }}">
+                            <span class="text-sm">{{ tag | title }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock content %}

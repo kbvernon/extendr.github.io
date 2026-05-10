@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% set date = now() | date(format="%Y-%m-%d") %}
+<div class="mx-auto w-full flex-1 shrink-0 max-w-screen-md">
+    <article class="content flex flex-col gap-4">
+        <header class="pb-2 border-b border-border">
+            <h1 class="my-0">{{ section.title }}</h1>
+            {% if section.description %}
+            <p class="text-muted-foreground mt-1 mb-0">{{ section.description }}</p>
+            {% endif %}
+            <p class="text-muted-foreground text-sm mt-4 mb-0">
+                Last updated: <time datetime="{{ date }}"
+                      class="font-mono">{{ date }}</time>
+            </p>
+        </header>
+        <div class="prose">
+            {{ section.content | safe }}
+        </div>
+        {% if "blog" not in section.components %}
+        {% set next_page = false %}
+        {% if section.pages | length > 0 %}
+        {% set next_page = section.pages | first %}
+        {% elif section.subsections | length > 0 %}
+        {% set first_sub = get_section(path=section.subsections | first) %}
+        {% if first_sub.pages | length > 0 %}
+        {% set next_page = first_sub.pages | first %}
+        {% endif %}
+        {% endif %}
+        <footer class="mt-10">
+            <nav class="flex justify-end items-center text-sm">
+                {% if next_page %}
+                <a href="{{ next_page.permalink }}"
+                   class="flex items-center gap-1">
+                    <span>{{ next_page.title }}</span>
+                    <span>→</span>
+                </a>
+                {% endif %}
+            </nav>
+        </footer>
+        {% endif %}
+    </article>
+</div>
+{% endblock content %}
