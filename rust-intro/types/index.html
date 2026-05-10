@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en"
+      class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0" />
+        <title>extendr</title>
+
+        <!-- Tailwind + Basecoat CSS -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/style.css" />
+
+        <!-- Determine theme before loading syntax highlighting -->
+        <script>
+            (() => {
+                const stored = localStorage.getItem("themeMode");
+                // Use stored preference if exists, otherwise always default to dark
+                const isDark = stored ? stored === "dark" : true;
+                document.documentElement.classList.toggle("dark", isDark);
+            })();
+        </script>
+
+        <!-- Syntax highlighting themes (both loaded; inactive one disabled by pre-paint script) -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-light.css"
+              id="giallo-light" />
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-dark.css"
+              id="giallo-dark" />
+
+        <!-- Toggle syntax highlighting -->
+        <script defer>
+            (() => {
+                const apply = (dark) => {
+                    document.documentElement.classList.toggle("dark", dark);
+
+                    // Toggle syntax highlighting themes via media attribute
+                    const darkSyntax = document.getElementById("giallo-dark");
+                    const lightSyntax = document.getElementById("giallo-light");
+                    if (darkSyntax && lightSyntax) {
+                        darkSyntax.media = dark ? "all" : "not all";
+                        lightSyntax.media = dark ? "not all" : "all";
+                    }
+
+                    try {
+                        localStorage.setItem(
+                            "themeMode",
+                            dark ? "dark" : "light",
+                        );
+                    } catch (_) { }
+                };
+
+                document.addEventListener("basecoat:theme", (event) => {
+                    const mode = event.detail?.mode;
+                    apply(
+                        mode === "dark" ? true : mode === "light"
+                            ? false : !document.documentElement.classList.contains("dark"),
+                    );
+                });
+
+                apply(document.documentElement.classList.contains("dark"));
+            })();
+        </script>
+
+        <!-- Basecoat ui functionality -->
+        <script src="https://extendr.rs/js/basecoat.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/dropdown-menu.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/sidebar.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/popover.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/tabs.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/accordion.js"
+                defer></script>
+        <script>window.SEARCH_INDEX_URL = "https://extendr.rs/search_index.en.json";</script>
+        <script src="https://extendr.rs/js/search.js"
+                defer></script>
+        <script src="https://extendr.rs/js/filter-list.js"
+                defer></script>
+
+        <script>
+            (() => {
+                const themeSelect = document.getElementById('theme-select');
+                const storedTheme = localStorage.getItem('themeVariant');
+                if (themeSelect && storedTheme) themeSelect.value = storedTheme;
+                themeSelect.addEventListener('change', () => {
+                    const newTheme = themeSelect.value;
+                    document.documentElement.classList.forEach(c => {
+                        if (c.startsWith('theme-')) document.documentElement.classList.remove(c);
+                    });
+                    if (newTheme) {
+                        document.documentElement.classList.add(`theme-${newTheme}`);
+                        localStorage.setItem('themeVariant', newTheme);
+                    } else {
+                        localStorage.removeItem('themeVariant');
+                    }
+                });
+            })();
+        </script>
+
+        <script>
+            (() => {
+                const KEY = "sidebarScrollTop";
+                const select = () => document.querySelector("aside.sidebar section");
+
+                const restore = () => {
+                    const el = select();
+                    if (!el) return;
+                    const v = sessionStorage.getItem(KEY);
+                    if (v !== null) el.scrollTop = parseInt(v, 10);
+                };
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", restore);
+                } else {
+                    restore();
+                }
+
+                window.addEventListener("pagehide", () => {
+                    const el = select();
+                    if (!el) return;
+                    sessionStorage.setItem(KEY, String(el.scrollTop));
+                });
+            })();
+        </script>
+
+        
+    </head>
+    <body>
+        <aside class="sidebar block"
+               data-side="left"
+               aria-label="Main navigation">
+            <nav aria-label="Sidebar navigation">
+    <header class="font-mono">
+        <a href="/" class="btn-ghost p-2 h-12 w-full justify-start text-xl items-baseline">
+            extendr <span class="text-sm text-muted-foreground">v0.9.0</span>
+        </a>
+    </header>
+    <section class="scrollbar [&_div>h3]:uppercase">
+        <div role="group">
+            <h3>Getting started</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/introduction/">
+                        <span class="iconify lucide--info text-xs"></span>
+                        Introduction
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/installation/">
+                        <span class="iconify lucide--terminal text-xs"></span>
+                        Installation
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/example/">
+                        <span class="iconify lucide--package text-xs"></span>
+                        Example
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>API Reference</h3>
+            <ul>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;extendr&#x2F;">
+                        <span class="iconify mdi--language-rust text-base"></span>extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;rextendr&#x2F;">
+                        <span class="iconify mdi--language-r text-base"></span>rextendr
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>Community</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/blog/">
+                        <span class="iconify lucide--rss text-xs"></span>Blog
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/awesome/">
+                        <span class="iconify lucide--sparkles text-xs"></span>Awesome Extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc">
+                        <span class="iconify fa7-brands--discord text-xs"></span>Discord
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr">
+                        <span class="iconify mdi--github text-xs"></span>GitHub
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+
+<h3>Development</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/development/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/data-types/" class="pl-4">
+            R to Rust type mapping
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/extendr-macro/" class="pl-4">
+            Using Rust types in R
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/collections/" class="pl-4">
+            Using HashMaps
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/into-list/" class="pl-4">
+            Rust Structs to Lists
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/default-args/" class="pl-4">
+            Default function arguments
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/package-structure/" class="pl-4">
+            Project Structure
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/serde-integration/" class="pl-4">
+            `serde` integration
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/webr/" class="pl-4">
+            Building for WebR
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/tokio/" class="pl-4">
+            Async with Tokio
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Publishing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/publishing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-publishing/" class="pl-4">
+            Publish to CRAN
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-msrv/" class="pl-4">
+            CRAN MSRV
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Rust Tutorials</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/rust-intro/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/hello-world/" class="pl-4">
+            Hello, World!
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/types/" class="pl-4">
+            Basic Types
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/control-flow/" class="pl-4">
+            Control Flow
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/collections/" class="pl-4">
+            Collections
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/loops/" class="pl-4">
+            Loops
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/mutability/" class="pl-4">
+            Mutability
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/functions/" class="pl-4">
+            Functions
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/ownership/" class="pl-4">
+            Ownership
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/iterators/" class="pl-4">
+            Iterators
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/structures/" class="pl-4">
+            Structures
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/implementations/" class="pl-4">
+            Implementations
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/enumerations/" class="pl-4">
+            Enumerations
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Contributing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/contributing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/writing-code/" class="pl-4">
+            Writing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/documenting-code/" class="pl-4">
+            Documenting Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/testing-code/" class="pl-4">
+            Testing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/extendr-internals/" class="pl-4">
+            extendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/rextendr-internals/" class="pl-4">
+            rextendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/colors-and-fonts/" class="pl-4">
+            Colors and Fonts
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/user-guide-pages/" class="pl-4">
+            User Guide Pages
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+    </section>
+</nav>
+        </aside>
+        <main>
+            <header class="bg-sidebar sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b z-10">
+                <div class="flex h-14 w-full items-center gap-2 px-4">
+    <button type="button" onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))" aria-label="Toggle sidebar" data-tooltip="Toggle sidebar"
+        data-side="bottom" data-align="start" class="btn-sm-icon-ghost mr-auto size-7 -ml-1.5">
+        <span class="iconify lucide--sidebar"></span>
+    </button>
+    <div class="relative">
+        <span class="iconify lucide--search absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none"></span>
+        <input class="input h-8 pl-8" id="input-with-text" type="search" placeholder="Search the docs">
+    </div>
+    <button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="bottom"
+        onclick="document.dispatchEvent(new CustomEvent('basecoat:theme'))" class="btn-icon-outline size-8">
+        <span class="iconify lucide--sun hidden dark:block"></span>
+        <span class="iconify lucide--moon block dark:hidden"></span>
+    </button>
+    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="GitHub repository"
+        data-side="bottom" data-align="end">
+        <span class="iconify mdi--github"></span>
+    </a>
+    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="Discord channel"
+        data-side="bottom" data-align="end">
+        <span class="iconify fa7-brands--discord text-xs"></span>
+    </a>
+</div>
+            </header>
+            <div class="p-4 md:p-6 xl:p-12">
+                <main class="mx-auto relative flex w-full max-w-screen-xl gap-8">
+                    
+<div class="ml-auto w-full flex-1 min-w-0 max-w-screen-md">
+    <article class="content flex flex-col gap-4">
+        <header class="pb-2 border-b border-border">
+            <h1 class="my-0">Basic Types</h1>
+            
+            <p class="text-muted-foreground mt-1 mb-0">Meet Rust&#x27;s scalar primitives — signed and unsigned integers, floats, and how to declare or infer their types.</p>
+            
+            
+        </header>
+        <div class="prose">
+            <p>In R, everything is a vector or a <em>collection</em> of values. There is no concept of
+a single value variable or scalar. The closest equivalent to that is a
+length-one vector. In Rust, however, scalars are the building blocks of
+everything. When a collection is needed, it is made directly from scalars. For
+this reason, you will often hear them referred to as <strong>primitives</strong>. A primitive
+or scalar can be used to hold a single value of a specific data type, including
+strings, integers, and floats, among others. In this tutorial, we will cover
+some of those data types, focusing on how to instantiate them and convert
+between them.</p>
+<p>Integers in Rust are a good place to start. They can be either signed, meaning
+they can represent negative values, or unsigned, meaning they support only
+positive values. Both varieties come in several sizes depending on how many bits
+are needed to store the value:</p>
+<ul>
+<li>Signed integers: <code>i8</code>, <code>i16</code>, <code>i32</code>, <code>i64</code>, <code>i128</code></li>
+<li>Unsigned integers: <code>u8</code>, <code>u16</code>, <code>u32</code>, <code>u64</code>, <code>u128</code></li>
+</ul>
+<p>The letter prefix indicates the type (<code>i</code> for signed, <code>u</code> for unsigned) and the
+number indicates the bit width. Unsigned integers can hold larger positive
+values than their signed counterparts because they do not need to use a bit to
+represent a negative value:</p>
+<pre class="giallo z-code"><code data-lang="rust"><span class="giallo-l"><span class="z-entity z-name z-type">i32</span><span class="z-keyword z-operator">::</span><span>MAX</span><span class="z-comment"> //</span><span class="z-comment"> 2147483647</span></span>
+<span class="giallo-l"><span class="z-entity z-name z-type">u32</span><span class="z-keyword z-operator">::</span><span>MAX</span><span class="z-comment"> //</span><span class="z-comment"> 4294967295</span></span></code></pre>
+<p>Floating points are similar to integers but can represent decimal values, too.
+Unlike integers, floating points are also always signed and come in two sizes:
+<code>f32</code> and <code>f64</code>.</p>
+<div class="bc px-4 py-3 rounded-lg border border-border border-l-4 border-l-primary bg-card text-card-foreground"
+     role="note" aria-label="Note">
+    <header class="flex items-center gap-3">
+        <span class="iconify lucide--info size-5 shrink-0 text-primary"></span>
+        <h2 class="font-semibold text-[0.95rem]/[1.4]">
+            Note
+        </h2>
+    </header>
+    <section class="mt-2 pl-8 text-muted-foreground text-[0.925rem] [&>:first-child]:mt-0 [&>:last-child]:mb-0">
+        In R, integer vectors are comprised of only <code>i32</code> values, and floating points,
+called doubles, are always <code>f64</code> values.
+    </section>
+</div>
+<p>Rust can usually infer types. For instance, it can distinguish the integer <code>1</code>
+from the floating point <code>1.0</code>, but you can also specify the type explicitly.
+There are two ways to do this — using <code>:</code> in the assignment, or by appending a
+type suffix to the literal value:</p>
+<pre class="giallo z-code"><code data-lang="rust"><span class="giallo-l"><span class="z-storage z-type">let</span><span class="z-variable"> x</span><span class="z-keyword z-operator">:</span><span class="z-entity z-name z-type"> f64</span><span class="z-keyword z-operator"> =</span><span class="z-constant z-numeric"> 10</span><span class="z-constant z-numeric">.</span><span class="z-constant z-numeric">0</span><span>;</span></span>
+<span class="giallo-l"><span class="z-storage z-type">let</span><span class="z-variable"> x</span><span class="z-keyword z-operator"> =</span><span class="z-constant z-numeric"> 10</span><span class="z-constant z-numeric">.</span><span class="z-constant z-numeric">0</span><span class="z-entity z-name z-type">f64</span><span>;</span></span></code></pre>
+<p>You can also use <code>_</code> as a visual separator when writing numeric literals. The
+following are all identical:</p>
+<pre class="giallo z-code"><code data-lang="rust"><span class="giallo-l"><span class="z-storage z-type">let</span><span class="z-variable"> x</span><span class="z-keyword z-operator">:</span><span class="z-entity z-name z-type"> i32</span><span class="z-keyword z-operator"> =</span><span class="z-constant z-numeric"> 1000</span><span>;</span></span>
+<span class="giallo-l"><span class="z-storage z-type">let</span><span class="z-variable"> x</span><span class="z-keyword z-operator"> =</span><span class="z-constant z-numeric"> 1000</span><span class="z-entity z-name z-type">i32</span><span>;</span></span>
+<span class="giallo-l"><span class="z-storage z-type">let</span><span class="z-variable"> x</span><span class="z-keyword z-operator"> =</span><span class="z-constant z-numeric"> 1_000_</span><span class="z-entity z-name z-type">i32</span><span>;</span></span></code></pre>
+<p>This pattern of explicitly declaring the type of a variable may seem somewhat
+verbose to the average R user since R is very lax about types, relying as it
+does on a lot of implicit conversions. Becuase of Rust’s memory management
+model, however, Rust is a strongly, statically typed language. That means that
+all types must be known when you go to build or compile your crate. It also
+precludes running operations on different types. For example, math expressions
+can only be performed between values of the same type, so you cannot, for
+example, directly add an <code>f64</code> and an <code>i32</code>. You must first cast one to match
+the type of the other, in the simplest case using the <code>as</code> keyword:</p>
+<pre class="giallo z-code"><code data-lang="rust"><span class="giallo-l"><span class="z-keyword">fn</span><span class="z-entity z-name z-function"> add2</span><span>(</span><span class="z-variable">x</span><span class="z-keyword z-operator">:</span><span class="z-entity z-name z-type"> f64</span><span>,</span><span class="z-variable"> y</span><span class="z-keyword z-operator">:</span><span class="z-entity z-name z-type"> i32</span><span>)</span><span class="z-keyword z-operator"> -&gt;</span><span class="z-entity z-name z-type"> f64</span><span> {</span></span>
+<span class="giallo-l"><span class="z-variable">    x</span><span class="z-keyword z-operator"> +</span><span> (</span><span class="z-variable">y</span><span class="z-keyword"> as</span><span class="z-entity z-name z-type"> f64</span><span>)</span></span>
+<span class="giallo-l"><span>}</span></span></code></pre>
+<p>If you call <code>add2(3.2, 2)</code>, the function will first cast <code>y</code> to <code>f64</code> before
+doing addition, returning the <code>f64</code> value <code>5.2</code>. Before we continue, note that
+Rust supports all the same numeric operators as R: <code>+</code>, <code>-</code>, <code>/</code>, <code>*</code>, and <code>%</code>
+for remainder (equivalent to <code>%%</code> in R).</p>
+
+        </div>
+        
+        <footer class="mt-10">
+            <nav class="flex justify-between items-center text-sm">
+                <div>
+                    
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;rust-intro&#x2F;hello-world&#x2F;"
+                       class="flex items-center gap-1">
+                        <span>←</span>
+                        <span>Hello, World!</span>
+                    </a>
+                    
+                </div>
+                <div>
+                    
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;rust-intro&#x2F;control-flow&#x2F;"
+                       class="flex items-center gap-1">
+                        <span>Control Flow</span>
+                        <span>→</span>
+                    </a>
+                    
+                </div>
+            </nav>
+        </footer>
+        
+    </article>
+</div>
+<div class="hidden text-sm xl:block w-full max-w-[240px]">
+    
+    <aside aria-label="On this page"
+           class="sticky top-[var(--header-h,5rem)] py-4 space-y-1">
+        
+    </aside>
+</div>
+
+                </main>
+            </div>
+        </main>
+    </body>
+</html>

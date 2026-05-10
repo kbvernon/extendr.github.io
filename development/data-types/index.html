@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en"
+      class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0" />
+        <title>extendr</title>
+
+        <!-- Tailwind + Basecoat CSS -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/style.css" />
+
+        <!-- Determine theme before loading syntax highlighting -->
+        <script>
+            (() => {
+                const stored = localStorage.getItem("themeMode");
+                // Use stored preference if exists, otherwise always default to dark
+                const isDark = stored ? stored === "dark" : true;
+                document.documentElement.classList.toggle("dark", isDark);
+            })();
+        </script>
+
+        <!-- Syntax highlighting themes (both loaded; inactive one disabled by pre-paint script) -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-light.css"
+              id="giallo-light" />
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-dark.css"
+              id="giallo-dark" />
+
+        <!-- Toggle syntax highlighting -->
+        <script defer>
+            (() => {
+                const apply = (dark) => {
+                    document.documentElement.classList.toggle("dark", dark);
+
+                    // Toggle syntax highlighting themes via media attribute
+                    const darkSyntax = document.getElementById("giallo-dark");
+                    const lightSyntax = document.getElementById("giallo-light");
+                    if (darkSyntax && lightSyntax) {
+                        darkSyntax.media = dark ? "all" : "not all";
+                        lightSyntax.media = dark ? "not all" : "all";
+                    }
+
+                    try {
+                        localStorage.setItem(
+                            "themeMode",
+                            dark ? "dark" : "light",
+                        );
+                    } catch (_) { }
+                };
+
+                document.addEventListener("basecoat:theme", (event) => {
+                    const mode = event.detail?.mode;
+                    apply(
+                        mode === "dark" ? true : mode === "light"
+                            ? false : !document.documentElement.classList.contains("dark"),
+                    );
+                });
+
+                apply(document.documentElement.classList.contains("dark"));
+            })();
+        </script>
+
+        <!-- Basecoat ui functionality -->
+        <script src="https://extendr.rs/js/basecoat.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/dropdown-menu.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/sidebar.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/popover.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/tabs.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/accordion.js"
+                defer></script>
+        <script>window.SEARCH_INDEX_URL = "https://extendr.rs/search_index.en.json";</script>
+        <script src="https://extendr.rs/js/search.js"
+                defer></script>
+        <script src="https://extendr.rs/js/filter-list.js"
+                defer></script>
+
+        <script>
+            (() => {
+                const themeSelect = document.getElementById('theme-select');
+                const storedTheme = localStorage.getItem('themeVariant');
+                if (themeSelect && storedTheme) themeSelect.value = storedTheme;
+                themeSelect.addEventListener('change', () => {
+                    const newTheme = themeSelect.value;
+                    document.documentElement.classList.forEach(c => {
+                        if (c.startsWith('theme-')) document.documentElement.classList.remove(c);
+                    });
+                    if (newTheme) {
+                        document.documentElement.classList.add(`theme-${newTheme}`);
+                        localStorage.setItem('themeVariant', newTheme);
+                    } else {
+                        localStorage.removeItem('themeVariant');
+                    }
+                });
+            })();
+        </script>
+
+        <script>
+            (() => {
+                const KEY = "sidebarScrollTop";
+                const select = () => document.querySelector("aside.sidebar section");
+
+                const restore = () => {
+                    const el = select();
+                    if (!el) return;
+                    const v = sessionStorage.getItem(KEY);
+                    if (v !== null) el.scrollTop = parseInt(v, 10);
+                };
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", restore);
+                } else {
+                    restore();
+                }
+
+                window.addEventListener("pagehide", () => {
+                    const el = select();
+                    if (!el) return;
+                    sessionStorage.setItem(KEY, String(el.scrollTop));
+                });
+            })();
+        </script>
+
+        
+    </head>
+    <body>
+        <aside class="sidebar block"
+               data-side="left"
+               aria-label="Main navigation">
+            <nav aria-label="Sidebar navigation">
+    <header class="font-mono">
+        <a href="/" class="btn-ghost p-2 h-12 w-full justify-start text-xl items-baseline">
+            extendr <span class="text-sm text-muted-foreground">v0.9.0</span>
+        </a>
+    </header>
+    <section class="scrollbar [&_div>h3]:uppercase">
+        <div role="group">
+            <h3>Getting started</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/introduction/">
+                        <span class="iconify lucide--info text-xs"></span>
+                        Introduction
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/installation/">
+                        <span class="iconify lucide--terminal text-xs"></span>
+                        Installation
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/example/">
+                        <span class="iconify lucide--package text-xs"></span>
+                        Example
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>API Reference</h3>
+            <ul>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;extendr&#x2F;">
+                        <span class="iconify mdi--language-rust text-base"></span>extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;rextendr&#x2F;">
+                        <span class="iconify mdi--language-r text-base"></span>rextendr
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>Community</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/blog/">
+                        <span class="iconify lucide--rss text-xs"></span>Blog
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/awesome/">
+                        <span class="iconify lucide--sparkles text-xs"></span>Awesome Extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc">
+                        <span class="iconify fa7-brands--discord text-xs"></span>Discord
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr">
+                        <span class="iconify mdi--github text-xs"></span>GitHub
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+
+<h3>Development</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/development/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/data-types/" class="pl-4">
+            R to Rust type mapping
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/extendr-macro/" class="pl-4">
+            Using Rust types in R
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/collections/" class="pl-4">
+            Using HashMaps
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/into-list/" class="pl-4">
+            Rust Structs to Lists
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/default-args/" class="pl-4">
+            Default function arguments
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/package-structure/" class="pl-4">
+            Project Structure
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/serde-integration/" class="pl-4">
+            `serde` integration
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/webr/" class="pl-4">
+            Building for WebR
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/tokio/" class="pl-4">
+            Async with Tokio
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Publishing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/publishing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-publishing/" class="pl-4">
+            Publish to CRAN
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-msrv/" class="pl-4">
+            CRAN MSRV
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Rust Tutorials</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/rust-intro/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/hello-world/" class="pl-4">
+            Hello, World!
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/types/" class="pl-4">
+            Basic Types
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/control-flow/" class="pl-4">
+            Control Flow
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/collections/" class="pl-4">
+            Collections
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/loops/" class="pl-4">
+            Loops
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/mutability/" class="pl-4">
+            Mutability
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/functions/" class="pl-4">
+            Functions
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/ownership/" class="pl-4">
+            Ownership
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/iterators/" class="pl-4">
+            Iterators
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/structures/" class="pl-4">
+            Structures
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/implementations/" class="pl-4">
+            Implementations
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/enumerations/" class="pl-4">
+            Enumerations
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Contributing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/contributing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/writing-code/" class="pl-4">
+            Writing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/documenting-code/" class="pl-4">
+            Documenting Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/testing-code/" class="pl-4">
+            Testing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/extendr-internals/" class="pl-4">
+            extendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/rextendr-internals/" class="pl-4">
+            rextendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/colors-and-fonts/" class="pl-4">
+            Colors and Fonts
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/user-guide-pages/" class="pl-4">
+            User Guide Pages
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+    </section>
+</nav>
+        </aside>
+        <main>
+            <header class="bg-sidebar sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b z-10">
+                <div class="flex h-14 w-full items-center gap-2 px-4">
+    <button type="button" onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))" aria-label="Toggle sidebar" data-tooltip="Toggle sidebar"
+        data-side="bottom" data-align="start" class="btn-sm-icon-ghost mr-auto size-7 -ml-1.5">
+        <span class="iconify lucide--sidebar"></span>
+    </button>
+    <div class="relative">
+        <span class="iconify lucide--search absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none"></span>
+        <input class="input h-8 pl-8" id="input-with-text" type="search" placeholder="Search the docs">
+    </div>
+    <button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="bottom"
+        onclick="document.dispatchEvent(new CustomEvent('basecoat:theme'))" class="btn-icon-outline size-8">
+        <span class="iconify lucide--sun hidden dark:block"></span>
+        <span class="iconify lucide--moon block dark:hidden"></span>
+    </button>
+    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="GitHub repository"
+        data-side="bottom" data-align="end">
+        <span class="iconify mdi--github"></span>
+    </a>
+    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="Discord channel"
+        data-side="bottom" data-align="end">
+        <span class="iconify fa7-brands--discord text-xs"></span>
+    </a>
+</div>
+            </header>
+            <div class="p-4 md:p-6 xl:p-12">
+                <main class="mx-auto relative flex w-full max-w-screen-xl gap-8">
+                    
+<div class="ml-auto w-full flex-1 min-w-0 max-w-screen-md">
+    <article class="content flex flex-col gap-4">
+        <header class="pb-2 border-b border-border">
+            <h1 class="my-0">R to Rust type mapping</h1>
+            
+            
+        </header>
+        <div class="prose">
+            <p>extendr is allows us to create a bridge between R and Rust. When writing a function in Rust that is intended to be called from R, it is important that the input types be R types. There are many types of objects in R (almost) all of which are available in extendr via a wrapper struct.</p>
+<p>The below lists the extendr structs that wrap R object types. These types can be used as function arguments or return values.</p>
+<h2 id="scalar-types">Scalar types</h2>
+<p>R has no concept of scalar values whereas Rust does. Rust does not have the concept of an NA. As such, we have types to represent scalar values in R. The below is how they are mapped.</p>
+
+<table class="table">
+  
+  <thead>
+    <tr>
+      <th>R</th><th> Rust</th><th> extendr</th>
+    </tr>
+  </thead>
+  <tbody class="[&>tr:not(:last-child)]:border-none [&>tr:last-child]:border-b">
+    
+    <tr><td>integer(1)</td><td> i32</td><td> Rint</td></tr>
+    
+    <tr><td>logical(1)</td><td> bool</td><td> Rbool</td></tr>
+    
+    <tr><td>double(1)</td><td> f64</td><td> Rfloat</td></tr>
+    
+    <tr><td>complex(1)</td><td> Complex&lt;f64&gt;</td><td> Rcplx</td></tr>
+    
+    <tr><td>character(1)</td><td> String</td><td> Rstr</td></tr>
+    
+  </tbody>
+  
+</table><h2 id="vector-types">Vector types</h2>
+<p>Everything in R is a vector. In Rust, we have to point to R’s owned vector types rather than use Rust’s native <code>Vec</code> collection. These are mapped accordingly:</p>
+
+<table class="table">
+  
+  <thead>
+    <tr>
+      <th>R</th><th>extendr</th><th>scalar</th><th>C API</th>
+    </tr>
+  </thead>
+  <tbody class="[&>tr:not(:last-child)]:border-none [&>tr:last-child]:border-b">
+    
+    <tr><td>integer()</td><td>Integers</td><td>Rint</td><td>INTSXP</td></tr>
+    
+    <tr><td>double()</td><td>Doubles</td><td>Rfloat</td><td>REALSXP</td></tr>
+    
+    <tr><td>logical()</td><td>Logicals</td><td>Rbool</td><td>LGLSXP</td></tr>
+    
+    <tr><td>complex()</td><td>Complexes</td><td>Rcplx</td><td>CPLXSXP</td></tr>
+    
+    <tr><td>character()</td><td>Strings</td><td>Rstr</td><td>STRSXP</td></tr>
+    
+    <tr><td>raw()</td><td>Raw</td><td>&amp;\[u8\]</td><td>RAWSXP</td></tr>
+    
+    <tr><td>list()</td><td>List</td><td>Robj</td><td>VECSXP</td></tr>
+    
+  </tbody>
+  
+</table><h2 id="using-rust-library-types-vs-r-native-types">Using Rust library types vs R-native types</h2>
+<p>Whenever possible use the extendr wrapper type. Accepting or returning a <code>Vec&lt;T&gt;</code> requires additional allocations. This will always incur memory usage overhead. In some cases, the overhead will be minimal and tolerable. However, if you can use the Rust type instead, always do.</p>
+<h2 id="other-types">Other types</h2>
+<ul>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/environment/struct.Environment.html"><code>Environment</code></a> (<code>ENVSXP</code>)</li>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/expr/struct.Expressions.html"><code>Expressions</code></a> (<code>EXPRSXP</code>)</li>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/externalptr/struct.ExternalPtr.html"><code>ExternalPtr</code></a> (<code>EXTPTRSXP</code>)</li>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/function/struct.Function.html"><code>Function</code></a> (<code>CLOSSXP</code>)</li>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/lang/struct.Language.html"><code>Language</code></a> (<code>LANGSXP</code>)</li>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/matrix/struct.RArray.html"><code>RArray</code></a></li>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/pairlist/struct.Pairlist.html"><code>Pairlist</code></a> (<code>LISTSXP</code>)</li>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/promise/struct.Promise.html"><code>Promise</code></a> (<code>PROMSXP</code>)</li>
+<li><a rel="external" href="https://extendr.github.io/extendr/extendr_api/wrapper/s4/struct.S4.html"><code>S4</code></a> (<code>S4SXP</code>)</li>
+</ul>
+
+        </div>
+        
+        <footer class="mt-10">
+            <nav class="flex justify-between items-center text-sm">
+                <div>
+                    
+                </div>
+                <div>
+                    
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;development&#x2F;extendr-macro&#x2F;"
+                       class="flex items-center gap-1">
+                        <span>Using Rust types in R</span>
+                        <span>→</span>
+                    </a>
+                    
+                </div>
+            </nav>
+        </footer>
+        
+    </article>
+</div>
+<div class="hidden text-sm xl:block w-full max-w-[240px]">
+    
+    <aside aria-label="On this page"
+           class="sticky top-[var(--header-h,5rem)] py-4 space-y-1">
+        
+        <nav
+             class="toc sticky top-22 space-y-2 [&_ul]:my-0 [&_ul]:list-none [&_li]:mt-0 [&_li]:pt-2 [&_a]:inline-block [&_a]:no-underline [&_a]:transition-colors [&_a]:hover:text-foreground [&_a]:text-muted-foreground">
+            <h4 class="font-medium uppercase">On this page</h4>
+            
+<ul class="space-y-1 ml-2 border-l border-border">
+    
+    
+    <li class="toc-item">
+        <a href="#scalar-types" class="toc-link pl-4">Scalar types</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#vector-types" class="toc-link pl-4">Vector types</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#using-rust-library-types-vs-r-native-types" class="toc-link pl-4">Using Rust library types vs R-native types</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#other-types" class="toc-link pl-4">Other types</a>
+        
+    </li>
+    
+    
+</ul>
+
+        </nav>
+        
+    </aside>
+</div>
+
+                </main>
+            </div>
+        </main>
+    </body>
+</html>

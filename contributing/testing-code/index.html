@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en"
+      class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0" />
+        <title>extendr</title>
+
+        <!-- Tailwind + Basecoat CSS -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/style.css" />
+
+        <!-- Determine theme before loading syntax highlighting -->
+        <script>
+            (() => {
+                const stored = localStorage.getItem("themeMode");
+                // Use stored preference if exists, otherwise always default to dark
+                const isDark = stored ? stored === "dark" : true;
+                document.documentElement.classList.toggle("dark", isDark);
+            })();
+        </script>
+
+        <!-- Syntax highlighting themes (both loaded; inactive one disabled by pre-paint script) -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-light.css"
+              id="giallo-light" />
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-dark.css"
+              id="giallo-dark" />
+
+        <!-- Toggle syntax highlighting -->
+        <script defer>
+            (() => {
+                const apply = (dark) => {
+                    document.documentElement.classList.toggle("dark", dark);
+
+                    // Toggle syntax highlighting themes via media attribute
+                    const darkSyntax = document.getElementById("giallo-dark");
+                    const lightSyntax = document.getElementById("giallo-light");
+                    if (darkSyntax && lightSyntax) {
+                        darkSyntax.media = dark ? "all" : "not all";
+                        lightSyntax.media = dark ? "not all" : "all";
+                    }
+
+                    try {
+                        localStorage.setItem(
+                            "themeMode",
+                            dark ? "dark" : "light",
+                        );
+                    } catch (_) { }
+                };
+
+                document.addEventListener("basecoat:theme", (event) => {
+                    const mode = event.detail?.mode;
+                    apply(
+                        mode === "dark" ? true : mode === "light"
+                            ? false : !document.documentElement.classList.contains("dark"),
+                    );
+                });
+
+                apply(document.documentElement.classList.contains("dark"));
+            })();
+        </script>
+
+        <!-- Basecoat ui functionality -->
+        <script src="https://extendr.rs/js/basecoat.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/dropdown-menu.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/sidebar.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/popover.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/tabs.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/accordion.js"
+                defer></script>
+        <script>window.SEARCH_INDEX_URL = "https://extendr.rs/search_index.en.json";</script>
+        <script src="https://extendr.rs/js/search.js"
+                defer></script>
+        <script src="https://extendr.rs/js/filter-list.js"
+                defer></script>
+
+        <script>
+            (() => {
+                const themeSelect = document.getElementById('theme-select');
+                const storedTheme = localStorage.getItem('themeVariant');
+                if (themeSelect && storedTheme) themeSelect.value = storedTheme;
+                themeSelect.addEventListener('change', () => {
+                    const newTheme = themeSelect.value;
+                    document.documentElement.classList.forEach(c => {
+                        if (c.startsWith('theme-')) document.documentElement.classList.remove(c);
+                    });
+                    if (newTheme) {
+                        document.documentElement.classList.add(`theme-${newTheme}`);
+                        localStorage.setItem('themeVariant', newTheme);
+                    } else {
+                        localStorage.removeItem('themeVariant');
+                    }
+                });
+            })();
+        </script>
+
+        <script>
+            (() => {
+                const KEY = "sidebarScrollTop";
+                const select = () => document.querySelector("aside.sidebar section");
+
+                const restore = () => {
+                    const el = select();
+                    if (!el) return;
+                    const v = sessionStorage.getItem(KEY);
+                    if (v !== null) el.scrollTop = parseInt(v, 10);
+                };
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", restore);
+                } else {
+                    restore();
+                }
+
+                window.addEventListener("pagehide", () => {
+                    const el = select();
+                    if (!el) return;
+                    sessionStorage.setItem(KEY, String(el.scrollTop));
+                });
+            })();
+        </script>
+
+        
+    </head>
+    <body>
+        <aside class="sidebar block"
+               data-side="left"
+               aria-label="Main navigation">
+            <nav aria-label="Sidebar navigation">
+    <header class="font-mono">
+        <a href="/" class="btn-ghost p-2 h-12 w-full justify-start text-xl items-baseline">
+            extendr <span class="text-sm text-muted-foreground">v0.9.0</span>
+        </a>
+    </header>
+    <section class="scrollbar [&_div>h3]:uppercase">
+        <div role="group">
+            <h3>Getting started</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/introduction/">
+                        <span class="iconify lucide--info text-xs"></span>
+                        Introduction
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/installation/">
+                        <span class="iconify lucide--terminal text-xs"></span>
+                        Installation
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/example/">
+                        <span class="iconify lucide--package text-xs"></span>
+                        Example
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>API Reference</h3>
+            <ul>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;extendr&#x2F;">
+                        <span class="iconify mdi--language-rust text-base"></span>extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;rextendr&#x2F;">
+                        <span class="iconify mdi--language-r text-base"></span>rextendr
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>Community</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/blog/">
+                        <span class="iconify lucide--rss text-xs"></span>Blog
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/awesome/">
+                        <span class="iconify lucide--sparkles text-xs"></span>Awesome Extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc">
+                        <span class="iconify fa7-brands--discord text-xs"></span>Discord
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr">
+                        <span class="iconify mdi--github text-xs"></span>GitHub
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+
+<h3>Development</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/development/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/data-types/" class="pl-4">
+            R to Rust type mapping
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/extendr-macro/" class="pl-4">
+            Using Rust types in R
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/collections/" class="pl-4">
+            Using HashMaps
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/into-list/" class="pl-4">
+            Rust Structs to Lists
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/default-args/" class="pl-4">
+            Default function arguments
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/package-structure/" class="pl-4">
+            Project Structure
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/serde-integration/" class="pl-4">
+            `serde` integration
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/webr/" class="pl-4">
+            Building for WebR
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/tokio/" class="pl-4">
+            Async with Tokio
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Publishing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/publishing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-publishing/" class="pl-4">
+            Publish to CRAN
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-msrv/" class="pl-4">
+            CRAN MSRV
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Rust Tutorials</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/rust-intro/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/hello-world/" class="pl-4">
+            Hello, World!
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/types/" class="pl-4">
+            Basic Types
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/control-flow/" class="pl-4">
+            Control Flow
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/collections/" class="pl-4">
+            Collections
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/loops/" class="pl-4">
+            Loops
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/mutability/" class="pl-4">
+            Mutability
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/functions/" class="pl-4">
+            Functions
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/ownership/" class="pl-4">
+            Ownership
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/iterators/" class="pl-4">
+            Iterators
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/structures/" class="pl-4">
+            Structures
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/implementations/" class="pl-4">
+            Implementations
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/enumerations/" class="pl-4">
+            Enumerations
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Contributing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/contributing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/writing-code/" class="pl-4">
+            Writing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/documenting-code/" class="pl-4">
+            Documenting Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/testing-code/" class="pl-4">
+            Testing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/extendr-internals/" class="pl-4">
+            extendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/rextendr-internals/" class="pl-4">
+            rextendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/colors-and-fonts/" class="pl-4">
+            Colors and Fonts
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/user-guide-pages/" class="pl-4">
+            User Guide Pages
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+    </section>
+</nav>
+        </aside>
+        <main>
+            <header class="bg-sidebar sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b z-10">
+                <div class="flex h-14 w-full items-center gap-2 px-4">
+    <button type="button" onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))" aria-label="Toggle sidebar" data-tooltip="Toggle sidebar"
+        data-side="bottom" data-align="start" class="btn-sm-icon-ghost mr-auto size-7 -ml-1.5">
+        <span class="iconify lucide--sidebar"></span>
+    </button>
+    <div class="relative">
+        <span class="iconify lucide--search absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none"></span>
+        <input class="input h-8 pl-8" id="input-with-text" type="search" placeholder="Search the docs">
+    </div>
+    <button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="bottom"
+        onclick="document.dispatchEvent(new CustomEvent('basecoat:theme'))" class="btn-icon-outline size-8">
+        <span class="iconify lucide--sun hidden dark:block"></span>
+        <span class="iconify lucide--moon block dark:hidden"></span>
+    </button>
+    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="GitHub repository"
+        data-side="bottom" data-align="end">
+        <span class="iconify mdi--github"></span>
+    </a>
+    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="Discord channel"
+        data-side="bottom" data-align="end">
+        <span class="iconify fa7-brands--discord text-xs"></span>
+    </a>
+</div>
+            </header>
+            <div class="p-4 md:p-6 xl:p-12">
+                <main class="mx-auto relative flex w-full max-w-screen-xl gap-8">
+                    
+<div class="ml-auto w-full flex-1 min-w-0 max-w-screen-md">
+    <article class="content flex flex-col gap-4">
+        <header class="pb-2 border-b border-border">
+            <h1 class="my-0">Testing Code</h1>
+            
+            <p class="text-muted-foreground mt-1 mb-0">Testing requirements and conventions, including FFI tests via the extendrtests package.</p>
+            
+            
+        </header>
+        <div class="prose">
+            <p>Testing is mission critical for extendr. For all new functionality we require
+tests to ensure they continue to work as intended. For bug fixes we require a
+test to cover the bug fix (if one didn’t exist yet).</p>
+<p>Note that we have a justfile that you can use to run tests locally:</p>
+<ul>
+<li>for R, <code>just document</code> then <code>just devtools-test</code> and</li>
+<li>for Rust, <code>just test</code> and then also ensure that things are formatted with
+<code>just fmt</code>.</li>
+</ul>
+<h2 id="rust-tests">Rust Tests</h2>
+<p>Rust tests in extendr follow standard Rust conventions: <code>#[test]</code> functions
+in <code>#[cfg(test)]</code> modules, either inline in the source file or in a separate
+file under <code>tests/</code>. For details, see <a rel="external" href="https://doc.rust-lang.org/book/ch11-00-testing.html">Writing Automated Tests</a> in The Book.</p>
+<h3 id="tests-using-r-symbols">Tests using R symbols</h3>
+<p>There is an important wrinkle for testing Rust code in extendr as many Rust
+tests will need a live R session to handle R objects and symbols. The <code>test!</code>
+macro is useful for this purpose. It wraps test code in a call to the R API and
+allows <code>?</code> to be used inside the block:</p>
+<pre class="giallo z-code"><code data-lang="rust"><span class="giallo-l"><span>#</span><span>[</span><span>test</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">fn</span><span class="z-entity z-name z-function"> my_test</span><span>(</span><span>)</span><span> {</span></span>
+<span class="giallo-l"><span class="z-entity z-name z-function">    test!</span><span> {</span></span>
+<span class="giallo-l"><span class="z-storage z-type">        let</span><span class="z-variable"> x</span><span class="z-keyword z-operator"> =</span><span class="z-entity z-name z-function"> r!</span><span>(</span><span>[</span><span class="z-constant z-numeric">1</span><span>,</span><span class="z-constant z-numeric"> 2</span><span>,</span><span class="z-constant z-numeric"> 3</span><span>]</span><span>)</span><span>;</span></span>
+<span class="giallo-l"><span class="z-entity z-name z-function">        assert_eq!</span><span>(</span><span class="z-variable">x</span><span class="z-keyword z-operator">.</span><span class="z-entity z-name z-function">len</span><span>(</span><span>)</span><span>,</span><span class="z-constant z-numeric"> 3</span><span>)</span><span>;</span></span>
+<span class="giallo-l"><span>    }</span></span>
+<span class="giallo-l"><span>}</span></span></code></pre>
+<p>If a test does not call the R API at all — for example, testing pure Rust
+arithmetic on scalar wrapper types — <code>test!</code> is not needed.</p>
+<h3 id="ffi-tests">FFI tests</h3>
+<p>Rust primarily supports unit and integration tests for testing individual
+functions and the public API, but extendr needs a third layer of integration
+tests to account for the Rust-R interface. These tests should go in the
+workspace level <a rel="external" href="https://github.com/extendr/extendr/tree/main/tests/extendrtests"><code>tests/extendrtests</code></a>
+directory, which holds the R package <code>{extendrtests}</code> that implements all
+extendr functionality.</p>
+<p>Because this is an R package with internal Rust code, we actually get access to
+many varieties of tests: on the R side, documentation examples and testthat
+tests along with <code>R CMD CHECK</code>, and on the Rust side, standard testing with unit
+and integration tests. For our purposes, however, we have chosen to rely only on
+testthat tests, which get called during <code>R CMD CHECK</code>. We do not really care so
+much about the Rust code passing tests in the R package as we do that the
+traffic back and forth with R is robust.</p>
+<p>See
+<a rel="external" href="https://github.com/extendr/extendr/blob/main/tests/extendrtests/src/rust/src/tuple_conversions.rs"><code>src/rust/src/tuple_conversions.rs</code></a>
+and
+<a rel="external" href="https://github.com/extendr/extendr/blob/main/tests/extendrtests/tests/testthat/test-tuples.R"><code>tests/testthat/tuples.rs</code></a>
+for an example of how we implement these tests.</p>
+<h3 id="additional-guidance">Additional guidance</h3>
+<p>Here are some other important guidelines for Rust testing:</p>
+<ul>
+<li>Following standard Rust conventions, integration tests should go in the crate
+<code>/src</code> folder and unit tests at the end of each module file. See
+<a rel="external" href="https://github.com/extendr/extendr/tree/main/extendr-api/tests">extendr-api/tests</a>
+for an example of integration tests.</li>
+<li>All tests should go in a test module <code>mod tests {}</code>.</li>
+<li>All tests should be annotated with <code>#[cfg(test)]</code> to ensure that tests are
+not compiled with extendr.</li>
+<li>Do not use documentation tests.</li>
+</ul>
+<h2 id="r-tests">R Tests</h2>
+<p>R code in rextendr is tested with <a rel="external" href="https://testthat.r-lib.org">testthat</a>,
+following standard R package testing conventions.</p>
+<p>Here are some guidelines specific to rextendr:</p>
+<ul>
+<li>Documentation for all exported functions should include examples that run
+during <code>R CMD CHECK</code> on CRAN.</li>
+<li>Avoid introducing new snapshot tests whenever possible. We should prefer more
+explicit testing.</li>
+</ul>
+
+        </div>
+        
+        <footer class="mt-10">
+            <nav class="flex justify-between items-center text-sm">
+                <div>
+                    
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;contributing&#x2F;documenting-code&#x2F;"
+                       class="flex items-center gap-1">
+                        <span>←</span>
+                        <span>Documenting Code</span>
+                    </a>
+                    
+                </div>
+                <div>
+                    
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;contributing&#x2F;extendr-internals&#x2F;"
+                       class="flex items-center gap-1">
+                        <span>extendr Internals</span>
+                        <span>→</span>
+                    </a>
+                    
+                </div>
+            </nav>
+        </footer>
+        
+    </article>
+</div>
+<div class="hidden text-sm xl:block w-full max-w-[240px]">
+    
+    <aside aria-label="On this page"
+           class="sticky top-[var(--header-h,5rem)] py-4 space-y-1">
+        
+        <nav
+             class="toc sticky top-22 space-y-2 [&_ul]:my-0 [&_ul]:list-none [&_li]:mt-0 [&_li]:pt-2 [&_a]:inline-block [&_a]:no-underline [&_a]:transition-colors [&_a]:hover:text-foreground [&_a]:text-muted-foreground">
+            <h4 class="font-medium uppercase">On this page</h4>
+            
+<ul class="space-y-1 ml-2 border-l border-border">
+    
+    
+    <li class="toc-item">
+        <a href="#rust-tests" class="toc-link pl-4">Rust Tests</a>
+        
+        
+<ul class="space-y-1 ml-2">
+    
+    
+    <li class="toc-item">
+        <a href="#tests-using-r-symbols" class="toc-link pl-4">Tests using R symbols</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#ffi-tests" class="toc-link pl-4">FFI tests</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#additional-guidance" class="toc-link pl-4">Additional guidance</a>
+        
+    </li>
+    
+    
+</ul>
+
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#r-tests" class="toc-link pl-4">R Tests</a>
+        
+    </li>
+    
+    
+</ul>
+
+        </nav>
+        
+    </aside>
+</div>
+
+                </main>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="en"
+      class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0" />
+        <title>extendr</title>
+
+        <!-- Tailwind + Basecoat CSS -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/style.css" />
+
+        <!-- Determine theme before loading syntax highlighting -->
+        <script>
+            (() => {
+                const stored = localStorage.getItem("themeMode");
+                // Use stored preference if exists, otherwise always default to dark
+                const isDark = stored ? stored === "dark" : true;
+                document.documentElement.classList.toggle("dark", isDark);
+            })();
+        </script>
+
+        <!-- Syntax highlighting themes (both loaded; inactive one disabled by pre-paint script) -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-light.css"
+              id="giallo-light" />
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-dark.css"
+              id="giallo-dark" />
+
+        <!-- Toggle syntax highlighting -->
+        <script defer>
+            (() => {
+                const apply = (dark) => {
+                    document.documentElement.classList.toggle("dark", dark);
+
+                    // Toggle syntax highlighting themes via media attribute
+                    const darkSyntax = document.getElementById("giallo-dark");
+                    const lightSyntax = document.getElementById("giallo-light");
+                    if (darkSyntax && lightSyntax) {
+                        darkSyntax.media = dark ? "all" : "not all";
+                        lightSyntax.media = dark ? "not all" : "all";
+                    }
+
+                    try {
+                        localStorage.setItem(
+                            "themeMode",
+                            dark ? "dark" : "light",
+                        );
+                    } catch (_) { }
+                };
+
+                document.addEventListener("basecoat:theme", (event) => {
+                    const mode = event.detail?.mode;
+                    apply(
+                        mode === "dark" ? true : mode === "light"
+                            ? false : !document.documentElement.classList.contains("dark"),
+                    );
+                });
+
+                apply(document.documentElement.classList.contains("dark"));
+            })();
+        </script>
+
+        <!-- Basecoat ui functionality -->
+        <script src="https://extendr.rs/js/basecoat.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/dropdown-menu.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/sidebar.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/popover.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/tabs.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/accordion.js"
+                defer></script>
+        <script>window.SEARCH_INDEX_URL = "https://extendr.rs/search_index.en.json";</script>
+        <script src="https://extendr.rs/js/search.js"
+                defer></script>
+        <script src="https://extendr.rs/js/filter-list.js"
+                defer></script>
+
+        <script>
+            (() => {
+                const themeSelect = document.getElementById('theme-select');
+                const storedTheme = localStorage.getItem('themeVariant');
+                if (themeSelect && storedTheme) themeSelect.value = storedTheme;
+                themeSelect.addEventListener('change', () => {
+                    const newTheme = themeSelect.value;
+                    document.documentElement.classList.forEach(c => {
+                        if (c.startsWith('theme-')) document.documentElement.classList.remove(c);
+                    });
+                    if (newTheme) {
+                        document.documentElement.classList.add(`theme-${newTheme}`);
+                        localStorage.setItem('themeVariant', newTheme);
+                    } else {
+                        localStorage.removeItem('themeVariant');
+                    }
+                });
+            })();
+        </script>
+
+        <script>
+            (() => {
+                const KEY = "sidebarScrollTop";
+                const select = () => document.querySelector("aside.sidebar section");
+
+                const restore = () => {
+                    const el = select();
+                    if (!el) return;
+                    const v = sessionStorage.getItem(KEY);
+                    if (v !== null) el.scrollTop = parseInt(v, 10);
+                };
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", restore);
+                } else {
+                    restore();
+                }
+
+                window.addEventListener("pagehide", () => {
+                    const el = select();
+                    if (!el) return;
+                    sessionStorage.setItem(KEY, String(el.scrollTop));
+                });
+            })();
+        </script>
+
+        
+    </head>
+    <body>
+        <aside class="sidebar block"
+               data-side="left"
+               aria-label="Main navigation">
+            <nav aria-label="Sidebar navigation">
+    <header class="font-mono">
+        <a href="/" class="btn-ghost p-2 h-12 w-full justify-start text-xl items-baseline">
+            extendr <span class="text-sm text-muted-foreground">v0.9.0</span>
+        </a>
+    </header>
+    <section class="scrollbar [&_div>h3]:uppercase">
+        <div role="group">
+            <h3>Getting started</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/introduction/">
+                        <span class="iconify lucide--info text-xs"></span>
+                        Introduction
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/installation/">
+                        <span class="iconify lucide--terminal text-xs"></span>
+                        Installation
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/example/">
+                        <span class="iconify lucide--package text-xs"></span>
+                        Example
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>API Reference</h3>
+            <ul>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;extendr&#x2F;">
+                        <span class="iconify mdi--language-rust text-base"></span>extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;rextendr&#x2F;">
+                        <span class="iconify mdi--language-r text-base"></span>rextendr
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>Community</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/blog/">
+                        <span class="iconify lucide--rss text-xs"></span>Blog
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/awesome/">
+                        <span class="iconify lucide--sparkles text-xs"></span>Awesome Extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc">
+                        <span class="iconify fa7-brands--discord text-xs"></span>Discord
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr">
+                        <span class="iconify mdi--github text-xs"></span>GitHub
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+
+<h3>Development</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/development/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/data-types/" class="pl-4">
+            R to Rust type mapping
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/extendr-macro/" class="pl-4">
+            Using Rust types in R
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/collections/" class="pl-4">
+            Using HashMaps
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/into-list/" class="pl-4">
+            Rust Structs to Lists
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/default-args/" class="pl-4">
+            Default function arguments
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/package-structure/" class="pl-4">
+            Project Structure
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/serde-integration/" class="pl-4">
+            `serde` integration
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/webr/" class="pl-4">
+            Building for WebR
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/tokio/" class="pl-4">
+            Async with Tokio
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Publishing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/publishing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-publishing/" class="pl-4">
+            Publish to CRAN
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-msrv/" class="pl-4">
+            CRAN MSRV
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Rust Tutorials</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/rust-intro/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/hello-world/" class="pl-4">
+            Hello, World!
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/types/" class="pl-4">
+            Basic Types
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/control-flow/" class="pl-4">
+            Control Flow
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/collections/" class="pl-4">
+            Collections
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/loops/" class="pl-4">
+            Loops
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/mutability/" class="pl-4">
+            Mutability
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/functions/" class="pl-4">
+            Functions
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/ownership/" class="pl-4">
+            Ownership
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/iterators/" class="pl-4">
+            Iterators
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/structures/" class="pl-4">
+            Structures
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/implementations/" class="pl-4">
+            Implementations
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/enumerations/" class="pl-4">
+            Enumerations
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Contributing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/contributing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/writing-code/" class="pl-4">
+            Writing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/documenting-code/" class="pl-4">
+            Documenting Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/testing-code/" class="pl-4">
+            Testing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/extendr-internals/" class="pl-4">
+            extendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/rextendr-internals/" class="pl-4">
+            rextendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/colors-and-fonts/" class="pl-4">
+            Colors and Fonts
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/user-guide-pages/" class="pl-4">
+            User Guide Pages
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+    </section>
+</nav>
+        </aside>
+        <main>
+            <header class="bg-sidebar sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b z-10">
+                <div class="flex h-14 w-full items-center gap-2 px-4">
+    <button type="button" onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))" aria-label="Toggle sidebar" data-tooltip="Toggle sidebar"
+        data-side="bottom" data-align="start" class="btn-sm-icon-ghost mr-auto size-7 -ml-1.5">
+        <span class="iconify lucide--sidebar"></span>
+    </button>
+    <div class="relative">
+        <span class="iconify lucide--search absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none"></span>
+        <input class="input h-8 pl-8" id="input-with-text" type="search" placeholder="Search the docs">
+    </div>
+    <button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="bottom"
+        onclick="document.dispatchEvent(new CustomEvent('basecoat:theme'))" class="btn-icon-outline size-8">
+        <span class="iconify lucide--sun hidden dark:block"></span>
+        <span class="iconify lucide--moon block dark:hidden"></span>
+    </button>
+    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="GitHub repository"
+        data-side="bottom" data-align="end">
+        <span class="iconify mdi--github"></span>
+    </a>
+    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="Discord channel"
+        data-side="bottom" data-align="end">
+        <span class="iconify fa7-brands--discord text-xs"></span>
+    </a>
+</div>
+            </header>
+            <div class="p-4 md:p-6 xl:p-12">
+                <main class="mx-auto relative flex w-full max-w-screen-xl gap-8">
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="mx-auto w-full">
+    <div class="grid gap-y-6 grid-cols-1 xl:grid-cols-[minmax(0,16rem)_minmax(0,48rem)_1rem_15rem]">
+        <header class="xl:col-start-2 xl:row-start-1">
+            <h1 class="mt-0 text-4xl font-mono">extendr Blog</h1>
+            
+            <p class="text-muted-foreground mt-1 mb-0">News and tips from the extendr community.</p>
+            
+        </header>
+
+        <article id="blog-list"
+                 data-filterable-list
+                 class="flex flex-col gap-4 min-w-0 xl:col-start-2 xl:row-start-2">
+            <div class="flex gap-2">
+                <div class="flex-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span
+                              class="iconify lucide--search absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none"></span>
+                    </div>
+                    <input type="search"
+                           data-filter-search
+                           placeholder="Search posts"
+                           class="input pl-8 h-8">
+                </div>
+                <div class="dropdown-menu xl:hidden">
+                    <button type="button"
+                            id="filter-dropdown-trigger"
+                            aria-haspopup="menu"
+                            aria-controls="filter-dropdown-menu"
+                            aria-expanded="false"
+                            class="btn-outline flex items-center gap-2 h-8">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="1em"
+                             height="1em"
+                             fill="currentColor"
+                             viewBox="0 0 256 256">
+                            <path
+                                  d="M200,136a8,8,0,0,1-8,8H64a8,8,0,0,1,0-16H192A8,8,0,0,1,200,136Zm32-56H24a8,8,0,0,0,0,16H232a8,8,0,0,0,0-16Zm-80,96H104a8,8,0,0,0,0,16h48a8,8,0,0,0,0-16Z">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="filter-dropdown-popover"
+                         data-popover=""
+                         aria-hidden="true"
+                         data-align="end"
+                         class="min-w-64 max-h-96 overflow-y-auto scrollbar">
+                        <div role="menu"
+                             id="filter-dropdown-menu"
+                             aria-labelledby="filter-dropdown-trigger">
+                            <div role="group"
+                                 aria-labelledby="dropdown-tags-heading">
+                                <div class="flex items-center justify-between px-2 py-1.5">
+                                    <div role="heading"
+                                         id="dropdown-tags-heading"
+                                         class="text-sm font-medium">Tags
+                                    </div>
+                                    <button type="button"
+                                            data-tag-select-all
+                                            class="text-xs text-primary hover:underline">Select all</button>
+                                </div>
+                                
+                                <label class="flex items-center gap-2 w-full cursor-pointer px-2 py-1.5">
+                                    <input type="checkbox"
+                                           class="input"
+                                           data-tag-checkbox
+                                           value="Release">
+                                    <span class="text-sm">Release</span>
+                                </label>
+                                
+                                <label class="flex items-center gap-2 w-full cursor-pointer px-2 py-1.5">
+                                    <input type="checkbox"
+                                           class="input"
+                                           data-tag-checkbox
+                                           value="Updates">
+                                    <span class="text-sm">Updates</span>
+                                </label>
+                                
+                                <label class="flex items-center gap-2 w-full cursor-pointer px-2 py-1.5">
+                                    <input type="checkbox"
+                                           class="input"
+                                           data-tag-checkbox
+                                           value="arrow">
+                                    <span class="text-sm">Arrow</span>
+                                </label>
+                                
+                                <label class="flex items-center gap-2 w-full cursor-pointer px-2 py-1.5">
+                                    <input type="checkbox"
+                                           class="input"
+                                           data-tag-checkbox
+                                           value="arrow-extendr">
+                                    <span class="text-sm">Arrow-Extendr</span>
+                                </label>
+                                
+                                <label class="flex items-center gap-2 w-full cursor-pointer px-2 py-1.5">
+                                    <input type="checkbox"
+                                           class="input"
+                                           data-tag-checkbox
+                                           value="polars">
+                                    <span class="text-sm">Polars</span>
+                                </label>
+                                
+                                <label class="flex items-center gap-2 w-full cursor-pointer px-2 py-1.5">
+                                    <input type="checkbox"
+                                           class="input"
+                                           data-tag-checkbox
+                                           value="release">
+                                    <span class="text-sm">Release</span>
+                                </label>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <a class="card overflow-hidden hover:bg-muted/80 transition-colors cursor-pointer hover:border-ring hover:ring-ring/50 hover:ring-[3px]"
+               href="https://extendr.rs/blog/extendr-v090/"
+               data-filter-item
+               data-title="extendr v0.9.0"
+               data-description="This is (hopefully) our last minor release before extendr v1.0.0, focused 
+almost entirely on improved developer experience. 
+"
+               data-tags="release">
+                <header class="flex items-start justify-between">
+                    <h2 class="font-mono">extendr v0.9.0</h2>
+                    <span class="text-xs text-muted-foreground">
+                        Read <span class="iconify lucide--external-link"></span>
+                    </span>
+                </header>
+                <section>
+                    
+                    <p class="text-sm text-muted-foreground line-clamp-3">This is (hopefully) our last minor release before extendr v1.0.0, focused 
+almost entirely on improved developer experience. 
+</p>
+                    
+                    
+                    <div class="flex items-center gap-2 flex-wrap mt-2">
+                        
+                        <span class="badge-outline flex items-center gap-1">release</span>
+                        
+                    </div>
+                    
+                </section>
+                <footer class="flex items-center gap-2 w-full text-xs text-muted-foreground">
+                    
+                    <span class="truncate flex items-center gap-1 mr-auto shrink-0">
+                        <span class="iconify lucide--users mr-1"></span>
+                        Josiah Parry, Blake Vernon
+                    </span>
+                    
+                    
+                    <span class="flex items-center gap-1 ml-auto shrink-0">
+                        <span class="iconify lucide--calendar text-xs mr-1"></span>
+                        Apr 19, 2026
+                    </span>
+                    
+                </footer>
+            </a>
+            
+            <a class="card overflow-hidden hover:bg-muted/80 transition-colors cursor-pointer hover:border-ring hover:ring-ring/50 hover:ring-[3px]"
+               href="https://extendr.rs/blog/arrow-extendr-polars/"
+               data-filter-item
+               data-title="arrow-extendr: 🏹 Polars support 🐻‍❄️"
+               data-description="The latest release of arrow-extendr adds support for Polars,
+making it straightforward to move data between R and Polars
+DataFrames via the Arrow C Stream interface.
+"
+               data-tags="arrow-extendr,arrow,release,polars">
+                <header class="flex items-start justify-between">
+                    <h2 class="font-mono">arrow-extendr: 🏹 Polars support 🐻‍❄️</h2>
+                    <span class="text-xs text-muted-foreground">
+                        Read <span class="iconify lucide--external-link"></span>
+                    </span>
+                </header>
+                <section>
+                    
+                    <p class="text-sm text-muted-foreground line-clamp-3">The latest release of arrow-extendr adds support for Polars,
+making it straightforward to move data between R and Polars
+DataFrames via the Arrow C Stream interface.
+</p>
+                    
+                    
+                    <div class="flex items-center gap-2 flex-wrap mt-2">
+                        
+                        <span class="badge-outline flex items-center gap-1">arrow-extendr</span>
+                        
+                        <span class="badge-outline flex items-center gap-1">arrow</span>
+                        
+                        <span class="badge-outline flex items-center gap-1">release</span>
+                        
+                        <span class="badge-outline flex items-center gap-1">polars</span>
+                        
+                    </div>
+                    
+                </section>
+                <footer class="flex items-center gap-2 w-full text-xs text-muted-foreground">
+                    
+                    <span class="truncate flex items-center gap-1 mr-auto shrink-0">
+                        <span class="iconify lucide--users mr-1"></span>
+                        Josiah Parry
+                    </span>
+                    
+                    
+                    <span class="flex items-center gap-1 ml-auto shrink-0">
+                        <span class="iconify lucide--calendar text-xs mr-1"></span>
+                        Mar 25, 2026
+                    </span>
+                    
+                </footer>
+            </a>
+            
+            <a class="card overflow-hidden hover:bg-muted/80 transition-colors cursor-pointer hover:border-ring hover:ring-ring/50 hover:ring-[3px]"
+               href="https://extendr.rs/blog/h3o-on-cran/"
+               data-filter-item
+               data-title="h3o is now on CRAN‼️"
+               data-description="R users now have access to a pure Rust implementation of Uber&#x27;s H3, a 
+hexagonal geospatial grid and indexing system.
+"
+               data-tags="Release">
+                <header class="flex items-start justify-between">
+                    <h2 class="font-mono">h3o is now on CRAN‼️</h2>
+                    <span class="text-xs text-muted-foreground">
+                        Read <span class="iconify lucide--external-link"></span>
+                    </span>
+                </header>
+                <section>
+                    
+                    <p class="text-sm text-muted-foreground line-clamp-3">R users now have access to a pure Rust implementation of Uber&#x27;s H3, a 
+hexagonal geospatial grid and indexing system.
+</p>
+                    
+                    
+                    <div class="flex items-center gap-2 flex-wrap mt-2">
+                        
+                        <span class="badge-outline flex items-center gap-1">Release</span>
+                        
+                    </div>
+                    
+                </section>
+                <footer class="flex items-center gap-2 w-full text-xs text-muted-foreground">
+                    
+                    <span class="truncate flex items-center gap-1 mr-auto shrink-0">
+                        <span class="iconify lucide--users mr-1"></span>
+                        Blake Vernon, Josiah Parry
+                    </span>
+                    
+                    
+                    <span class="flex items-center gap-1 ml-auto shrink-0">
+                        <span class="iconify lucide--calendar text-xs mr-1"></span>
+                        Sep 9, 2025
+                    </span>
+                    
+                </footer>
+            </a>
+            
+            <a class="card overflow-hidden hover:bg-muted/80 transition-colors cursor-pointer hover:border-ring hover:ring-ring/50 hover:ring-[3px]"
+               href="https://extendr.rs/blog/rextendr-release-040/"
+               data-filter-item
+               data-title="rextendr 0.4"
+               data-description="A new version of rextendr has arrived.
+"
+               data-tags="Release,Updates">
+                <header class="flex items-start justify-between">
+                    <h2 class="font-mono">rextendr 0.4</h2>
+                    <span class="text-xs text-muted-foreground">
+                        Read <span class="iconify lucide--external-link"></span>
+                    </span>
+                </header>
+                <section>
+                    
+                    <p class="text-sm text-muted-foreground line-clamp-3">A new version of rextendr has arrived.
+</p>
+                    
+                    
+                    <div class="flex items-center gap-2 flex-wrap mt-2">
+                        
+                        <span class="badge-outline flex items-center gap-1">Release</span>
+                        
+                        <span class="badge-outline flex items-center gap-1">Updates</span>
+                        
+                    </div>
+                    
+                </section>
+                <footer class="flex items-center gap-2 w-full text-xs text-muted-foreground">
+                    
+                    <span class="truncate flex items-center gap-1 mr-auto shrink-0">
+                        <span class="iconify lucide--users mr-1"></span>
+                        Blake Vernon
+                    </span>
+                    
+                    
+                    <span class="flex items-center gap-1 ml-auto shrink-0">
+                        <span class="iconify lucide--calendar text-xs mr-1"></span>
+                        Aug 26, 2025
+                    </span>
+                    
+                </footer>
+            </a>
+            
+            <a class="card overflow-hidden hover:bg-muted/80 transition-colors cursor-pointer hover:border-ring hover:ring-ring/50 hover:ring-[3px]"
+               href="https://extendr.rs/blog/extendr-release-070/"
+               data-filter-item
+               data-title="Migration guide for extendr 0.7.0"
+               data-description="A new version of extendr has arrived, so we explain how to address major changes.
+"
+               data-tags="Release,Updates">
+                <header class="flex items-start justify-between">
+                    <h2 class="font-mono">Migration guide for extendr 0.7.0</h2>
+                    <span class="text-xs text-muted-foreground">
+                        Read <span class="iconify lucide--external-link"></span>
+                    </span>
+                </header>
+                <section>
+                    
+                    <p class="text-sm text-muted-foreground line-clamp-3">A new version of extendr has arrived, so we explain how to address major changes.
+</p>
+                    
+                    
+                    <div class="flex items-center gap-2 flex-wrap mt-2">
+                        
+                        <span class="badge-outline flex items-center gap-1">Release</span>
+                        
+                        <span class="badge-outline flex items-center gap-1">Updates</span>
+                        
+                    </div>
+                    
+                </section>
+                <footer class="flex items-center gap-2 w-full text-xs text-muted-foreground">
+                    
+                    <span class="truncate flex items-center gap-1 mr-auto shrink-0">
+                        <span class="iconify lucide--users mr-1"></span>
+                        Josiah Parry
+                    </span>
+                    
+                    
+                    <span class="flex items-center gap-1 ml-auto shrink-0">
+                        <span class="iconify lucide--calendar text-xs mr-1"></span>
+                        Jun 30, 2024
+                    </span>
+                    
+                </footer>
+            </a>
+            
+
+            <p data-filter-empty
+               class="hidden text-sm text-muted-foreground mt-2">No posts match your filters.</p>
+        </article>
+
+        <aside id="tag-list"
+               class="hidden text-sm xl:block xl:col-start-4 xl:row-start-2">
+            <div class="card">
+                <header>
+                    <h2 class="font-mono">Filter items</h2>
+                </header>
+                <section class="flex flex-col gap-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-medium">Tags</h4>
+                        <button type="button"
+                                data-tag-select-all
+                                class="text-xs text-primary hover:underline">Select all</button>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox"
+                                   class="input"
+                                   data-tag-checkbox
+                                   value="Release">
+                            <span class="text-sm">Release</span>
+                        </label>
+                        
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox"
+                                   class="input"
+                                   data-tag-checkbox
+                                   value="Updates">
+                            <span class="text-sm">Updates</span>
+                        </label>
+                        
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox"
+                                   class="input"
+                                   data-tag-checkbox
+                                   value="arrow">
+                            <span class="text-sm">Arrow</span>
+                        </label>
+                        
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox"
+                                   class="input"
+                                   data-tag-checkbox
+                                   value="arrow-extendr">
+                            <span class="text-sm">Arrow-Extendr</span>
+                        </label>
+                        
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox"
+                                   class="input"
+                                   data-tag-checkbox
+                                   value="polars">
+                            <span class="text-sm">Polars</span>
+                        </label>
+                        
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox"
+                                   class="input"
+                                   data-tag-checkbox
+                                   value="release">
+                            <span class="text-sm">Release</span>
+                        </label>
+                        
+                    </div>
+                </section>
+            </div>
+        </aside>
+    </div>
+</div>
+
+                </main>
+            </div>
+        </main>
+    </body>
+</html>

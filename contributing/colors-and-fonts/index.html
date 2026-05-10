@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="en"
+      class="dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0" />
+        <title>extendr</title>
+
+        <!-- Tailwind + Basecoat CSS -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/style.css" />
+
+        <!-- Determine theme before loading syntax highlighting -->
+        <script>
+            (() => {
+                const stored = localStorage.getItem("themeMode");
+                // Use stored preference if exists, otherwise always default to dark
+                const isDark = stored ? stored === "dark" : true;
+                document.documentElement.classList.toggle("dark", isDark);
+            })();
+        </script>
+
+        <!-- Syntax highlighting themes (both loaded; inactive one disabled by pre-paint script) -->
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-light.css"
+              id="giallo-light" />
+        <link rel="stylesheet"
+              href="https://extendr.rs/giallo-dark.css"
+              id="giallo-dark" />
+
+        <!-- Toggle syntax highlighting -->
+        <script defer>
+            (() => {
+                const apply = (dark) => {
+                    document.documentElement.classList.toggle("dark", dark);
+
+                    // Toggle syntax highlighting themes via media attribute
+                    const darkSyntax = document.getElementById("giallo-dark");
+                    const lightSyntax = document.getElementById("giallo-light");
+                    if (darkSyntax && lightSyntax) {
+                        darkSyntax.media = dark ? "all" : "not all";
+                        lightSyntax.media = dark ? "not all" : "all";
+                    }
+
+                    try {
+                        localStorage.setItem(
+                            "themeMode",
+                            dark ? "dark" : "light",
+                        );
+                    } catch (_) { }
+                };
+
+                document.addEventListener("basecoat:theme", (event) => {
+                    const mode = event.detail?.mode;
+                    apply(
+                        mode === "dark" ? true : mode === "light"
+                            ? false : !document.documentElement.classList.contains("dark"),
+                    );
+                });
+
+                apply(document.documentElement.classList.contains("dark"));
+            })();
+        </script>
+
+        <!-- Basecoat ui functionality -->
+        <script src="https://extendr.rs/js/basecoat.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/dropdown-menu.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/sidebar.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/popover.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/tabs.min.js"
+                defer></script>
+        <script src="https://extendr.rs/js/accordion.js"
+                defer></script>
+        <script>window.SEARCH_INDEX_URL = "https://extendr.rs/search_index.en.json";</script>
+        <script src="https://extendr.rs/js/search.js"
+                defer></script>
+        <script src="https://extendr.rs/js/filter-list.js"
+                defer></script>
+
+        <script>
+            (() => {
+                const themeSelect = document.getElementById('theme-select');
+                const storedTheme = localStorage.getItem('themeVariant');
+                if (themeSelect && storedTheme) themeSelect.value = storedTheme;
+                themeSelect.addEventListener('change', () => {
+                    const newTheme = themeSelect.value;
+                    document.documentElement.classList.forEach(c => {
+                        if (c.startsWith('theme-')) document.documentElement.classList.remove(c);
+                    });
+                    if (newTheme) {
+                        document.documentElement.classList.add(`theme-${newTheme}`);
+                        localStorage.setItem('themeVariant', newTheme);
+                    } else {
+                        localStorage.removeItem('themeVariant');
+                    }
+                });
+            })();
+        </script>
+
+        <script>
+            (() => {
+                const KEY = "sidebarScrollTop";
+                const select = () => document.querySelector("aside.sidebar section");
+
+                const restore = () => {
+                    const el = select();
+                    if (!el) return;
+                    const v = sessionStorage.getItem(KEY);
+                    if (v !== null) el.scrollTop = parseInt(v, 10);
+                };
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", restore);
+                } else {
+                    restore();
+                }
+
+                window.addEventListener("pagehide", () => {
+                    const el = select();
+                    if (!el) return;
+                    sessionStorage.setItem(KEY, String(el.scrollTop));
+                });
+            })();
+        </script>
+
+        
+    </head>
+    <body>
+        <aside class="sidebar block"
+               data-side="left"
+               aria-label="Main navigation">
+            <nav aria-label="Sidebar navigation">
+    <header class="font-mono">
+        <a href="/" class="btn-ghost p-2 h-12 w-full justify-start text-xl items-baseline">
+            extendr <span class="text-sm text-muted-foreground">v0.9.0</span>
+        </a>
+    </header>
+    <section class="scrollbar [&_div>h3]:uppercase">
+        <div role="group">
+            <h3>Getting started</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/introduction/">
+                        <span class="iconify lucide--info text-xs"></span>
+                        Introduction
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/installation/">
+                        <span class="iconify lucide--terminal text-xs"></span>
+                        Installation
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/example/">
+                        <span class="iconify lucide--package text-xs"></span>
+                        Example
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>API Reference</h3>
+            <ul>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;extendr&#x2F;">
+                        <span class="iconify mdi--language-rust text-base"></span>extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;rextendr&#x2F;">
+                        <span class="iconify mdi--language-r text-base"></span>rextendr
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+            <h3>Community</h3>
+            <ul>
+                <li>
+                    <a href="https://extendr.rs/blog/">
+                        <span class="iconify lucide--rss text-xs"></span>Blog
+                    </a>
+                </li>
+                <li>
+                    <a href="https://extendr.rs/awesome/">
+                        <span class="iconify lucide--sparkles text-xs"></span>Awesome Extendr
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc">
+                        <span class="iconify fa7-brands--discord text-xs"></span>Discord
+                    </a>
+                </li>
+                <li>
+                    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr">
+                        <span class="iconify mdi--github text-xs"></span>GitHub
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div role="group">
+
+<h3>Development</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/development/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/data-types/" class="pl-4">
+            R to Rust type mapping
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/extendr-macro/" class="pl-4">
+            Using Rust types in R
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/collections/" class="pl-4">
+            Using HashMaps
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/into-list/" class="pl-4">
+            Rust Structs to Lists
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/default-args/" class="pl-4">
+            Default function arguments
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/package-structure/" class="pl-4">
+            Project Structure
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/serde-integration/" class="pl-4">
+            `serde` integration
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/webr/" class="pl-4">
+            Building for WebR
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/development/tokio/" class="pl-4">
+            Async with Tokio
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Publishing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/publishing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-publishing/" class="pl-4">
+            Publish to CRAN
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/publishing/cran-msrv/" class="pl-4">
+            CRAN MSRV
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Rust Tutorials</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/rust-intro/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/hello-world/" class="pl-4">
+            Hello, World!
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/types/" class="pl-4">
+            Basic Types
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/control-flow/" class="pl-4">
+            Control Flow
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/collections/" class="pl-4">
+            Collections
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/loops/" class="pl-4">
+            Loops
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/mutability/" class="pl-4">
+            Mutability
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/functions/" class="pl-4">
+            Functions
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/ownership/" class="pl-4">
+            Ownership
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/iterators/" class="pl-4">
+            Iterators
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/structures/" class="pl-4">
+            Structures
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/implementations/" class="pl-4">
+            Implementations
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/rust-intro/enumerations/" class="pl-4">
+            Enumerations
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+        <div role="group">
+
+<h3>Contributing</h3>
+<ul class="border-l border-border ml-2">
+    <li>
+        <a href="https://extendr.rs/contributing/" class="pl-4">Overview</a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/writing-code/" class="pl-4">
+            Writing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/documenting-code/" class="pl-4">
+            Documenting Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/testing-code/" class="pl-4">
+            Testing Code
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/extendr-internals/" class="pl-4">
+            extendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/rextendr-internals/" class="pl-4">
+            rextendr Internals
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/colors-and-fonts/" class="pl-4">
+            Colors and Fonts
+        </a>
+    </li>
+    
+    <li>
+        <a href="https://extendr.rs/contributing/user-guide-pages/" class="pl-4">
+            User Guide Pages
+        </a>
+    </li>
+    
+    
+</ul>
+</div>
+    </section>
+</nav>
+        </aside>
+        <main>
+            <header class="bg-sidebar sticky inset-x-0 top-0 isolate flex shrink-0 items-center gap-2 border-b z-10">
+                <div class="flex h-14 w-full items-center gap-2 px-4">
+    <button type="button" onclick="document.dispatchEvent(new CustomEvent('basecoat:sidebar'))" aria-label="Toggle sidebar" data-tooltip="Toggle sidebar"
+        data-side="bottom" data-align="start" class="btn-sm-icon-ghost mr-auto size-7 -ml-1.5">
+        <span class="iconify lucide--sidebar"></span>
+    </button>
+    <div class="relative">
+        <span class="iconify lucide--search absolute left-2 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none"></span>
+        <input class="input h-8 pl-8" id="input-with-text" type="search" placeholder="Search the docs">
+    </div>
+    <button type="button" aria-label="Toggle dark mode" data-tooltip="Toggle dark mode" data-side="bottom"
+        onclick="document.dispatchEvent(new CustomEvent('basecoat:theme'))" class="btn-icon-outline size-8">
+        <span class="iconify lucide--sun hidden dark:block"></span>
+        <span class="iconify lucide--moon block dark:hidden"></span>
+    </button>
+    <a href="https:&#x2F;&#x2F;github.com&#x2F;extendr&#x2F;extendr" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="GitHub repository"
+        data-side="bottom" data-align="end">
+        <span class="iconify mdi--github"></span>
+    </a>
+    <a href="https:&#x2F;&#x2F;discord.gg&#x2F;7hmApuc" class="btn-icon-outline size-8" target="_blank" rel="noopener noreferrer" data-tooltip="Discord channel"
+        data-side="bottom" data-align="end">
+        <span class="iconify fa7-brands--discord text-xs"></span>
+    </a>
+</div>
+            </header>
+            <div class="p-4 md:p-6 xl:p-12">
+                <main class="mx-auto relative flex w-full max-w-screen-xl gap-8">
+                    
+<div class="ml-auto w-full flex-1 min-w-0 max-w-screen-md">
+    <article class="content flex flex-col gap-4">
+        <header class="pb-2 border-b border-border">
+            <h1 class="my-0">Colors and Fonts</h1>
+            
+            <p class="text-muted-foreground mt-1 mb-0">Reference for the site&#x27;s Tailwind theme tokens, brand palette, and fonts.</p>
+            
+            
+        </header>
+        <div class="prose">
+            <p>The site uses <a rel="external" href="https://tailwindcss.com/">Tailwind CSS v4</a> with the
+<a rel="external" href="https://basecoatui.com/">basecoat</a> component library. Two color systems are
+exposed as Tailwind utilities:</p>
+<ol>
+<li><strong>Semantic theme tokens</strong> — <code>primary</code>, <code>muted</code>, <code>card</code>, etc. These adapt
+automatically to light and dark mode and should be preferred for general UI.</li>
+<li><strong>Brand palette tokens</strong> — fixed R Foundation and Rust Foundation colors.
+Use these when you specifically want a brand color regardless of theme.</li>
+</ol>
+<p>Anywhere a Tailwind color utility is accepted (<code>bg-*</code>, <code>text-*</code>, <code>border-*</code>,
+<code>ring-*</code>, <code>from-*</code>, <code>to-*</code>, …), both groups work the same way.</p>
+<h2 id="semantic-theme-colors">Semantic theme colors</h2>
+<p>Each semantic role comes as a pair: a background and its matching foreground.
+Tokens live in <code>css/theme.css</code> and flip automatically when the <code>.dark</code> class
+is on <code>&lt;html&gt;</code>.</p>
+<div class="flex gap-2 flex-wrap">
+<div class="bg-background text-foreground border border-border h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-background</p>
+</div>
+<div class="bg-card text-card-foreground border border-border h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-card</p>
+</div>
+<div class="bg-popover text-popover-foreground border border-border h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-popover</p>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap mt-2">
+<div class="bg-primary text-primary-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-primary</p>
+</div>
+<div class="bg-secondary text-secondary-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-secondary</p>
+</div>
+<div class="bg-accent text-accent-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-accent</p>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap mt-2">
+<div class="bg-muted text-muted-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-muted</p>
+</div>
+<div class="bg-destructive text-destructive-foreground h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-destructive</p>
+</div>
+</div>
+<p>Three single-purpose tokens round out the set:</p>
+<ul>
+<li><code>border-border</code> — default border color.</li>
+<li><code>bg-input</code> — form field background.</li>
+<li><code>ring-ring</code> — focus ring color.</li>
+</ul>
+<p>For text, drop the <code>bg-</code> prefix:
+<span class="text-foreground">text-foreground</span>,
+<span class="text-muted-foreground">text-muted-foreground</span>,
+<span class="text-primary">text-primary</span>,
+<span class="text-destructive">text-destructive</span>,
+<span class="text-accent-foreground">text-accent-foreground</span>.</p>
+<h2 id="chart-colors">Chart colors</h2>
+<p>Five semantic slots designed for data visualization, each with a distinct
+light/dark mapping.</p>
+<div class="flex gap-2 flex-wrap">
+<div class="bg-chart-1 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+<p>chart-1</p>
+</div>
+<div class="bg-chart-2 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+<p>chart-2</p>
+</div>
+<div class="bg-chart-3 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+<p>chart-3</p>
+</div>
+<div class="bg-chart-4 h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+<p>chart-4</p>
+</div>
+<div class="bg-chart-5 h-16 flex-1 min-w-32 flex items-center justify-center text-sm font-mono">
+<p>chart-5</p>
+</div>
+</div>
+<h2 id="brand-palette">Brand palette</h2>
+<p>Defined in <code>css/colors.css</code>. These are <strong>fixed values</strong> — they don’t flip in
+dark mode. Pair them with an appropriate text color manually.</p>
+<h3 id="r-foundation">R Foundation</h3>
+<p>The blues from the <a rel="external" href="https://www.r-project.org/logo/">R logo</a>.</p>
+<div class="flex gap-2 flex-wrap">
+<div class="bg-r-blue-2 text-white h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-r-blue-2</p>
+</div>
+<div class="bg-r-blue-1 text-white h-16 flex-1 min-w-40 flex items-center justify-center text-sm font-mono">
+<p>bg-r-blue-1</p>
+</div>
+</div>
+<h3 id="rust-foundation">Rust Foundation</h3>
+<p>Tints from the Rust Foundation <a rel="external" href="https://rustfoundation.org/brand-guide/">brand guide</a>.
+Each family ships at 100, 75, 50, and 25 percent saturation.</p>
+<div class="flex gap-2 flex-wrap">
+<div class="bg-rust-dark-blue-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-dark-blue-100</p>
+</div>
+<div class="bg-rust-dark-blue-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-dark-blue-75</p>
+</div>
+<div class="bg-rust-dark-blue-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-dark-blue-50</p>
+</div>
+<div class="bg-rust-dark-blue-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-dark-blue-25</p>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap mt-2">
+<div class="bg-rust-orange-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-orange-100</p>
+</div>
+<div class="bg-rust-orange-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-orange-75</p>
+</div>
+<div class="bg-rust-orange-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-orange-50</p>
+</div>
+<div class="bg-rust-orange-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-orange-25</p>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap mt-2">
+<div class="bg-rust-blue-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-blue-100</p>
+</div>
+<div class="bg-rust-blue-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-blue-75</p>
+</div>
+<div class="bg-rust-blue-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-blue-50</p>
+</div>
+<div class="bg-rust-blue-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-blue-25</p>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap mt-2">
+<div class="bg-rust-silver-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-silver-100</p>
+</div>
+<div class="bg-rust-silver-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-silver-75</p>
+</div>
+<div class="bg-rust-silver-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-silver-50</p>
+</div>
+<div class="bg-rust-silver-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-silver-25</p>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap mt-2">
+<div class="bg-rust-green-100 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-green-100</p>
+</div>
+<div class="bg-rust-green-75 text-white h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-green-75</p>
+</div>
+<div class="bg-rust-green-50 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-green-50</p>
+</div>
+<div class="bg-rust-green-25 h-16 flex-1 min-w-32 flex items-center justify-center text-xs font-mono">
+<p>rust-green-25</p>
+</div>
+</div>
+<p>Brand colors are also available as text utilities:
+<span class="text-r-blue-1">text-r-blue-1</span>,
+<span class="text-rust-orange-100">text-rust-orange-100</span>,
+<span class="text-rust-blue-100">text-rust-blue-100</span>,
+<span class="text-rust-green-100">text-rust-green-100</span>,
+<span class="text-rust-dark-blue-100">text-rust-dark-blue-100</span>.</p>
+<h2 id="light-and-dark-mode">Light and dark mode</h2>
+<p>Theme switching is driven by a <code>.dark</code> class on <code>&lt;html&gt;</code>. Semantic tokens
+have separate values for each mode, so utilities like <code>bg-primary</code> or
+<code>text-muted-foreground</code> adapt without any extra work on your part.</p>
+<p>When you need a class to apply <em>only</em> in one mode, prefix it with the <code>dark:</code>
+variant:</p>
+<div class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-border p-4 rounded">
+<p>This block is white in light mode and zinc-900 in dark mode. Toggle the theme
+to see the swap.</p>
+</div>
+<p>In practice you should rarely need <code>dark:</code> — reach for it only when the
+semantic tokens above don’t fit your case.</p>
+<h2 id="fonts">Fonts</h2>
+<p>Three font families are loaded in <code>css/fonts.css</code> and exposed as Tailwind
+utilities:</p>
+<div class="flex gap-2 flex-wrap">
+<div class="bg-card text-card-foreground border border-border font-mono p-4 flex-1 min-w-56">
+<pre class="giallo z-code"><code data-lang="plain"><span class="giallo-l"><span>&lt;div class=&quot;text-2xl&quot;&gt;Monaspace&lt;/div&gt;</span></span>
+<span class="giallo-l"><span>font-mono&lt;br&gt;</span></span>
+<span class="giallo-l"><span>ABCDEFGHIJKLMNOPQRSTUVWXYZ&lt;br&gt;</span></span>
+<span class="giallo-l"><span>abcdefghijklmnopqrstuvwxyz&lt;br&gt;</span></span>
+<span class="giallo-l"><span>0123456789</span></span></code></pre></div>
+<div class="bg-card text-card-foreground border border-border font-serif p-4 flex-1 min-w-56">
+<pre class="giallo z-code"><code data-lang="plain"><span class="giallo-l"><span>&lt;div class=&quot;text-2xl&quot;&gt;Noto Serif&lt;/div&gt;</span></span>
+<span class="giallo-l"><span>font-serif&lt;br&gt;</span></span>
+<span class="giallo-l"><span>ABCDEFGHIJKLMNOPQRSTUVWXYZ&lt;br&gt;</span></span>
+<span class="giallo-l"><span>abcdefghijklmnopqrstuvwxyz&lt;br&gt;</span></span>
+<span class="giallo-l"><span>0123456789</span></span></code></pre></div>
+<div class="bg-card text-card-foreground border border-border font-sans p-4 flex-1 min-w-56">
+<pre class="giallo z-code"><code data-lang="plain"><span class="giallo-l"><span>&lt;div class=&quot;text-2xl&quot;&gt;Noto Sans&lt;/div&gt;</span></span>
+<span class="giallo-l"><span>font-sans&lt;br&gt;</span></span>
+<span class="giallo-l"><span>ABCDEFGHIJKLMNOPQRSTUVWXYZ&lt;br&gt;</span></span>
+<span class="giallo-l"><span>abcdefghijklmnopqrstuvwxyz&lt;br&gt;</span></span>
+<span class="giallo-l"><span>0123456789</span></span></code></pre></div>
+</div>
+<p>Body copy uses <code>font-sans</code> by default, and headings inside <code>.content</code> get
+<code>font-mono</code> automatically (see <code>css/content.css</code>). You should rarely need to
+set a font utility by hand.</p>
+
+        </div>
+        
+        <footer class="mt-10">
+            <nav class="flex justify-between items-center text-sm">
+                <div>
+                    
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;contributing&#x2F;rextendr-internals&#x2F;"
+                       class="flex items-center gap-1">
+                        <span>←</span>
+                        <span>rextendr Internals</span>
+                    </a>
+                    
+                </div>
+                <div>
+                    
+                    <a href="https:&#x2F;&#x2F;extendr.rs&#x2F;contributing&#x2F;user-guide-pages&#x2F;"
+                       class="flex items-center gap-1">
+                        <span>User Guide Pages</span>
+                        <span>→</span>
+                    </a>
+                    
+                </div>
+            </nav>
+        </footer>
+        
+    </article>
+</div>
+<div class="hidden text-sm xl:block w-full max-w-[240px]">
+    
+    <aside aria-label="On this page"
+           class="sticky top-[var(--header-h,5rem)] py-4 space-y-1">
+        
+        <nav
+             class="toc sticky top-22 space-y-2 [&_ul]:my-0 [&_ul]:list-none [&_li]:mt-0 [&_li]:pt-2 [&_a]:inline-block [&_a]:no-underline [&_a]:transition-colors [&_a]:hover:text-foreground [&_a]:text-muted-foreground">
+            <h4 class="font-medium uppercase">On this page</h4>
+            
+<ul class="space-y-1 ml-2 border-l border-border">
+    
+    
+    <li class="toc-item">
+        <a href="#semantic-theme-colors" class="toc-link pl-4">Semantic theme colors</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#chart-colors" class="toc-link pl-4">Chart colors</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#brand-palette" class="toc-link pl-4">Brand palette</a>
+        
+        
+<ul class="space-y-1 ml-2">
+    
+    
+    <li class="toc-item">
+        <a href="#r-foundation" class="toc-link pl-4">R Foundation</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#rust-foundation" class="toc-link pl-4">Rust Foundation</a>
+        
+    </li>
+    
+    
+</ul>
+
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#light-and-dark-mode" class="toc-link pl-4">Light and dark mode</a>
+        
+    </li>
+    
+    
+    
+    <li class="toc-item">
+        <a href="#fonts" class="toc-link pl-4">Fonts</a>
+        
+    </li>
+    
+    
+</ul>
+
+        </nav>
+        
+    </aside>
+</div>
+
+                </main>
+            </div>
+        </main>
+    </body>
+</html>
