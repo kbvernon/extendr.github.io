@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     name: Publish site
     runs-on: ubuntu-latest
     permissions:
@@ -26,39 +26,7 @@ jobs:
       - name: Build Tailwind CSS
         run: npm run tailwind:build
 
-      - name: Install Zola
-        run: |
-          ZOLA_VERSION="0.22.1"
-          curl -sL "https://github.com/getzola/zola/releases/download/v${ZOLA_VERSION}/zola-v${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz
-          sudo mv zola /usr/local/bin/
-
-      - name: Build site
-        run: zola build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-
-      - name: Fix permissions
-        run: |
-          chmod -c -R +rX "public" | while read line; do
-            echo "::warning title=Invalid file permissions automatically fixed::$line"
-          done
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: public
-  
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Build and deploy
+        uses: shalzz/zola-deploy-action@v0.22.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
