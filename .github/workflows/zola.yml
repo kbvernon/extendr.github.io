@@ -6,11 +6,13 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build:
     name: Publish site
     runs-on: ubuntu-latest
+    
     permissions:
       contents: write
+    
     steps:
       - name: Checkout main
         uses: actions/checkout@v6
@@ -26,7 +28,19 @@ jobs:
       - name: Build Tailwind CSS
         run: npm run tailwind:build
 
-      - name: Build and deploy
-        uses: shalzz/zola-deploy-action@v0.22.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Zola
+        run: |
+          ZOLA_VERSION="0.22.1"
+          curl -sL "https://github.com/getzola/zola/releases/download/v${ZOLA_VERSION}/zola-v${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz
+          sudo mv zola /usr/local/bin/
+
+      - name: Build site
+        run: zola build
+      
+      - name: Deploy to GitHub pages 🚀
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          clean: false
+          branch: gh-pages
+          folder: public
