@@ -12,7 +12,7 @@ taxonomies:
 ---
 
 
-## TL; DR
+## TL;DR
 
 - New domain! Say hi to extendr.rs 👋🏼
 - Positron & VS Code Support 👩🏽‍💻
