@@ -9,8 +9,10 @@ jobs:
   build:
     name: Publish site
     runs-on: ubuntu-latest
+    
     permissions:
       contents: write
+    
     steps:
       - name: Checkout main
         uses: actions/checkout@v6
@@ -34,31 +36,11 @@ jobs:
 
       - name: Build site
         run: zola build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-
-      - name: Fix permissions
-        run: |
-          chmod -c -R +rX "public" | while read line; do
-            echo "::warning title=Invalid file permissions automatically fixed::$line"
-          done
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
+      
+      - name: Deploy to GitHub pages 🚀
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
-          path: public
-  
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+          clean: false
+          branch: gh-pages
+          folder: public
