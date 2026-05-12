@@ -29,7 +29,7 @@ Identifying whether a number is odd or even is a classic example. The [is-odd
 npm package](https://www.npmjs.com/package/is-odd) became famous for being a
 remarkably small and widely depended-upon piece of code:
 
-<img src="/rust-intro/images/is-odd.png" width="70%" fig-align="center"/>
+<img src="is-odd.png" class="w-8/10 mx-auto my-8"/>
 
 Here is the Rust equivalent. We define `is_even()` first, taking an `i32` and
 returning a `bool`, then use it inside `is_odd()`:
