@@ -48,6 +48,8 @@
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
+    --link: oklch(0.54 0.2 150);
+    --link-hover: oklch(0.7 0.2 150);
 }
 
 .dark {
@@ -98,6 +100,8 @@
     --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
     --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
     --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+    --link: var(--primary);
+    --link-hover: oklch(from var(--primary) 0.86 c h);
 }
 
 @theme inline {
@@ -147,6 +151,9 @@
     --shadow-lg: var(--shadow-lg);
     --shadow-xl: var(--shadow-xl);
     --shadow-2xl: var(--shadow-2xl);
+
+    --color-link: var(--link);
+    --color-link-hover: var(--link-hover);
 }
 
 @layer base {

@@ -15,7 +15,7 @@
 }
 
 html:not(.dark) .z-code {
-    @apply bg-gray-100;
+    @apply bg-gray-50;
 }
 
 .z-code {
