@@ -1,8 +1,9 @@
 @layer base {
 
-    /* Typography rules for guide and blog content. The `to (.bc)` boundary
-       stops descent into shortcode subtrees so basecoat components keep
-       their own styling. */
+    /* 
+    Typography rules for guide and blog content. The `to (.bc)` boundary stops 
+    descent into shortcode subtrees so basecoat components keep their own styling. 
+    */
     @scope (.content) to (.bc) {
 
         :is(h1, h2, h3, h4, h5) {
@@ -47,7 +48,7 @@
         }
 
         a {
-            @apply text-primary hover:underline;
+            @apply text-link hover:text-link-hover hover:underline;
         }
     }
 }
