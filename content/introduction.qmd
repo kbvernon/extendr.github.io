@@ -1,6 +1,6 @@
 ---
 title: "Introduction"
-description: "Call Rust code in R!"
+description: "Write Rust code and call it in R!"
 weight: 2
 ---
 
@@ -13,47 +13,79 @@ knitr::opts_knit$set(root.dir = root_dir)
 ```
 
 This is the website for `extendr`, a developer-first utility for building R
-packages that call Rust code. Of course, you do not have to be a package 
-developer to find some use in extendr. In fact, anyone who has a need to call 
-Rust in R can do so with ease. Consider this basic example:
+packages that call Rust code. With extendr, you can write Rust code like this:
 
-```{r}
-#| label: rust-function
-# create a Rust function
-rextendr::rust_function(
-  "fn add(a:f64, b:f64) -> f64 { a + b }",
-  quiet = TRUE
-)
+```rust {filename="lib.rs"}
+use extendr_api::prelude::*;
 
-# call it from R
-add(2.5, 4.7)
+/// Return string `"Hello world!"` to R.
+/// @param name A name to greet.
+/// @export
+#[extendr]
+fn hello(name: String) -> String {
+    format!("Hello {name}!")
+}
+
+// Macro to generate exports.
+extendr_module! {
+    mod helloextendr;
+    fn hello;
+}
 ```
 
-Moving beyond these simple, one-off cases, however, is where extendr really 
-shines. Any time you have lots of really complex Rust code that requires 
-seamless integration with R, notably within a package, extendr is the tool for
-you. 
+and then in R you can call it like this:
 
-Now largely owing to the fact that we are bridging programming languages, you 
-will rarely proceed directly to extendr's Rust API. You will instead reach for 
-the R package `rextendr`, which works sort of like `usethis`, automating many of 
-the repetitive tasks required to setup or scaffold your project, so you can 
-focus on the important business of writing code. This is done by calling
-`rextendr::use_extendr()`, which should feel familiar to anyone who has worked
-with `usethis::use_cpp11()`.
+```{.r}
+hello("world")
+```
+
+```
+[1] "Hello world!"
+```
+
+We call the whole project extendr, of course, but it isn't just one thing. It's 
+actually a *suite* of software tools. On the Rust side, extendr consists of 
+several crates, but you will typically interact with `extender-api`, a 
+developer-facing crate providing a host of data structures, traits, and macros — 
+like `#[extendr]` in the above example — that make it easy to write Rust code to 
+call in R. On the R side, there is `rextendr`, an R package that works sort of 
+like `usethis`, sort of like `devtools`, automating many of the repetitive tasks 
+required to setup or scaffold your project, allowing you to focus on the 
+important business of writing Rust and R code. 
+
+```{=html}
+<div class="w-fit mx-auto my-4 md:my-8 flex flex-row items-center gap-2">
+  <a href="https://extendr.github.io/extendr/extendr_api/" class="bc btn-lg-outline h-auto p-2 md:p-4 font-mono md:text-[1.5em]">
+    <span class="iconify mdi--language-rust"></span>
+    extendr-api
+  </a>
+  <p class="text-gray-600 dark:text-gray-300 m-0 md:text-[1.5em]">&harr;</p>
+  <a href="https://extendr.github.io/rextendr/" class="bc btn-lg-outline h-auto p-2 md:p-4 font-mono md:text-[1.5em]">
+    rextendr
+    <span class="iconify mdi--language-r"></span>
+  </a>
+</div>
+```
+
+So, when you go to setup a repository to develop a Rust-powered R package, you 
+will reach for rextendr first. Then, when you start writing Rust code for your R 
+package, you will turn to extendr-api.
 
 ## Create an R package
 
 The process of building a Rust-powered R package with extendr boils down to 
-three simple steps:
+four simple steps:
 
 1. Setup R package with `usethis::create_package()`.
 2. Add extendr scaffolding with `rextendr::use_extendr()`.
-3. Build and document with `devtools::document()`.
+3. Write Rust code and export it with `extendr-api`.
+4. Build and document with `devtools::document()`.
 
 Once you have worked through those steps, you can then load your package with 
-`devtools::load_all()` and start using your package! Here is an example with 
-just the defaults:
+`devtools::load_all()` and start using your package! Here is an example that 
+loads the above `lib.rs` into your package at `src/rust/src/lib.rs`, compiles 
+it, generates wrappers and documentation, and then calls the `hello()` function 
+from R:
 
 ```r
 # setup R package
@@ -69,7 +101,7 @@ devtools::document()
 devtools::load_all()
 
 # call rust function
-hello_world()
+hello("world")
 ```
 
 ```

@@ -40,7 +40,7 @@ devtools::document()
 devtools::load_all()
 
 # call rust function
-hello_world()
+hello("world")
 ```
 
 <div class="mt-4">
