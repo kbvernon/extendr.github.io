@@ -73,7 +73,7 @@ post title:
 render-page path: (render-one path)
 
 # Render a blog post at content/blog/{{title}}/index.qmd
-render-post title: (render-one "blog/{{title}}/index")
+render-post title: (render-one ("blog" / title / "index"))
 
 [private]
 render-one path:
