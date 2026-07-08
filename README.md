@@ -13,8 +13,6 @@ code. The website is built using the Rust-powered static site generator,
     framework
 -   **[basecoat-css](https://basecoatui.com/)** — a lightweight shadcn/ui 
     components library built with Tailwind CSS
--   **[just](https://github.com/casey/just)** — a Rust-powered command runner,
-    similar to `make`
 -   **[Quarto](https://quarto.org/)** — currently used to execute code chunks 
     and render to commonmark, though this is likely to change
 -   **[Node.js](https://nodejs.org/en)** — `npm` and `npx` are also used to 
@@ -23,17 +21,12 @@ code. The website is built using the Rust-powered static site generator,
     Tailwind extension for icons (currently limited to fa7-brands, lucide, and 
     mdi icons)
 
-## Pipeline
-
-Running `just build` will do the following:
+The build pipeline:
 
 1.  **Tailwind** compiles `css/*.css` to `static/style.css`.
-2.  **Quarto** executes code in `content/**/*.qmd` and compiles to CommonMark in
+2.  **Quarto** executes code in `content/**/*.qmd` and compiles to commonmark in
     `content/**/*.md`.
 3.  **Zola** compiles commonmark to HTML and builds site in public/.
-
-For development, the same is achieved with `just dev`, which will serve the site
-and open it in the default browser with live reload.
 
 ## Structure
 
@@ -60,9 +53,13 @@ and open it in the default browser with live reload.
 **Prerequisites**
 
 In addition to the stack software listed above, you will need R installed and 
-the most recent release version of the rextendr package. The 
-[`just`](https://github.com/casey/just) command line runner will also be very 
-beneficial to you.
+the most recent release version of the rextendr package. The `just` command line 
+runner will also be very beneficial to you.
+
+-   **[just](https://github.com/casey/just)** v1.55.0 or higher
+-   **Node.js** v24.15.0 or higher
+-   **Quarto** 
+-   **Zola** v0.22.1 or higher
 
 **Installation**
 
