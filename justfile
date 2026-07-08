@@ -35,6 +35,7 @@ basecoat:
 # Create a new documentation page at content/{{path}}.qmd
 page path:
     #!/usr/bin/env bash
+    set -euo pipefail
     if [ -f "content/{{ path }}.qmd" ]; then
     	echo "Error: content/{{ path }}.qmd already exists."
     	exit 1
@@ -53,6 +54,7 @@ page path:
 # Create a new blog post at content/blog/{{title}}/index.qmd
 post title:
     #!/usr/bin/env bash
+    set -euo pipefail
     date=$(date +%Y-%m-%d)
     dir="content/blog/${date}-{{ title }}"
     mkdir -p "$dir"
@@ -76,10 +78,11 @@ render-post title: (render-one "blog/{{title}}/index")
 [private]
 render-one path:
     #!/usr/bin/env bash
+    set -euo pipefail
     cd content
     if [ -f "{{ path }}.qmd" ]; then
     	rm -f "{{ path }}.md"
-    	quarto render "{{ path }}.qmd" -M engine:knitr
+    	quarto render "{{ path }}.qmd" {{ quarto_out + " " + quarto_flags }}
     else
     	echo "Error: Could not find content/{{ path }}.qmd."
     	exit 1
@@ -94,6 +97,9 @@ render:
     for page in **/*.qmd; do
     	[[ "$page" == blog/* ]] && continue
     	rm -f "${page%.qmd}.md"
-    	quarto render "$page" -M engine:knitr
+    	quarto render "$page" {{ quarto_out + " " + quarto_flags }}
     done
     echo "Successfully rendered all documentation pages."
+
+quarto_out := "--to commonmark+yaml_metadata_block"
+quarto_flags := "-M engine:knitr -M wrap:preserve -M from:markdown-smart"
