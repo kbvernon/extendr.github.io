@@ -38,7 +38,7 @@ page path:
     #!/usr/bin/env bash
     set -euo pipefail
     if [ -f "content/{{ path }}.qmd" ]; then
-    	echo "Error: content/{{ path }}.qmd already exists."
+    	@echo "Error: content/{{ path }}.qmd already exists."
     	exit 1
     fi
     cat > "content/{{ path }}.qmd" <<-EOF
@@ -50,7 +50,7 @@ page path:
       short_title:
     ---
     EOF
-    echo "Created content/{{ path }}.qmd"
+    @echo "Created content/{{ path }}.qmd"
 
 # Create a new blog post at content/blog/{{title}}/index.qmd
 post title:
@@ -68,7 +68,7 @@ post title:
       tags: []
     ---
     EOF
-    echo "Created $dir/index.qmd"
+    @echo "Created $dir/index.qmd"
 
 # Render a documentation page at content/{{path}}.qmd
 render-page path: (render-one path)
