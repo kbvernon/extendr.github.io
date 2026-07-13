@@ -22,7 +22,7 @@ reset:
 
 # Install Node.js dependencies
 install: npm basecoat
-    echo "Successfully installed dependencies and copied basecoat files to static."
+    @echo "Successfully installed dependencies and copied basecoat files to static."
 
 [private]
 npm:
@@ -30,7 +30,8 @@ npm:
 
 [private]
 basecoat:
-    cp node_modules/basecoate-css/dist/js/*.js static/js/
+    mkdir -p static/js/
+    cp node_modules/basecoat-css/dist/js/*.js static/js/
 
 # Create a new documentation page at content/{{path}}.qmd
 page path:
@@ -84,7 +85,7 @@ render-one path:
     	rm -f "{{ path }}.md"
     	quarto render "{{ path }}.qmd" {{ quarto_out + " " + quarto_flags }}
     else
-    	echo "Error: Could not find content/{{ path }}.qmd."
+    	@echo "Error: Could not find content/{{ path }}.qmd."
     	exit 1
     fi
 
@@ -99,7 +100,7 @@ render:
     	rm -f "${page%.qmd}.md"
     	quarto render "$page" {{ quarto_out + " " + quarto_flags }}
     done
-    echo "Successfully rendered all documentation pages."
+    @echo "Successfully rendered all documentation pages."
 
 quarto_out := "--to commonmark+yaml_metadata_block"
 quarto_flags := "-M engine:knitr -M wrap:preserve -M from:markdown-smart"
